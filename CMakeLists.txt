@@ -11,6 +11,7 @@ option(glfw "" OFF)
 option(opengl2 "" OFF)
 option(opengl3 "" OFF)
 option(vulkan "" OFF)
+option(sdl3 "" OFF)
 
 option(examples "" OFF)
 
@@ -27,8 +28,8 @@ cmake_dependent_option(example_null "" OFF examples OFF)
 option(visualize_targets "" ON)
 
 add_library(imgui_core)
-target_sources(imgui_core PUBLIC imgui.cpp imgui_demo.cpp imgui_draw.cpp imgui_tables.cpp imgui_widgets.cpp
-                                 imgui_widgets.cpp)
+target_sources(imgui_core PRIVATE imgui.cpp imgui_demo.cpp imgui_draw.cpp imgui_tables.cpp imgui_widgets.cpp
+                                  imgui_widgets.cpp)
 target_include_directories(imgui_core PUBLIC ${IMGUI_SOURCE_DIR})
 add_library(ImGui::core ALIAS imgui_core)
 
@@ -37,8 +38,8 @@ if(opengl2)
   add_library(imgui_backend_opengl2)
   target_sources(imgui_backend_opengl2 PUBLIC backends/imgui_impl_opengl2.cpp)
   target_include_directories(imgui_backend_opengl2 PUBLIC ${IMGUI_SOURCE_DIR} ${IMGUI_SOURCE_DIR}/backends)
-  target_link_libraries(imgui_backend_opengl2 PUBLIC ImGui::core)
   target_link_libraries(imgui_backend_opengl2 PUBLIC OpenGL::GL)
+  target_link_libraries(imgui_backend_opengl2 PUBLIC imgui_core)
   add_library(ImGui::backend::opengl2 ALIAS imgui_backend_opengl2)
 endif()
 
@@ -47,8 +48,8 @@ if(opengl3)
   add_library(imgui_backend_opengl3)
   target_sources(imgui_backend_opengl3 PUBLIC backends/imgui_impl_opengl3.cpp)
   target_include_directories(imgui_backend_opengl3 PUBLIC ${IMGUI_SOURCE_DIR} ${IMGUI_SOURCE_DIR}/backends)
-  target_link_libraries(imgui_backend_opengl3 PUBLIC ImGui::core)
   target_link_libraries(imgui_backend_opengl3 PUBLIC OpenGL::GL)
+  target_link_libraries(imgui_backend_opengl3 PUBLIC imgui_core)
   add_library(ImGui::backend::opengl3 ALIAS imgui_backend_opengl3)
 endif()
 
@@ -67,10 +68,10 @@ if(glfw)
   find_package(glfw3 CONFIG REQUIRED)
 
   add_library(imgui_backend_glfw)
-  target_sources(imgui_backend_glfw PUBLIC backends/imgui_impl_glfw.cpp)
-  target_include_directories(imgui_backend_glfw PUBLIC ${IMGUI_SOURCE_DIR} ${IMGUI_SOURCE_DIR}/backends)
-  target_link_libraries(imgui_backend_glfw PUBLIC ImGui::backend::opengl3)
+  target_sources(imgui_backend_glfw PUBLIC backends/imgui_impl_glfw.cpp backends/imgui_impl_glfw.h
+                                           ${IMGUI_SOURCE_DIR}/imgui.h)
   target_link_libraries(imgui_backend_glfw PUBLIC glfw)
+  target_link_libraries(imgui_backend_glfw PUBLIC imgui_core imgui_backend_opengl3)
   add_library(ImGui::backend::glfw ALIAS imgui_backend_glfw)
 
   if(example_glfw_opengl3)
@@ -90,7 +91,16 @@ if(glfw)
     target_sources(glfw_example_vulkan PUBLIC examples/example_glfw_vulkan/main.cpp)
     target_link_libraries(glfw_example_vulkan PUBLIC imgui_backend_glfw imgui_backend_vulkan)
   endif()
+endif()
 
+if(sdl3)
+  find_package(SDL3 REQUIRED)
+  add_library(imgui_backend_sdl3)
+  target_sources(imgui_backend_sdl3 PUBLIC backends/imgui_impl_sdl3.cpp backends/imgui_impl_sdl3.h
+                                           ${IMGUI_SOURCE_DIR}/imgui.h)
+  target_link_libraries(imgui_backend_sdl3 PUBLIC SDL3::SDL3)
+  target_link_libraries(imgui_backend_sdl3 PUBLIC imgui_core)
+  add_library(ImGui::backend::sdl3 ALIAS imgui_backend_sdl3)
 endif()
 
 if(example_null)
