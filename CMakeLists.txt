@@ -8,6 +8,10 @@ include(CMakeDependentOption)
 set(IMGUI_SOURCE_DIR ${PROJECT_SOURCE_DIR})
 
 option(glfw "" OFF)
+option(opengl2 "" OFF)
+option(opengl3 "" OFF)
+option(vulkan "" OFF)
+
 option(examples "" OFF)
 
 cmake_dependent_option(opengl3 "" ON glfw ON)
@@ -48,6 +52,17 @@ if(opengl3)
   add_library(ImGui::backend::opengl3 ALIAS imgui_backend_opengl3)
 endif()
 
+if(vulkan)
+  find_package(Vulkan REQUIRED)
+
+  add_library(imgui_backend_vulkan)
+  target_sources(imgui_backend_vulkan PUBLIC backends/imgui_impl_vulkan.cpp backends/imgui_impl_vulkan.h
+                                             ${IMGUI_SOURCE_DIR}/imgui.h)
+  target_link_libraries(imgui_backend_vulkan PUBLIC Vulkan::Vulkan)
+  target_link_libraries(imgui_backend_vulkan PUBLIC imgui_core)
+  add_library(ImGui::backend::vulkan ALIAS imgui_backend_vulkan)
+endif()
+
 if(glfw)
   find_package(glfw3 CONFIG REQUIRED)
 
@@ -69,6 +84,13 @@ if(glfw)
     target_sources(glfw_example_opengl2 PUBLIC examples/example_glfw_opengl2/main.cpp)
     target_link_libraries(glfw_example_opengl2 PUBLIC imgui_backend_glfw imgui_backend_opengl2)
   endif()
+
+  if(example_glfw_vulkan)
+    add_executable(glfw_example_vulkan)
+    target_sources(glfw_example_vulkan PUBLIC examples/example_glfw_vulkan/main.cpp)
+    target_link_libraries(glfw_example_vulkan PUBLIC imgui_backend_glfw imgui_backend_vulkan)
+  endif()
+
 endif()
 
 if(example_null)
