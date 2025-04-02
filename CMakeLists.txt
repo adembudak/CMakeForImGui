@@ -23,8 +23,10 @@ cmake_dependent_option(example_glfw_opengl2 "" OFF glfw;examples OFF)
 cmake_dependent_option(example_glfw_opengl3 "" OFF glfw;examples OFF)
 cmake_dependent_option(example_glfw_vulkan "" OFF glfw;examples OFF)
 cmake_dependent_option(example_glfw_wgpu "" OFF glfw;examples OFF)
+
 cmake_dependent_option(example_null "" OFF examples OFF)
 
+cmake_dependent_option(example_sdl3_opengl3 "" OFF sdl3;examples OFF)
 option(visualize_targets "" ON)
 
 add_library(imgui_core)
@@ -102,6 +104,13 @@ if(sdl3)
   target_link_libraries(imgui_backend_sdl3 PUBLIC SDL3::SDL3)
   target_link_libraries(imgui_backend_sdl3 PUBLIC imgui_core)
   add_library(ImGui::backend::sdl3 ALIAS imgui_backend_sdl3)
+
+  if(example_sdl3_opengl3)
+    add_executable(sdl3_example_opengl3)
+    target_sources(sdl3_example_opengl3 PRIVATE examples/example_sdl3_opengl3/main.cpp)
+    target_link_libraries(sdl3_example_opengl3 PRIVATE imgui_backend_sdl3 imgui_backend_opengl3)
+  endif()
+
 endif()
 
 if(example_null)
