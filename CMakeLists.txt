@@ -79,7 +79,7 @@ if(opengl2)
   target_sources(imgui_backend_opengl2 PRIVATE ${_imdir}/backends/imgui_impl_opengl2.cpp)
   target_link_libraries(imgui_backend_opengl2 PUBLIC imgui_core)
   target_link_libraries(imgui_backend_opengl2 PUBLIC OpenGL::GL)
-  target_sources(imgui_backend_opengl2 PUBLIC FILE_SET imgui_backend_opengl2_set BASE_DIRS ${_imdir} TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_opengl2.h ${_imdir}/imgui.h)
+  target_sources(imgui_backend_opengl2 PUBLIC FILE_SET imgui_backend_opengl2_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_opengl2.h)
 
   install(
     TARGETS imgui_backend_opengl2
@@ -94,7 +94,7 @@ if(opengl3)
   target_sources(imgui_backend_opengl3 PRIVATE ${_imdir}/backends/imgui_impl_opengl3.cpp)
   target_link_libraries(imgui_backend_opengl3 PUBLIC imgui_core)
   target_link_libraries(imgui_backend_opengl3 PUBLIC OpenGL::GL)
-  target_sources(imgui_backend_opengl3 PUBLIC FILE_SET imgui_backend_opengl3_set BASE_DIRS ${_imdir} TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_opengl3.h ${_imdir}/imgui.h)
+  target_sources(imgui_backend_opengl3 PUBLIC FILE_SET imgui_backend_opengl3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_opengl3.h)
 
   install(
     TARGETS imgui_backend_opengl3
