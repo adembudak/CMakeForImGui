@@ -67,6 +67,11 @@ install(
   NAMESPACE imgui::
   FILE ImGuiConfig.cmake)
 
+install(
+  TARGETS imgui_core imgui_misc_cpp
+  EXPORT imgui_core_export
+  FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set)
+
 if(opengl2)
   find_package(OpenGL 2 REQUIRED)
 
@@ -75,12 +80,12 @@ if(opengl2)
   target_link_libraries(imgui_backend_opengl2 PUBLIC imgui_core)
   target_link_libraries(imgui_backend_opengl2 PUBLIC OpenGL::GL)
   target_sources(imgui_backend_opengl2 PUBLIC FILE_SET imgui_backend_opengl2_set BASE_DIRS ${_imdir} TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_opengl2.h ${_imdir}/imgui.h)
-endif()
 
-install(
-  TARGETS imgui_core imgui_misc_cpp imgui_backend_opengl2
-  EXPORT imgui_core_export
-  FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_backend_opengl2_set)
+  install(
+    TARGETS imgui_backend_opengl2
+    EXPORT imgui_core_export
+    FILE_SET imgui_backend_opengl2_set)
+endif()
 
 if(opengl3)
   find_package(OpenGL 3 REQUIRED)
