@@ -103,18 +103,22 @@ if(opengl3)
 
 endif()
 
-#[[
 if(vulkan)
   find_package(Vulkan REQUIRED)
 
   add_library(imgui_backend_vulkan)
-  target_sources(imgui_backend_vulkan PUBLIC backends/imgui_impl_vulkan.cpp)
-  target_sources(imgui_backend_vulkan PUBLIC FILE_SET imgui_backend_vulkan_set BASE_DIRS backends TYPE HEADERS FILES backends/imgui_impl_vulkan.h)
   target_link_libraries(imgui_backend_vulkan PUBLIC Vulkan::Vulkan)
   target_link_libraries(imgui_backend_vulkan PUBLIC imgui_core)
-  add_library(ImGui::backend::vulkan ALIAS imgui_backend_vulkan)
+  target_sources(imgui_backend_vulkan PRIVATE ${_imdir}/backends/imgui_impl_vulkan.cpp)
+  target_sources(imgui_backend_vulkan PUBLIC FILE_SET imgui_backend_vulkan_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_vulkan.h)
+
+  install(
+    TARGETS imgui_backend_vulkan
+    EXPORT imgui_core_export
+    FILE_SET imgui_backend_vulkan_set)
 endif()
 
+#[[
 if(glfw)
   find_package(glfw3 CONFIG REQUIRED)
 
