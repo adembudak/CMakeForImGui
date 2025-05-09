@@ -5,7 +5,13 @@ cmake_minimum_required(VERSION 3.40.0)
 project(CMakeForImGui CXX)
 include(CMakeDependentOption)
 
-set(IMGUI_SOURCE_DIR ${PROJECT_SOURCE_DIR})
+if(NOT IMGUI_SOURCE_DIR)
+  message(FATAL_ERROR "set IMGUI_SOURCE_DIR to proceed.\ne.g. cmake -DIMGUI_SOURCE_DIR=path.to.imgui -S . -B build")
+endif()
+
+set(_imdir ${IMGUI_SOURCE_DIR})
+
+option(with_miscellaneous "" OFF)
 
 option(glfw "" OFF)
 option(opengl2 "" OFF)
@@ -28,34 +34,66 @@ cmake_dependent_option(example_null "" OFF examples OFF)
 
 cmake_dependent_option(example_sdl3_opengl3 "" OFF sdl3;examples OFF)
 option(visualize_targets "" ON)
-
 add_library(imgui_core)
-target_sources(imgui_core PRIVATE imgui.cpp imgui_demo.cpp imgui_draw.cpp imgui_tables.cpp imgui_widgets.cpp imgui_widgets.cpp)
-target_sources(imgui_core PUBLIC FILE_SET imgui_core_set TYPE HEADERS FILES ${IMGUI_SOURCE_DIR}/imgui.h ${IMGUI_SOURCE_DIR}/imconfig.h)
-add_library(ImGui::core ALIAS imgui_core)
+target_sources(imgui_core PRIVATE ${_imdir}/imgui.cpp ${_imdir}/imgui_demo.cpp ${_imdir}/imgui_draw.cpp ${_imdir}/imgui_tables.cpp ${_imdir}/imgui_widgets.cpp
+                                  ${_imdir}/imgui_widgets.cpp)
+target_sources(
+  imgui_core
+  PUBLIC FILE_SET
+         imgui_core_set
+         BASE_DIRS
+         ${_imdir}
+         TYPE
+         HEADERS
+         FILES
+         ${_imdir}/imgui.h
+         ${_imdir}/imconfig.h
+         ${_imdir}/imgui_internal.h
+         ${_imdir}/imstb_rectpack.h
+         ${_imdir}/imstb_textedit.h
+         ${_imdir}/imstb_truetype.h)
+
+if(with_miscellaneous)
+  add_library(imgui_misc_cpp)
+  target_sources(imgui_misc_cpp PRIVATE ${_imdir}/misc/cpp/imgui_stdlib.cpp)
+  target_sources(imgui_misc_cpp PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imdir} TYPE HEADERS FILES ${_imdir}/misc/cpp/imgui_stdlib.h ${_imdir}/imgui.h)
+
+  target_link_libraries(imgui_core PUBLIC imgui_misc_cpp)
+endif()
+
+install(
+  EXPORT imgui_core_export
+  DESTINATION lib/cmake
+  NAMESPACE imgui::
+  FILE ImGuiConfig.cmake)
 
 if(opengl2)
   find_package(OpenGL 2 REQUIRED)
 
   add_library(imgui_backend_opengl2)
-  target_sources(imgui_backend_opengl2 PUBLIC backends/imgui_impl_opengl2.cpp)
-  target_sources(imgui_backend_opengl2 PUBLIC FILE_SET imgui_backend_opengl2_set TYPE HEADERS FILES backends/imgui_impl_opengl2.h)
-  target_link_libraries(imgui_backend_opengl2 PUBLIC OpenGL::GL)
+  target_sources(imgui_backend_opengl2 PRIVATE ${_imdir}/backends/imgui_impl_opengl2.cpp)
   target_link_libraries(imgui_backend_opengl2 PUBLIC imgui_core)
-  add_library(ImGui::backend::opengl2 ALIAS imgui_backend_opengl2)
+  target_link_libraries(imgui_backend_opengl2 PUBLIC OpenGL::GL)
+  target_sources(imgui_backend_opengl2 PUBLIC FILE_SET imgui_backend_opengl2_set BASE_DIRS ${_imdir} TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_opengl2.h ${_imdir}/imgui.h)
 endif()
+
+install(
+  TARGETS imgui_core imgui_misc_cpp imgui_backend_opengl2
+  EXPORT imgui_core_export
+  FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_backend_opengl2_set)
 
 if(opengl3)
   find_package(OpenGL 3 REQUIRED)
 
   add_library(imgui_backend_opengl3)
-  target_sources(imgui_backend_opengl3 PUBLIC backends/imgui_impl_opengl3.cpp)
-  target_sources(imgui_backend_opengl3 PUBLIC FILE_SET imgui_backend_opengl3_set BASE_DIRS backends TYPE HEADERS FILES backends/imgui_impl_opengl3.h)
-  target_link_libraries(imgui_backend_opengl3 PUBLIC OpenGL::GL)
+  target_sources(imgui_backend_opengl3 PUBLIC ${_imdir}/backends/imgui_impl_opengl3.cpp)
   target_link_libraries(imgui_backend_opengl3 PUBLIC imgui_core)
-  add_library(ImGui::backend::opengl3 ALIAS imgui_backend_opengl3)
+  target_link_libraries(imgui_backend_opengl3 PUBLIC OpenGL::GL)
+  target_sources(imgui_backend_opengl3 PUBLIC FILE_SET imgui_backend_opengl3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_opengl3.h)
+  target_include_directories(imgui_backend_opengl3 PUBLIC ${_imdir})
 endif()
 
+#[[
 if(vulkan)
   find_package(Vulkan REQUIRED)
 
@@ -133,3 +171,5 @@ if(visualize_targets)
     COMMAND feh targets.png
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 endif()
+]]
+#
