@@ -57,14 +57,6 @@ target_sources(
          ${_imdir}/imstb_textedit.h
          ${_imdir}/imstb_truetype.h)
 
-if(with_miscellaneous)
-  add_library(imgui_misc_cpp)
-  target_sources(imgui_misc_cpp PRIVATE ${_imdir}/misc/cpp/imgui_stdlib.cpp)
-  target_sources(imgui_misc_cpp PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imdir} TYPE HEADERS FILES ${_imdir}/misc/cpp/imgui_stdlib.h ${_imdir}/imgui.h)
-
-  target_link_libraries(imgui_core PUBLIC imgui_misc_cpp)
-endif()
-
 install(
   EXPORT imgui_core_export
   DESTINATION lib/cmake
@@ -72,9 +64,22 @@ install(
   FILE ImGuiConfig.cmake)
 
 install(
-  TARGETS imgui_core imgui_misc_cpp
+  TARGETS imgui_core
   EXPORT imgui_core_export
-  FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set)
+  FILE_SET imgui_core_set)
+
+if(with_miscellaneous)
+  add_library(imgui_misc_cpp)
+  target_sources(imgui_misc_cpp PRIVATE ${_imdir}/misc/cpp/imgui_stdlib.cpp)
+  target_sources(imgui_misc_cpp PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imdir} TYPE HEADERS FILES ${_imdir}/misc/cpp/imgui_stdlib.h ${_imdir}/imgui.h)
+
+  target_link_libraries(imgui_core PUBLIC imgui_misc_cpp)
+
+  install(
+    TARGETS imgui_misc_cpp
+    EXPORT imgui_core_export
+    FILE_SET imgui_misc_cpp_set)
+endif()
 
 if(opengl2)
   find_package(OpenGL 2 REQUIRED)
