@@ -179,18 +179,19 @@ if(example_null)
   target_link_libraries(example_null PRIVATE imgui_core)
   target_include_directories(example_null PRIVATE ${IMGUI_SOURCE_DIR})
 endif()
+]]
+#
 
 if(visualize_targets)
   include(CMakeGraphVizOptions)
 
   find_program(DOT_COMMAND dot REQUIRED)
+  find_program(FEH_COMMAND feh REQUIRED)
 
   add_custom_target(
     graph ALL
     COMMAND ${CMAKE_COMMAND} --graphviz=tgt.dot ${PROJECT_BINARY_DIR}
     COMMAND ${DOT_COMMAND} -Tpng tgt.dot -o targets.png
-    COMMAND feh targets.png
+    COMMAND ${FEH_COMMAND} targets.png
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 endif()
-]]
-#
