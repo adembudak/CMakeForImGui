@@ -172,7 +172,7 @@ if(visualize_targets)
   find_program(FEH_COMMAND feh REQUIRED)
 
   add_custom_target(
-    graph ALL
+    graph
     COMMAND ${CMAKE_COMMAND} --graphviz=tgt.dot ${PROJECT_BINARY_DIR}
     COMMAND ${DOT_COMMAND} -Tpng tgt.dot -o targets.png
     COMMAND ${FEH_COMMAND} targets.png
