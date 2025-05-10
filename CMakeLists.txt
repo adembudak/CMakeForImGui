@@ -5,6 +5,9 @@ cmake_minimum_required(VERSION 3.40.0)
 project(CMakeForImGui CXX)
 include(CMakeDependentOption)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED 1)
+
 if(NOT IMGUI_SOURCE_DIR)
   message(FATAL_ERROR "set IMGUI_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_SOURCE_DIR=path.to.imgui ...")
 endif()
