@@ -171,16 +171,14 @@ if(sdl3)
   endif()
 
 endif()
-
-if(example_null)
-  add_executable(example_null)
-  target_sources(example_null PRIVATE examples/example_null/main.cpp)
-  target_sources(example_null PRIVATE FILE_SET example_null_set TYPE HEADERS FILES ${IMGUI_SOURCE_DIR}/imgui.h)
-  target_link_libraries(example_null PRIVATE imgui_core)
-  target_include_directories(example_null PRIVATE ${IMGUI_SOURCE_DIR})
-endif()
 ]]
 #
+if(example_null)
+  add_executable(example_null)
+  target_sources(example_null PRIVATE ${_imdir}/examples/example_null/main.cpp)
+  target_sources(example_null PRIVATE FILE_SET example_null_set TYPE HEADERS FILES ${_imdir}/imgui.h)
+  target_link_libraries(example_null PRIVATE imgui_core)
+endif()
 
 if(visualize_targets)
   include(CMakeGraphVizOptions)
