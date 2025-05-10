@@ -154,25 +154,6 @@ if(glfw)
   #
 endif()
 
-#[[
-if(sdl3)
-  find_package(SDL3 REQUIRED)
-  add_library(imgui_backend_sdl3)
-  target_sources(imgui_backend_sdl3 PUBLIC backends/imgui_impl_sdl3.cpp)
-  target_sources(imgui_backend_sdl3 PUBLIC FILE_SET imgui_backend_sdl3_set BASE_DIRS backends TYPE HEADERS FILES backends/imgui_impl_sdl3.h)
-  target_link_libraries(imgui_backend_sdl3 PUBLIC SDL3::SDL3)
-  target_link_libraries(imgui_backend_sdl3 PUBLIC imgui_core)
-  add_library(ImGui::backend::sdl3 ALIAS imgui_backend_sdl3)
-
-  if(example_sdl3_opengl3)
-    add_executable(sdl3_example_opengl3)
-    target_sources(sdl3_example_opengl3 PRIVATE examples/example_sdl3_opengl3/main.cpp)
-    target_link_libraries(sdl3_example_opengl3 PRIVATE imgui_backend_sdl3 imgui_backend_opengl3)
-  endif()
-
-endif()
-]]
-#
 if(example_null)
   add_executable(example_null)
   target_sources(example_null PRIVATE ${_imdir}/examples/example_null/main.cpp)
