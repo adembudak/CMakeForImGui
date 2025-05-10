@@ -6,7 +6,7 @@ project(CMakeForImGui CXX)
 include(CMakeDependentOption)
 
 if(NOT IMGUI_SOURCE_DIR)
-  message(FATAL_ERROR "set IMGUI_SOURCE_DIR to proceed.\ne.g. cmake -DIMGUI_SOURCE_DIR=path.to.imgui -S . -B build")
+  message(FATAL_ERROR "set IMGUI_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_SOURCE_DIR=path.to.imgui ...")
 endif()
 
 set(_imdir ${IMGUI_SOURCE_DIR})
@@ -34,6 +34,7 @@ cmake_dependent_option(example_null "" OFF examples OFF)
 
 cmake_dependent_option(example_sdl3_opengl3 "" OFF sdl3;examples OFF)
 option(visualize_targets "" ON)
+
 add_library(imgui_core)
 target_sources(imgui_core PRIVATE ${_imdir}/imgui.cpp ${_imdir}/imgui_demo.cpp ${_imdir}/imgui_draw.cpp ${_imdir}/imgui_tables.cpp ${_imdir}/imgui_widgets.cpp
                                   ${_imdir}/imgui_widgets.cpp)
