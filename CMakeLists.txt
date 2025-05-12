@@ -16,6 +16,7 @@ set(_imdir ${IMGUI_SOURCE_DIR})
 
 option(with_miscellaneous "" OFF)
 option(glfw "" OFF)
+option(glut "" OFF)
 option(opengl2 "" OFF)
 option(opengl3 "" OFF)
 option(vulkan "" OFF)
@@ -147,6 +148,21 @@ if(glfw)
     target_sources(glfw_example_vulkan PRIVATE ${_imdir}/examples/example_glfw_vulkan/main.cpp)
     target_link_libraries(glfw_example_vulkan PRIVATE imgui_backend_glfw imgui_backend_vulkan)
   endif()
+endif()
+
+if(glut)
+  find_package(FreeGLUT CONFIG REQUIRED)
+
+  add_library(imgui_backend_glut)
+  target_sources(imgui_backend_glut PRIVATE ${_imdir}/backends/imgui_impl_glut.cpp)
+  target_sources(imgui_backend_glut PUBLIC FILE_SET imgui_backend_glut_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_glut.h)
+  target_link_libraries(imgui_backend_glut PUBLIC FreeGLUT::freeglut)
+  target_link_libraries(imgui_backend_glut PUBLIC imgui_core)
+
+  install(
+    TARGETS imgui_backend_glut
+    EXPORT imgui_core_export
+    FILE_SET imgui_backend_glut_set)
 endif()
 
 if(example_null)
