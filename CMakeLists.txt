@@ -17,6 +17,7 @@ set(_imdir ${IMGUI_SOURCE_DIR})
 option(with_miscellaneous "" OFF)
 option(glfw "" OFF)
 option(glut "" OFF)
+option(sdl2 "" OFF)
 option(opengl2 "" OFF)
 option(opengl3 "" OFF)
 option(vulkan "" OFF)
@@ -171,7 +172,22 @@ if(glut)
     target_sources(glut_example_opengl2 PRIVATE ${_imdir}/examples/example_glut_opengl2/main.cpp)
     target_link_libraries(glut_example_opengl2 PRIVATE imgui_backend_glut imgui_backend_opengl2)
   endif()
+endif()
 
+if(sdl2)
+  find_package(SDL2 CONFIG REQUIRED)
+
+  add_library(imgui_backend_sdl2)
+  target_sources(imgui_backend_sdl2 PRIVATE ${_imdir}/backends/imgui_impl_sdl2.cpp)
+  target_sources(imgui_backend_sdl2 PUBLIC FILE_SET imgui_backend_sdl2_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_sdl2.h)
+
+  target_link_libraries(imgui_backend_sdl2 PUBLIC SDL2::SDL2)
+  target_link_libraries(imgui_backend_sdl2 PUBLIC imgui_core)
+
+  install(
+    TARGETS imgui_backend_sdl2
+    EXPORT imgui_core_export
+    FILE_SET imgui_backend_sdl2_set)
 endif()
 
 if(example_null)
