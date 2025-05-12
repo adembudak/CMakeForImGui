@@ -26,6 +26,8 @@ option(visualize_targets "" ON)
 cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND glfw AND opengl2" OFF)
 cmake_dependent_option(example_glfw_opengl3 "" OFF "examples AND glfw AND opengl3" OFF)
 cmake_dependent_option(example_glfw_vulkan "" OFF "examples AND glfw AND vulkan" OFF)
+cmake_dependent_option(example_glut_opengl2 "" OFF "examples AND glut AND opengl2" OFF)
+
 cmake_dependent_option(example_null "" OFF examples OFF)
 
 add_library(imgui_core)
@@ -163,6 +165,13 @@ if(glut)
     TARGETS imgui_backend_glut
     EXPORT imgui_core_export
     FILE_SET imgui_backend_glut_set)
+
+  if(example_glut_opengl2)
+    add_executable(glut_example_opengl2)
+    target_sources(glut_example_opengl2 PRIVATE ${_imdir}/examples/example_glut_opengl2/main.cpp)
+    target_link_libraries(glut_example_opengl2 PRIVATE imgui_backend_glut imgui_backend_opengl2)
+  endif()
+
 endif()
 
 if(example_null)
