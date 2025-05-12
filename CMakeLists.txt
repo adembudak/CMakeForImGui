@@ -31,6 +31,7 @@ cmake_dependent_option(example_glut_opengl2 "" OFF "examples AND glut AND opengl
 
 cmake_dependent_option(example_sdl2_opengl2 "" OFF "examples AND sdl2 AND opengl2" OFF)
 cmake_dependent_option(example_sdl2_opengl3 "" OFF "examples AND sdl2 AND opengl3" OFF)
+cmake_dependent_option(example_sdl2_vulkan "" OFF "examples AND sdl2 AND vulkan" OFF)
 
 cmake_dependent_option(example_null "" OFF examples OFF)
 
@@ -204,6 +205,11 @@ if(sdl2)
     target_link_libraries(example_sdl2_opengl3 PRIVATE imgui_backend_sdl2 imgui_backend_opengl3)
   endif()
 
+  if(example_sdl2_vulkan)
+    add_executable(example_sdl2_vulkan)
+    target_sources(example_sdl2_vulkan PRIVATE ${_imdir}/examples/example_sdl2_vulkan/main.cpp)
+    target_link_libraries(example_sdl2_vulkan PRIVATE imgui_backend_sdl2 imgui_backend_vulkan)
+  endif()
 endif()
 
 if(example_null)
