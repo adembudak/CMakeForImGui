@@ -116,9 +116,9 @@ if(vulkan)
   find_package(Vulkan REQUIRED)
 
   add_library(imgui_backend_vulkan)
-  target_link_libraries(imgui_backend_vulkan PUBLIC Vulkan::Vulkan)
-  target_link_libraries(imgui_backend_vulkan PUBLIC imgui_core)
   target_sources(imgui_backend_vulkan PRIVATE ${_imdir}/backends/imgui_impl_vulkan.cpp)
+  target_link_libraries(imgui_backend_vulkan PUBLIC imgui_core)
+  target_link_libraries(imgui_backend_vulkan PUBLIC Vulkan::Vulkan)
   target_sources(imgui_backend_vulkan PUBLIC FILE_SET imgui_backend_vulkan_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_vulkan.h)
 
   install(
@@ -141,26 +141,23 @@ if(glfw)
     EXPORT imgui_core_export
     FILE_SET imgui_backend_glfw_set)
 
-  #[[
   if(example_glfw_opengl3)
     add_executable(glfw_example_opengl3)
-    target_sources(glfw_example_opengl3 PRIVATE examples/example_glfw_opengl3/main.cpp)
+    target_sources(glfw_example_opengl3 PRIVATE ${_imdir}/examples/example_glfw_opengl3/main.cpp)
     target_link_libraries(glfw_example_opengl3 PRIVATE imgui_backend_glfw)
   endif()
 
   if(example_glfw_opengl2)
     add_executable(glfw_example_opengl2)
-    target_sources(glfw_example_opengl2 PRIVATE examples/example_glfw_opengl2/main.cpp)
+    target_sources(glfw_example_opengl2 PRIVATE ${_imdir}/examples/example_glfw_opengl2/main.cpp)
     target_link_libraries(glfw_example_opengl2 PRIVATE imgui_backend_glfw imgui_backend_opengl2)
   endif()
 
   if(example_glfw_vulkan)
     add_executable(glfw_example_vulkan)
-    target_sources(glfw_example_vulkan PRIVATE examples/example_glfw_vulkan/main.cpp)
+    target_sources(glfw_example_vulkan PRIVATE ${_imdir}/examples/example_glfw_vulkan/main.cpp)
     target_link_libraries(glfw_example_vulkan PRIVATE imgui_backend_glfw imgui_backend_vulkan)
   endif()
-  ]]
-  #
 endif()
 
 if(example_null)
