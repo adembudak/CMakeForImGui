@@ -60,9 +60,9 @@ install(
 if(with_miscellaneous)
   add_library(imgui_misc_cpp)
   target_sources(imgui_misc_cpp PRIVATE ${_imdir}/misc/cpp/imgui_stdlib.cpp)
-  target_sources(imgui_misc_cpp PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imdir} TYPE HEADERS FILES ${_imdir}/misc/cpp/imgui_stdlib.h ${_imdir}/imgui.h)
-
+  target_include_directories(imgui_misc_cpp PRIVATE ${_imdir})
   target_link_libraries(imgui_core PUBLIC imgui_misc_cpp)
+  target_sources(imgui_misc_cpp PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imdir}/misc/cpp TYPE HEADERS FILES ${_imdir}/misc/cpp/imgui_stdlib.h)
 
   install(
     TARGETS imgui_misc_cpp
