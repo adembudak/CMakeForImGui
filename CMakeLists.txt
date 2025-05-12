@@ -29,6 +29,8 @@ cmake_dependent_option(example_glfw_opengl3 "" OFF "examples AND glfw AND opengl
 cmake_dependent_option(example_glfw_vulkan "" OFF "examples AND glfw AND vulkan" OFF)
 cmake_dependent_option(example_glut_opengl2 "" OFF "examples AND glut AND opengl2" OFF)
 
+cmake_dependent_option(example_sdl2_opengl2 "" OFF "examples AND sdl2 AND opengl2" OFF)
+
 cmake_dependent_option(example_null "" OFF examples OFF)
 
 add_library(imgui_core)
@@ -188,6 +190,13 @@ if(sdl2)
     TARGETS imgui_backend_sdl2
     EXPORT imgui_core_export
     FILE_SET imgui_backend_sdl2_set)
+
+  if(example_sdl2_opengl2)
+    add_executable(example_sdl2_opengl2)
+    target_sources(example_sdl2_opengl2 PRIVATE ${_imdir}/examples/example_sdl2_opengl2/main.cpp)
+    target_link_libraries(example_sdl2_opengl2 PRIVATE imgui_backend_sdl2 imgui_backend_opengl2)
+  endif()
+
 endif()
 
 if(example_null)
