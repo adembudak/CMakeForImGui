@@ -15,28 +15,17 @@ endif()
 set(_imdir ${IMGUI_SOURCE_DIR})
 
 option(with_miscellaneous "" OFF)
-
 option(glfw "" OFF)
 option(opengl2 "" OFF)
 option(opengl3 "" OFF)
 option(vulkan "" OFF)
-option(sdl3 "" OFF)
-
 option(examples "" OFF)
-
-cmake_dependent_option(opengl3 "" ON glfw ON)
-cmake_dependent_option(opengl2 "" ON glfw ON)
-
-cmake_dependent_option(example_glfw_metal "" OFF glfw;examples OFF)
-cmake_dependent_option(example_glfw_opengl2 "" OFF glfw;examples OFF)
-cmake_dependent_option(example_glfw_opengl3 "" OFF glfw;examples OFF)
-cmake_dependent_option(example_glfw_vulkan "" OFF glfw;examples OFF)
-cmake_dependent_option(example_glfw_wgpu "" OFF glfw;examples OFF)
-
-cmake_dependent_option(example_null "" OFF examples OFF)
-
-cmake_dependent_option(example_sdl3_opengl3 "" OFF sdl3;examples OFF)
 option(visualize_targets "" ON)
+
+cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND glfw AND opengl2" OFF)
+cmake_dependent_option(example_glfw_opengl3 "" OFF "examples AND glfw AND opengl3" OFF)
+cmake_dependent_option(example_glfw_vulkan "" OFF "examples AND glfw AND vulkan" OFF)
+cmake_dependent_option(example_null "" OFF examples OFF)
 
 add_library(imgui_core)
 target_sources(imgui_core PRIVATE ${_imdir}/imgui.cpp ${_imdir}/imgui_demo.cpp ${_imdir}/imgui_draw.cpp ${_imdir}/imgui_tables.cpp ${_imdir}/imgui_widgets.cpp
