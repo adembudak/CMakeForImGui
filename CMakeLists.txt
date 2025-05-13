@@ -18,6 +18,7 @@ option(with_miscellaneous "" OFF)
 option(glfw "" OFF)
 option(glut "" OFF)
 option(sdl2 "" OFF)
+option(sdlrenderer2 "" OFF)
 option(opengl2 "" OFF)
 option(opengl3 "" OFF)
 option(vulkan "" OFF)
@@ -192,7 +193,6 @@ if(sdl2)
   add_library(imgui_backend_sdl2)
   target_sources(imgui_backend_sdl2 PRIVATE ${_imdir}/backends/imgui_impl_sdl2.cpp)
   target_sources(imgui_backend_sdl2 PUBLIC FILE_SET imgui_backend_sdl2_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_sdl2.h)
-
   target_link_libraries(imgui_backend_sdl2 PUBLIC SDL2::SDL2)
   target_link_libraries(imgui_backend_sdl2 PUBLIC imgui_core)
 
@@ -218,6 +218,21 @@ if(sdl2)
     target_sources(example_sdl2_vulkan PRIVATE ${_imdir}/examples/example_sdl2_vulkan/main.cpp)
     target_link_libraries(example_sdl2_vulkan PRIVATE imgui_backend_sdl2 imgui_backend_vulkan)
   endif()
+endif()
+
+if(sdlrenderer2)
+  find_package(SDL2 CONFIG REQUIRED)
+  add_library(imgui_backend_sdlrenderer2)
+  target_sources(imgui_backend_sdlrenderer2 PRIVATE ${_imdir}/backends/imgui_impl_sdlrenderer2.cpp)
+  target_sources(imgui_backend_sdlrenderer2 PUBLIC FILE_SET imgui_backend_sdlrenderer2_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES
+                                                   ${_imdir}/backends/imgui_impl_sdlrenderer2.h)
+  target_link_libraries(imgui_backend_sdlrenderer2 PUBLIC SDL2::SDL2)
+  target_link_libraries(imgui_backend_sdlrenderer2 PUBLIC imgui_core)
+
+  install(
+    TARGETS imgui_backend_sdlrenderer2
+    EXPORT imgui_core_export
+    FILE_SET imgui_backend_sdlrenderer2_set)
 endif()
 
 if(example_null)
