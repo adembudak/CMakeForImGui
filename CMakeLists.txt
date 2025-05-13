@@ -40,6 +40,8 @@ cmake_dependent_option(example_sdl2_sdlrenderer2 "" OFF "examples AND sdlrendere
 
 cmake_dependent_option(example_allegro5 "" OFF "examples AND allegro5" OFF)
 
+cmake_dependent_option(example_sdl3_opengl3 "" OFF "examples AND sdl3 AND opengl3" OFF)
+
 cmake_dependent_option(example_null "" OFF examples OFF)
 
 add_library(imgui_core)
@@ -282,6 +284,13 @@ if(sdl3)
     TARGETS imgui_backend_sdl3
     EXPORT imgui_core_export
     FILE_SET imgui_backend_sdl3_set)
+
+  if(example_sdl3_opengl3)
+    add_executable(example_sdl3_opengl3)
+    target_sources(example_sdl3_opengl3 PRIVATE ${_imdir}/examples/example_sdl3_opengl3/main.cpp)
+    target_link_libraries(example_sdl3_opengl3 PRIVATE imgui_backend_sdl3 imgui_backend_opengl3)
+  endif()
+
 endif()
 
 if(example_null)
