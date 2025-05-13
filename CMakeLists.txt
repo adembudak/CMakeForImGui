@@ -268,15 +268,13 @@ if(example_null)
 endif()
 
 if(visualize_targets)
-  include(CMakeGraphVizOptions)
-
   find_program(DOT_COMMAND dot REQUIRED)
   find_program(FEH_COMMAND feh REQUIRED)
 
   add_custom_target(
     graph
-    COMMAND ${CMAKE_COMMAND} --graphviz=tgt.dot ${PROJECT_BINARY_DIR}
-    COMMAND ${DOT_COMMAND} -Tpng tgt.dot -o targets.png
+    COMMAND ${CMAKE_COMMAND} --graphviz=targets.dot ${PROJECT_BINARY_DIR}
+    COMMAND ${DOT_COMMAND} -Tpng targets.dot -o targets.png
     COMMAND ${FEH_COMMAND} targets.png
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 endif()
