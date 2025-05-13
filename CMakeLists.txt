@@ -297,13 +297,11 @@ if(sdl3)
     target_sources(example_sdl3_vulkan PRIVATE ${_imdir}/examples/example_sdl3_vulkan/main.cpp)
     target_link_libraries(example_sdl3_vulkan PRIVATE imgui_backend_sdl3 imgui_backend_vulkan)
   endif()
-
 endif()
 
 if(example_null)
   add_executable(example_null)
   target_sources(example_null PRIVATE ${_imdir}/examples/example_null/main.cpp)
-  target_sources(example_null PRIVATE FILE_SET example_null_set TYPE HEADERS FILES ${_imdir}/imgui.h)
   target_link_libraries(example_null PRIVATE imgui_core)
 endif()
 
