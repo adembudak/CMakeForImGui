@@ -15,6 +15,7 @@ endif()
 set(_imdir ${IMGUI_SOURCE_DIR})
 
 option(with_miscellaneous "" OFF)
+option(allegro5 "" OFF)
 option(glfw "" OFF)
 option(glut "" OFF)
 option(sdl2 "" OFF)
@@ -133,6 +134,21 @@ if(vulkan)
     TARGETS imgui_backend_vulkan
     EXPORT imgui_core_export
     FILE_SET imgui_backend_vulkan_set)
+endif()
+
+if(allegro5)
+  find_package(Allegro CONFIG REQUIRED)
+  add_library(imgui_backend_allegro5)
+  target_sources(imgui_backend_allegro5 PRIVATE ${_imdir}/backends/imgui_impl_allegro5.cpp)
+  target_link_libraries(imgui_backend_allegro5 PUBLIC imgui_core)
+  target_link_libraries(imgui_backend_allegro5 PUBLIC Allegro::allegro Allegro::allegro_primitives)
+  target_sources(imgui_backend_allegro5 PUBLIC FILE_SET imgui_backend_allegro5_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_allegro5.h)
+
+  install(
+    TARGETS imgui_backend_allegro5
+    EXPORT imgui_core_export
+    FILE_SET imgui_backend_allegro5_set)
+
 endif()
 
 if(glfw)
