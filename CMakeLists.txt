@@ -71,6 +71,8 @@ install(
   EXPORT imgui_core_export
   FILE_SET imgui_core_set)
 
+install(FILES ${_imdir}/LICENSE.txt TYPE DATA)
+
 if(with_miscellaneous)
   add_library(imgui_misc_cpp)
   target_sources(imgui_misc_cpp PRIVATE ${_imdir}/misc/cpp/imgui_stdlib.cpp)
