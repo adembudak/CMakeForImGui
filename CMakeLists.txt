@@ -268,6 +268,15 @@ if(example_null)
 endif()
 
 if(visualize_targets)
+  if(NOT EXISTS ${PROJECT_BINARY_DIR}/CMakeGraphVizOptions.cmake)
+    file(
+      WRITE ${PROJECT_BINARY_DIR}/CMakeGraphVizOptions.cmake
+      "
+set(GRAPHVIZ_GENERATE_PER_TARGET FALSE)
+set(GRAPHVIZ_GENERATE_DEPENDERS FALSE)
+")
+  endif()
+
   find_program(DOT_COMMAND dot REQUIRED)
   find_program(FEH_COMMAND feh REQUIRED)
 
