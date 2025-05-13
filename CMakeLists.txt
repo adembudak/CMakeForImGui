@@ -37,6 +37,8 @@ cmake_dependent_option(example_sdl2_vulkan "" OFF "examples AND sdl2 AND vulkan"
 
 cmake_dependent_option(example_sdl2_sdlrenderer2 "" OFF "examples AND sdlrenderer2 AND sdl2" OFF)
 
+cmake_dependent_option(example_allegro5 "" OFF "examples AND allegro5" OFF)
+
 cmake_dependent_option(example_null "" OFF examples OFF)
 
 add_library(imgui_core)
@@ -148,6 +150,12 @@ if(allegro5)
     TARGETS imgui_backend_allegro5
     EXPORT imgui_core_export
     FILE_SET imgui_backend_allegro5_set)
+
+  if(example_allegro5)
+    add_executable(example_allegro5)
+    target_sources(example_allegro5 PRIVATE ${_imdir}/examples/example_allegro5/main.cpp)
+    target_link_libraries(example_allegro5 PRIVATE imgui_backend_allegro5)
+  endif()
 
 endif()
 
