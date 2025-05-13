@@ -20,6 +20,7 @@ option(glfw "" OFF)
 option(glut "" OFF)
 option(sdl2 "" OFF)
 option(sdlrenderer2 "" OFF)
+option(sdl3 "" OFF)
 option(opengl2 "" OFF)
 option(opengl3 "" OFF)
 option(vulkan "" OFF)
@@ -267,7 +268,20 @@ if(sdlrenderer2)
     target_sources(example_sdl2_sdlrenderer2 PRIVATE ${_imdir}/examples/example_sdl2_sdlrenderer2/main.cpp)
     target_link_libraries(example_sdl2_sdlrenderer2 PRIVATE imgui_backend_sdlrenderer2 imgui_backend_sdl2)
   endif()
+endif()
 
+if(sdl3)
+  find_package(SDL3 CONFIG REQUIRED)
+  add_library(imgui_backend_sdl3)
+  target_sources(imgui_backend_sdl3 PRIVATE ${_imdir}/backends/imgui_impl_sdl3.cpp)
+  target_sources(imgui_backend_sdl3 PUBLIC FILE_SET imgui_backend_sdl3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_sdl3.h)
+  target_link_libraries(imgui_backend_sdl3 PUBLIC SDL3::SDL3)
+  target_link_libraries(imgui_backend_sdl3 PUBLIC imgui_core)
+
+  install(
+    TARGETS imgui_backend_sdl3
+    EXPORT imgui_core_export
+    FILE_SET imgui_backend_sdl3_set)
 endif()
 
 if(example_null)
