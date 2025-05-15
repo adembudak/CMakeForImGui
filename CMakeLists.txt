@@ -29,6 +29,7 @@ option(visualize_targets "" OFF)
 
 if(WIN32)
   option(win32 "" OFF)
+  cmake_dependent_option(example_win32_opengl3 "" OFF "examples AND win32 AND opengl3" OFF)
 endif()
 
 cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND glfw AND opengl2" OFF)
@@ -313,6 +314,12 @@ if(win32)
    install(TARGETS imgui_backend_win32
     EXPORT imgui_core_export
     FILE_SET imgui_backend_win32_set)
+
+   if(example_win32_opengl3)
+      add_executable(example_win32_opengl3)
+      target_sources(example_win32_opengl3 PRIVATE ${_imdir}/examples/example_win32_opengl3/main.cpp)
+      target_link_libraries(example_win32_opengl3 PRIVATE imgui_backend_win32 imgui_backend_opengl3)
+   endif()
 endif()
 
 if(example_null)
