@@ -25,7 +25,7 @@ option(opengl2 "" OFF)
 option(opengl3 "" OFF)
 option(vulkan "" OFF)
 option(examples "" OFF)
-option(visualize_targets "" ON)
+option(visualize_targets "" OFF)
 
 cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND glfw AND opengl2" OFF)
 cmake_dependent_option(example_glfw_opengl3 "" OFF "examples AND glfw AND opengl3" OFF)
