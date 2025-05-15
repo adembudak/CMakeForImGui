@@ -27,6 +27,10 @@ option(vulkan "" OFF)
 option(examples "" OFF)
 option(visualize_targets "" OFF)
 
+if(WIN32)
+  option(win32 "" OFF)
+endif()
+
 cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND glfw AND opengl2" OFF)
 cmake_dependent_option(example_glfw_opengl3 "" OFF "examples AND glfw AND opengl3" OFF)
 cmake_dependent_option(example_glfw_vulkan "" OFF "examples AND glfw AND vulkan" OFF)
@@ -298,6 +302,17 @@ if(sdl3)
     target_sources(example_sdl3_vulkan PRIVATE ${_imdir}/examples/example_sdl3_vulkan/main.cpp)
     target_link_libraries(example_sdl3_vulkan PRIVATE imgui_backend_sdl3 imgui_backend_vulkan)
   endif()
+endif()
+
+if(win32)
+   add_library(imgui_backend_win32)
+   target_sources(imgui_backend_win32 PRIVATE ${_imdir}/backends/imgui_impl_win32.cpp)
+   target_sources(imgui_backend_win32 PUBLIC FILE_SET imgui_backend_win32_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_win32.h)
+   target_link_libraries(imgui_backend_win32 PUBLIC imgui_core)
+
+   install(TARGETS imgui_backend_win32
+    EXPORT imgui_core_export
+    FILE_SET imgui_backend_win32_set)
 endif()
 
 if(example_null)
