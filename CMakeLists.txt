@@ -29,6 +29,8 @@ option(visualize_targets "" OFF)
 
 if(WIN32)
   option(win32 "" OFF)
+  option(dx9 "" OFF)
+
   cmake_dependent_option(example_win32_opengl3 "" OFF "examples AND win32 AND opengl3" OFF)
   cmake_dependent_option(example_win32_vulkan "" OFF "examples AND win32 AND vulkan" OFF)
 endif()
@@ -327,6 +329,42 @@ if(win32)
      target_sources(example_win32_vulkan PRIVATE ${_imdir}/examples/example_win32_vulkan/main.cpp)
      target_link_libraries(example_win32_vulkan PRIVATE imgui_backend_win32 imgui_backend_vulkan)
    endif()
+endif()
+
+if(dx9)
+
+  set(sdk ${CMAKE_SYSTEM_VERSION})
+  find_path(Windows_SDK_INCLUDE_DIR d3d9.h PATHS "C:/Program Files (x86)/Windows Kits/10/Include/${sdk}/shared" REQUIRED)
+
+  cmake_host_system_information(RESULT result QUERY IS_64BIT OS_PLATFORM)
+  list(GET result 0 is64Bit)
+  list(GET result 1 arch)
+
+  if(Is64Bit)
+    if(${arch} STREQUAL AMD64)
+      set(lib x64)
+    elseif(${arch} STREQUAL ARM64)
+      set(lib arm64)
+    else()
+      message("Not supported ${arch}")
+    endif()
+  else()
+    set(lib x86)
+  endif()
+
+  find_path(Windows_SDK_LIB_DIR d3d9.lib PATHS "C:/Program Files (x86)/Windows Kits/10/Lib/${sdk}/um/${lib}" REQUIRED)
+
+  add_library(imgui_backend_dx9)
+  target_sources(imgui_backend_dx9 PRIVATE ${_imdir}/backends/imgui_impl_dx9.cpp)
+  target_sources(imgui_backend_dx9 PUBLIC FILE_SET imgui_backend_dx9_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_dx9.h)
+  target_link_libraries(imgui_backend_dx9 PUBLIC ${Windows_SDK_LIB_DIR}/d3d9.lib)
+  target_link_libraries(imgui_backend_dx9 PUBLIC imgui_core)
+
+  target_include_directories(imgui_backend_dx9 PUBLIC ${Windows_SDK_INCLUDE_DIR})
+
+  install(TARGETS imgui_backend_dx9
+    EXPORT imgui_core_export
+    FILE_SET imgui_backend_dx9_set)
 endif()
 
 if(example_null)
