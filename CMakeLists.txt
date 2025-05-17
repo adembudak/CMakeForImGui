@@ -339,7 +339,6 @@ if(win32)
 endif()
 
 if(dx9)
-
   set(sdk ${CMAKE_SYSTEM_VERSION})
   find_path(Windows_SDK_INCLUDE_DIR d3d9.h PATHS "C:/Program Files (x86)/Windows Kits/10/Include/${sdk}/shared" REQUIRED)
 
@@ -353,7 +352,7 @@ if(dx9)
     elseif(${arch} STREQUAL ARM64)
       set(lib arm64)
     else()
-      message("Not supported ${arch}")
+      message(FATAL_ERROR "Unsupported architecture: ${arch}")
     endif()
   else()
     set(lib x86)
@@ -366,8 +365,7 @@ if(dx9)
   target_sources(imgui_backend_dx9 PUBLIC FILE_SET imgui_backend_dx9_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_dx9.h)
   target_link_libraries(imgui_backend_dx9 PUBLIC ${Windows_SDK_LIB_DIR}/d3d9.lib)
   target_link_libraries(imgui_backend_dx9 PUBLIC imgui_core)
-
-  target_include_directories(imgui_backend_dx9 PUBLIC ${Windows_SDK_INCLUDE_DIR})
+  target_sources(imgui_backend_dx9 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/d3d9.h)
 
   install(TARGETS imgui_backend_dx9
     EXPORT imgui_core_export
