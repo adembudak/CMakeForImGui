@@ -33,6 +33,7 @@ if(WIN32)
 
   cmake_dependent_option(example_win32_opengl3 "" OFF "examples AND win32 AND opengl3" OFF)
   cmake_dependent_option(example_win32_vulkan "" OFF "examples AND win32 AND vulkan" OFF)
+  cmake_dependent_option(example_win32_directx9 "" OFF "examples AND win32 AND dx9" OFF)
 endif()
 
 cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND glfw AND opengl2" OFF)
@@ -328,6 +329,12 @@ if(win32)
      add_executable(example_win32_vulkan)
      target_sources(example_win32_vulkan PRIVATE ${_imdir}/examples/example_win32_vulkan/main.cpp)
      target_link_libraries(example_win32_vulkan PRIVATE imgui_backend_win32 imgui_backend_vulkan)
+   endif()
+
+   if(example_win32_directx9)
+     add_executable(example_win32_directx9)
+     target_sources(example_win32_directx9 PRIVATE ${_imdir}/examples/example_win32_directx9/main.cpp)
+     target_link_libraries(example_win32_directx9 PRIVATE imgui_backend_win32 imgui_backend_dx9)
    endif()
 endif()
 
