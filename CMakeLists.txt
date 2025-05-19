@@ -348,8 +348,8 @@ if(dx9 OR dx10 OR dx11 OR dx12)
   set(sdk_version ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION})
 
   find_path(Windows_SDK_INCLUDE_DIR d3d9.h d3d10.h d3d10_1.h d3d11.h d3d12.h d3dcompiler.h 
-    PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots/KitsRoot10]/Include/${sdk_version}/shared"
-           "C:/Program Files (x86)/Windows Kits/10/Include/${sdk_version}/shared"
+    PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots;KitsRoot10]" PATH_SUFFIXES "Include/${sdk_version}/shared"
+          "C:/Program Files (x86)/Windows Kits/10/Include/${sdk_version}/shared"
     NO_CACHE REQUIRED)
 
   set(_arch ${CMAKE_VS_PLATFORM_NAME})
@@ -372,8 +372,8 @@ if(dx9 OR dx10 OR dx11 OR dx12)
   endif()
 
   find_path(Windows_SDK_LIB_DIR NAMES d3d9.lib d3d10.lib d3d10_1.lib d3d11.lib d3d12.lib d3dcompiler.lib
-    PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots/KitsRoot10]/Lib/${sdk_version}/um/${arch}"
-           "C:/Program Files (x86)/Windows Kits/10/Lib/${sdk_version}/um/${arch}"
+    PATHS "[HKLM/SOFTWARE/Microsoft/Windows Kits/Installed Roots;KitsRoot10]" PATH_SUFFIXES "Lib/${sdk_version}/um/${arch}"
+          "C:/Program Files (x86)/Windows Kits/10/Lib/${sdk_version}/um/${arch}"
     REGISTRY_VIEW HOST NO_CACHE REQUIRED)
 endif()
 
