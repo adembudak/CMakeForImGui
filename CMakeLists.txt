@@ -358,11 +358,17 @@ if(dx9 OR dx10 OR dx11 OR dx12)
   elseif("${_arch}" STREQUAL "x64")
     set(arch x64)
   elseif("${_arch}" STREQUAL "ARM")
-    set(arch arm) # It's available SDKs before version 10.0.26100.0
+    # ARM32 targets available SDKs before version 10.0.26100.0
+    # https://github.com/microsoft/WindowsAppSDK/discussions/406
+    if(${sdk_version} VERSION_LESS 10.0.26100.0)
+      set(arch arm)
+    endif()
   elseif("${_arch}" STREQUAL "ARM64")
     set(arch arm64)
-  else()
-     message(FATAL_ERROR "-- Unsupported architecture: ${_arch}")
+  endif()
+
+  if(NOT arch)
+    message(FATAL_ERROR "-- Unsupported architecture: ${_arch}")
   endif()
 
   find_path(Windows_SDK_LIB_DIR NAMES d3d9.lib d3d10.lib d3d10_1.lib d3d11.lib d3d12.lib d3dcompiler.lib
