@@ -347,9 +347,13 @@ endif()
 if(dx9 OR dx10 OR dx11 OR dx12)
   set(sdk_version ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION})
 
-  find_path(Windows_SDK_INCLUDE_DIR d3d9.h d3d10.h d3d10_1.h d3d11.h d3d12.h d3dcompiler.h 
-    PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots;KitsRoot10]" PATH_SUFFIXES "Include/${sdk_version}/shared"
-          "C:/Program Files (x86)/Windows Kits/10/Include/${sdk_version}/shared"
+  find_path(Windows_SDK_INCLUDE_DIR d3d9.h PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots;KitsRoot10]" "C:/Program Files (x86)/Windows Kits/10"
+    PATH_SUFFIXES "Include/${sdk_version}/shared"
+    NO_CACHE REQUIRED)
+
+  find_path(Windows_SDK_INCLUDE_DIR_1 d3d10.h d3d10_1.h d3d11.h d3d12.h d3dcompiler.h
+    PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots;KitsRoot10]" "C:/Program Files (x86)/Windows Kits/10"
+    PATH_SUFFIXES "Include/${sdk_version}/um"
     NO_CACHE REQUIRED)
 
   set(_arch ${CMAKE_VS_PLATFORM_NAME})
@@ -381,13 +385,28 @@ if(dx9)
   add_library(imgui_backend_dx9)
   target_sources(imgui_backend_dx9 PRIVATE ${_imdir}/backends/imgui_impl_dx9.cpp)
   target_sources(imgui_backend_dx9 PUBLIC FILE_SET imgui_backend_dx9_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_dx9.h)
-  target_link_libraries(imgui_backend_dx9 PUBLIC ${Windows_SDK_LIB_DIR}/d3d9.lib)
+  target_link_directories(imgui_backend_dx9 PRIVATE ${Windows_SDK_LIB_DIR})
+  target_link_libraries(imgui_backend_dx9 PUBLIC d3d9.lib)
   target_link_libraries(imgui_backend_dx9 PUBLIC imgui_core)
   target_sources(imgui_backend_dx9 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/d3d9.h)
 
   install(TARGETS imgui_backend_dx9
     EXPORT imgui_core_export
     FILE_SET imgui_backend_dx9_set)
+endif()
+
+if(dx10)
+  add_library(imgui_backend_dx10)
+  target_sources(imgui_backend_dx10 PRIVATE ${_imdir}/backends/imgui_impl_dx10.cpp)
+  target_sources(imgui_backend_dx10 PUBLIC FILE_SET imgui_backend_dx10_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_dx10.h)
+  target_link_directories(imgui_backend_dx10 PRIVATE ${Windows_SDK_LIB_DIR})
+  target_link_libraries(imgui_backend_dx10 PUBLIC d3d10_1.lib d3d10.lib d3dcompiler.lib)
+  target_link_libraries(imgui_backend_dx10 PUBLIC imgui_core)
+  target_sources(imgui_backend_dx10 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d10_1.h ${Windows_SDK_INCLUDE_DIR_1}/d3d10.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
+
+  install(TARGETS imgui_backend_dx10
+    EXPORT imgui_core_export
+    FILE_SET imgui_backend_dx10_set)
 endif()
 
 if(example_null)
