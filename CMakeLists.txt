@@ -37,6 +37,7 @@ option(visualize_targets "" OFF)
 cmake_dependent_option(example_win32_opengl3 "" OFF "examples AND win32 AND opengl3" OFF)
 cmake_dependent_option(example_win32_vulkan "" OFF "examples AND win32 AND vulkan" OFF)
 cmake_dependent_option(example_win32_directx9 "" OFF "examples AND win32 AND dx9" OFF)
+cmake_dependent_option(example_win32_directx10 "" OFF "examples AND win32 AND dx10" OFF)
 
 cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND glfw AND opengl2" OFF)
 cmake_dependent_option(example_glfw_opengl3 "" OFF "examples AND glfw AND opengl3" OFF)
@@ -338,6 +339,13 @@ if(win32)
      target_sources(example_win32_directx9 PRIVATE ${_imdir}/examples/example_win32_directx9/main.cpp)
      target_link_libraries(example_win32_directx9 PRIVATE imgui_backend_win32 imgui_backend_dx9)
    endif()
+
+  if(example_win32_directx10)
+    add_executable(example_win32_directx10)
+    target_sources(example_win32_directx10 PRIVATE ${_imdir}/examples/example_win32_directx10/main.cpp)
+    target_link_libraries(example_win32_directx10 PRIVATE imgui_backend_win32 imgui_backend_dx10)
+  endif()
+
 endif()
 
 if(NOT WIN32 AND (win32 OR dx9 OR dx10 OR dx11 OR dx12))
