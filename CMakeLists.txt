@@ -25,16 +25,18 @@ option(opengl2 "" OFF)
 option(opengl3 "" OFF)
 option(vulkan "" OFF)
 option(examples "" OFF)
+
+option(win32 "" OFF)
+option(dx9 "" OFF)
+option(dx10 "" OFF)
+option(dx11 "" OFF)
+option(dx12 "" OFF)
+
 option(visualize_targets "" OFF)
 
-if(WIN32)
-  option(win32 "" OFF)
-  option(dx9 "" OFF)
-
-  cmake_dependent_option(example_win32_opengl3 "" OFF "examples AND win32 AND opengl3" OFF)
-  cmake_dependent_option(example_win32_vulkan "" OFF "examples AND win32 AND vulkan" OFF)
-  cmake_dependent_option(example_win32_directx9 "" OFF "examples AND win32 AND dx9" OFF)
-endif()
+cmake_dependent_option(example_win32_opengl3 "" OFF "examples AND win32 AND opengl3" OFF)
+cmake_dependent_option(example_win32_vulkan "" OFF "examples AND win32 AND vulkan" OFF)
+cmake_dependent_option(example_win32_directx9 "" OFF "examples AND win32 AND dx9" OFF)
 
 cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND glfw AND opengl2" OFF)
 cmake_dependent_option(example_glfw_opengl3 "" OFF "examples AND glfw AND opengl3" OFF)
@@ -338,28 +340,41 @@ if(win32)
    endif()
 endif()
 
-if(dx9)
-  set(sdk ${CMAKE_SYSTEM_VERSION})
-  find_path(Windows_SDK_INCLUDE_DIR d3d9.h PATHS "C:/Program Files (x86)/Windows Kits/10/Include/${sdk}/shared" REQUIRED)
+if(NOT WIN32 AND (win32 OR dx9 OR dx10 OR dx11 OR dx12))
+  message(FATAL_ERROR "Win32 and DirectX targets are only available on Windows")
+endif()
+
+if(dx9 OR dx10 OR dx11 OR dx12)
+  set(sdk_version ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION})
+
+  find_path(Windows_SDK_INCLUDE_DIR d3d9.h d3d10.h d3d10_1.h d3d11.h d3d12.h d3dcompiler.h 
+    PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots/KitsRoot10]/Include/${sdk_version}/shared"
+           "C:/Program Files (x86)/Windows Kits/10/Include/${sdk_version}/shared"
+    NO_CACHE REQUIRED)
 
   cmake_host_system_information(RESULT result QUERY IS_64BIT OS_PLATFORM)
-  list(GET result 0 is64Bit)
-  list(GET result 1 arch)
+  list(GET result 0 _is64Bit)
+  list(GET result 1 _arch)
 
-  if(Is64Bit)
-    if(${arch} STREQUAL AMD64)
-      set(lib x64)
-    elseif(${arch} STREQUAL ARM64)
-      set(lib arm64)
+  if(_is64Bit)
+    if(${_arch} STREQUAL "AMD64")
+      set(arch x64)
+    elseif(${_arch} STREQUAL "ARM64")
+      set(arch arm64)
     else()
-      message(FATAL_ERROR "Unsupported architecture: ${arch}")
+      message(FATAL_ERROR "Unsupported architecture: ${_arch}")
     endif()
   else()
-    set(lib x86)
+    set(arch "x86")
   endif()
 
-  find_path(Windows_SDK_LIB_DIR d3d9.lib PATHS "C:/Program Files (x86)/Windows Kits/10/Lib/${sdk}/um/${lib}" REQUIRED)
+  find_path(Windows_SDK_LIB_DIR NAMES d3d9.lib d3d10.lib d3d10_1.lib d3d11.lib d3d12.lib d3dcompiler.lib
+    PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots/KitsRoot10]/Lib/${sdk_version}/um/${arch}"
+           "C:/Program Files (x86)/Windows Kits/10/Lib/${sdk_version}/um/${arch}"
+    REGISTRY_VIEW HOST NO_CACHE REQUIRED)
+endif()
 
+if(dx9)
   add_library(imgui_backend_dx9)
   target_sources(imgui_backend_dx9 PRIVATE ${_imdir}/backends/imgui_impl_dx9.cpp)
   target_sources(imgui_backend_dx9 PUBLIC FILE_SET imgui_backend_dx9_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_dx9.h)
