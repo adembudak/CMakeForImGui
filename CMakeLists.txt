@@ -352,20 +352,17 @@ if(dx9 OR dx10 OR dx11 OR dx12)
            "C:/Program Files (x86)/Windows Kits/10/Include/${sdk_version}/shared"
     NO_CACHE REQUIRED)
 
-  cmake_host_system_information(RESULT result QUERY IS_64BIT OS_PLATFORM)
-  list(GET result 0 _is64Bit)
-  list(GET result 1 _arch)
-
-  if(_is64Bit)
-    if(${_arch} STREQUAL "AMD64")
-      set(arch x64)
-    elseif(${_arch} STREQUAL "ARM64")
-      set(arch arm64)
-    else()
-      message(FATAL_ERROR "Unsupported architecture: ${_arch}")
-    endif()
+  set(_arch ${CMAKE_VS_PLATFORM_NAME})
+  if("${_arch}" STREQUAL "Win32")
+    set(arch x86)
+  elseif("${_arch}" STREQUAL "x64")
+    set(arch x64)
+  elseif("${_arch}" STREQUAL "ARM")
+    set(arch arm) # It's available SDKs before version 10.0.26100.0
+  elseif("${_arch}" STREQUAL "ARM64")
+    set(arch arm64)
   else()
-    set(arch "x86")
+     message(FATAL_ERROR "-- Unsupported architecture: ${_arch}")
   endif()
 
   find_path(Windows_SDK_LIB_DIR NAMES d3d9.lib d3d10.lib d3d10_1.lib d3d11.lib d3d12.lib d3dcompiler.lib
