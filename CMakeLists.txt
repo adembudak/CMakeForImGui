@@ -437,6 +437,21 @@ if(dx11)
     FILE_SET imgui_backend_dx11_set)
 endif()
 
+if(dx12)
+  add_library(imgui_backend_dx12)
+  target_sources(imgui_backend_dx12 PRIVATE ${_imdir}/backends/imgui_impl_dx12.cpp)
+  target_sources(imgui_backend_dx12 PUBLIC FILE_SET imgui_backend_dx12_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_dx12.h)
+  target_link_directories(imgui_backend_dx12 PRIVATE ${Windows_SDK_LIB_DIR})
+  target_link_libraries(imgui_backend_dx12 PUBLIC d3d12.lib dxgi.lib d3dcompiler.lib)
+  target_link_libraries(imgui_backend_dx12 PUBLIC imgui_core)
+  target_sources(imgui_backend_dx12 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d12.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
+  target_sources(imgui_backend_dx12 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/dxgi1_4.h)
+
+  install(TARGETS imgui_backend_dx12
+    EXPORT imgui_core_export
+    FILE_SET imgui_backend_dx12_set)
+endif()
+
 if(example_null)
   add_executable(example_null)
   target_sources(example_null PRIVATE ${_imdir}/examples/example_null/main.cpp)
