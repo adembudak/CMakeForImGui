@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.40.0)
 
 project(CMakeForImGui CXX)
 include(CMakeDependentOption)
+include(GNUInstallDirs)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED 1)
@@ -79,7 +80,7 @@ target_sources(
 
 install(
   EXPORT imgui_core_export
-  DESTINATION lib/cmake
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui
   NAMESPACE imgui::
   FILE ImGuiConfig.cmake)
 
