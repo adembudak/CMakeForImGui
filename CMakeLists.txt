@@ -60,8 +60,7 @@ cmake_dependent_option(example_win32_directx12 "" OFF "examples AND win32 AND dx
 cmake_dependent_option(example_null "" OFF examples OFF)
 
 add_library(imgui_core)
-target_sources(imgui_core PRIVATE ${_imdir}/imgui.cpp ${_imdir}/imgui_demo.cpp ${_imdir}/imgui_draw.cpp ${_imdir}/imgui_tables.cpp ${_imdir}/imgui_widgets.cpp
-                                  ${_imdir}/imgui_widgets.cpp)
+target_sources(imgui_core PRIVATE ${_imdir}/imgui.cpp ${_imdir}/imgui_demo.cpp ${_imdir}/imgui_draw.cpp ${_imdir}/imgui_tables.cpp ${_imdir}/imgui_widgets.cpp)
 target_sources(
   imgui_core
   PUBLIC FILE_SET
