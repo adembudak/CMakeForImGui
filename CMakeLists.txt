@@ -85,8 +85,8 @@ target_sources(
 install(
   EXPORT imgui_core_export
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui
-  NAMESPACE imgui::
-  FILE ImGuiConfig.cmake)
+  NAMESPACE Unofficial::DearImGui::
+  FILE ImGuiTargets.cmake)
 
 install(
   TARGETS imgui_core
