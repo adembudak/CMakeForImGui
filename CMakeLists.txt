@@ -15,6 +15,11 @@ endif()
 
 set(_imdir ${IMGUI_SOURCE_DIR})
 
+file(STRINGS ${_imdir}/imgui.h imgui_version_string REGEX "IMGUI_VERSION[ \t]+\"[0-9]+\\.[0-9]+\\.[0-9]+")
+string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" imgui_version ${imgui_version_string})
+
+set(PROJECT_VERSION ${imgui_version})
+
 option(with_miscellaneous "" OFF)
 option(allegro5 "" OFF)
 option(glfw "" OFF)
