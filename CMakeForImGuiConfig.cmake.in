@@ -22,6 +22,10 @@ if(TARGET Unofficial::DearImGui::imgui_backend_sdl2)
   find_dependency(SDL2)
 endif()
 
+if(TARGET Unofficial::DearImGui::imgui_backend_sdlrenderer2)
+  find_dependency(SDL2)
+endif()
+
 if(TARGET Unofficial::DearImGui::imgui_backend_opengl2)
   find_dependency(OpenGL 2)
 endif()
