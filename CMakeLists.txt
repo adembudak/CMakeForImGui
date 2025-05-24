@@ -37,7 +37,8 @@ option(dx10 "" OFF)
 option(dx11 "" OFF)
 option(dx12 "" OFF)
 
-option(visualize_targets "" OFF)
+option(visualize_targets "Visualize linkage graph" OFF)
+mark_as_advanced(FORCE visualize_targets)
 
 cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND glfw AND opengl2" OFF)
 cmake_dependent_option(example_glfw_opengl3 "" OFF "examples AND glfw AND opengl3" OFF)
