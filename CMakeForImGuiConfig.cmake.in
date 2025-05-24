@@ -2,10 +2,8 @@
 
 include(CMakeFindDependencyMacro)
 
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/ImGuiTargets.cmake") 
-  include("${CMAKE_CURRENT_LIST_DIR}/ImGuiTargets.cmake") 
-else()
-  message("Couldn't find anything")
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGuiTargets.cmake")
+  include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGuiTargets.cmake")
 endif()
 
 if(TARGET Unofficial::DearImGui::imgui_backend_opengl3)

@@ -3,8 +3,10 @@
 cmake_minimum_required(VERSION 3.40.0)
 
 project(CMakeForImGui CXX)
+
 include(CMakeDependentOption)
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED 1)
@@ -85,9 +87,9 @@ target_sources(
 
 install(
   EXPORT imgui_core_export
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
   NAMESPACE Unofficial::DearImGui::
-  FILE ImGuiTargets.cmake)
+  FILE CMakeForImGuiTargets.cmake)
 
 install(
   TARGETS imgui_core
@@ -488,3 +490,19 @@ set(GRAPHVIZ_GENERATE_DEPENDERS FALSE)
     COMMAND ${DOT_COMMAND} -Tpng targets.dot -o targets.png
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 endif()
+
+configure_package_config_file(
+  CMakeForImGuiConfig.cmake.in 
+  CMakeForImGuiConfig.cmake 
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui)
+
+write_basic_package_version_file(
+  ${PROJECT_BINARY_DIR}/CMakeForImGuiConfigVersion.cmake
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY AnyNewerVersion)
+
+install(FILES 
+  ${PROJECT_BINARY_DIR}/CMakeForImGuiConfig.cmake 
+  ${PROJECT_BINARY_DIR}/CMakeForImGuiConfigVersion.cmake
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui)
+
