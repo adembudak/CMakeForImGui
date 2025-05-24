@@ -6,8 +6,16 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGuiTargets.cmake")
   include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGuiTargets.cmake")
 endif()
 
+if(TARGET Unofficial::DearImGui::imgui_backend_opengl2)
+  find_dependency(OpenGL 2)
+endif()
+
 if(TARGET Unofficial::DearImGui::imgui_backend_opengl3)
   find_dependency(OpenGL 3)
+endif()
+
+if(TARGET Unofficial::DearImGui::imgui_backend_vulkan)
+  find_dependency(Vulkan)
 endif()
 
 check_required_components(CMakeForImGui)
