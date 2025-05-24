@@ -59,6 +59,8 @@ cmake_dependent_option(example_allegro5 "" OFF "examples AND allegro5" OFF)
 cmake_dependent_option(example_sdl3_opengl3 "" OFF "examples AND sdl3 AND opengl3" OFF)
 cmake_dependent_option(example_sdl3_vulkan "" OFF "examples AND sdl3 AND vulkan" OFF)
 
+cmake_dependent_option(example_sdl3_sdlrenderer3 "" OFF "examples AND sdlrenderer3 AND sdl3" OFF)
+
 cmake_dependent_option(example_win32_opengl3 "" OFF "examples AND win32 AND opengl3" OFF)
 cmake_dependent_option(example_win32_vulkan "" OFF "examples AND win32 AND vulkan" OFF)
 cmake_dependent_option(example_win32_directx9 "" OFF "examples AND win32 AND dx9" OFF)
@@ -337,6 +339,12 @@ if(sdlrenderer3)
     TARGETS imgui_backend_sdlrenderer3
     EXPORT imgui_core_export
     FILE_SET imgui_backend_sdlrenderer3_set)
+
+  if(example_sdl3_sdlrenderer3)
+    add_executable(example_sdl3_sdlrenderer3)
+    target_sources(example_sdl3_sdlrenderer3 PRIVATE ${_imdir}/examples/example_sdl3_sdlrenderer3/main.cpp)
+    target_link_libraries(example_sdl3_sdlrenderer3 PRIVATE imgui_backend_sdlrenderer3 imgui_backend_sdl3)
+  endif()
 endif()
 
 if(win32)
@@ -510,8 +518,8 @@ set(GRAPHVIZ_GENERATE_DEPENDERS FALSE)
 endif()
 
 configure_package_config_file(
-  CMakeForImGuiConfig.cmake.in 
-  CMakeForImGuiConfig.cmake 
+  CMakeForImGuiConfig.cmake.in
+  CMakeForImGuiConfig.cmake
   INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui)
 
 write_basic_package_version_file(
@@ -519,8 +527,8 @@ write_basic_package_version_file(
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY AnyNewerVersion)
 
-install(FILES 
-  ${PROJECT_BINARY_DIR}/CMakeForImGuiConfig.cmake 
+install(FILES
+  ${PROJECT_BINARY_DIR}/CMakeForImGuiConfig.cmake
   ${PROJECT_BINARY_DIR}/CMakeForImGuiConfigVersion.cmake
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui)
 
