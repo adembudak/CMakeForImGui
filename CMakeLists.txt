@@ -26,6 +26,7 @@ option(with_miscellaneous "" OFF)
 cmake_dependent_option(misc_cpp "" OFF "with_miscellaneous" OFF)
 cmake_dependent_option(misc_freetype "" OFF "with_miscellaneous" OFF)
 cmake_dependent_option(misc_debugger "" OFF "with_miscellaneous" OFF)
+cmake_dependent_option(misc_fonts "" OFF "with_miscellaneous" OFF)
 
 option(allegro5 "" OFF)
 option(glfw "" OFF)
@@ -141,6 +142,13 @@ if(with_miscellaneous)
     if(WIN32)
       install(FILES ${_imdir}/misc/debuggers/imgui.natvis ${_imdir}/misc/debuggers/imgui.natstepfilter DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui)
     endif()
+  endif()
+
+  if(misc_fonts)
+    add_executable(binary_to_compressed_c)
+    target_sources(binary_to_compressed_c PRIVATE ${_imdir}/misc/fonts/binary_to_compressed_c.cpp)
+
+    install(TARGETS binary_to_compressed_c)
   endif()
 endif()
 
