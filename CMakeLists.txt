@@ -67,6 +67,8 @@ cmake_dependent_option(example_allegro5 "" OFF "examples AND allegro5" OFF)
 cmake_dependent_option(example_sdl3_opengl3 "" OFF "examples AND sdl3 AND opengl3" OFF)
 cmake_dependent_option(example_sdl3_vulkan "" OFF "examples AND sdl3 AND vulkan" OFF)
 
+cmake_dependent_option(example_sdl3_sdlgpu3 "" OFF "examples AND sdlgpu3" OFF)
+
 cmake_dependent_option(example_sdl3_sdlrenderer3 "" OFF "examples AND sdlrenderer3 AND sdl3" OFF)
 
 cmake_dependent_option(example_win32_opengl3 "" OFF "examples AND win32 AND opengl3" OFF)
@@ -371,6 +373,12 @@ if(sdlgpu3)
     TARGETS imgui_backend_sdlgpu3
     EXPORT imgui_core_export
     FILE_SET imgui_backend_sdlgpu3_set)
+
+  if(example_sdl3_sdlgpu3)
+    add_executable(example_sdl3_sdlgpu3)
+    target_sources(example_sdl3_sdlgpu3 PRIVATE ${_imdir}/examples/example_sdl3_sdlgpu3/main.cpp)
+    target_link_libraries(example_sdl3_sdlgpu3 PRIVATE imgui_backend_sdlgpu3 imgui_backend_sdl3)
+  endif()
 endif()
 
 if(sdlrenderer3)
