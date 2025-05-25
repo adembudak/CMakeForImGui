@@ -23,6 +23,10 @@ string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" imgui_version ${imgui_version_stri
 set(PROJECT_VERSION ${imgui_version})
 
 option(with_miscellaneous "" OFF)
+cmake_dependent_option(misc_cpp "" OFF "with_miscellaneous" OFF)
+cmake_dependent_option(misc_freetype "" OFF "with_miscellaneous" OFF)
+cmake_dependent_option(misc_debugger "" OFF "with_miscellaneous" OFF)
+
 option(allegro5 "" OFF)
 option(glfw "" OFF)
 option(glut "" OFF)
@@ -87,7 +91,6 @@ target_sources(
          ${_imdir}/imstb_rectpack.h
          ${_imdir}/imstb_textedit.h
          ${_imdir}/imstb_truetype.h)
-
 install(
   EXPORT imgui_core_export
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
@@ -99,28 +102,46 @@ install(
   EXPORT imgui_core_export
   FILE_SET imgui_core_set)
 
-install(FILES ${_imdir}/LICENSE.txt TYPE DATA)
+install(FILES ${_imdir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui)
 
 if(with_miscellaneous)
-  add_library(imgui_misc_cpp)
-  target_sources(imgui_misc_cpp PRIVATE ${_imdir}/misc/cpp/imgui_stdlib.cpp)
-  target_sources(imgui_misc_cpp PRIVATE FILE_SET HEADERS BASE_DIRS ${_imdir} FILES ${_imdir}/imgui.h)
-  target_link_libraries(imgui_core PUBLIC imgui_misc_cpp)
-  target_sources(imgui_misc_cpp PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imdir}/misc/cpp TYPE HEADERS FILES ${_imdir}/misc/cpp/imgui_stdlib.h)
+  if(misc_cpp)
+    add_library(imgui_misc_cpp)
+    target_sources(imgui_misc_cpp PRIVATE ${_imdir}/misc/cpp/imgui_stdlib.cpp)
+    target_sources(imgui_misc_cpp PRIVATE FILE_SET HEADERS BASE_DIRS ${_imdir} FILES ${_imdir}/imgui.h)
+    target_link_libraries(imgui_core PUBLIC imgui_misc_cpp)
+    target_sources(imgui_misc_cpp PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imdir}/misc/cpp TYPE HEADERS FILES ${_imdir}/misc/cpp/imgui_stdlib.h)
 
-  find_package(freetype CONFIG REQUIRED)
+    install(
+      TARGETS imgui_misc_cpp
+      EXPORT imgui_core_export
+      FILE_SET imgui_misc_cpp_set)
+  endif()
 
-  add_library(imgui_misc_freetype)
-  target_sources(imgui_misc_freetype PRIVATE ${_imdir}/misc/freetype/imgui_freetype.cpp)
-  target_sources(imgui_misc_freetype PRIVATE FILE_SET HEADERS BASE_DIRS ${_imdir} FILES ${_imdir}/imgui.h)
-  target_link_libraries(imgui_misc_freetype PRIVATE Freetype::Freetype)
-  target_link_libraries(imgui_core PUBLIC imgui_misc_freetype)
-  target_sources(imgui_misc_freetype PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imdir}/misc/freetype TYPE HEADERS FILES ${_imdir}/misc/freetype/imgui_freetype.h)
+  if(misc_freetype)
+    find_package(freetype CONFIG REQUIRED)
 
-  install(
-    TARGETS imgui_misc_cpp imgui_misc_freetype
-    EXPORT imgui_core_export
-    FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
+    add_library(imgui_misc_freetype)
+    target_sources(imgui_misc_freetype PRIVATE ${_imdir}/misc/freetype/imgui_freetype.cpp)
+    target_sources(imgui_misc_freetype PRIVATE FILE_SET HEADERS BASE_DIRS ${_imdir} FILES ${_imdir}/imgui.h)
+    target_link_libraries(imgui_misc_freetype PRIVATE Freetype::Freetype)
+    target_link_libraries(imgui_core PUBLIC imgui_misc_freetype)
+    target_sources(imgui_misc_freetype PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imdir}/misc/freetype TYPE HEADERS FILES ${_imdir}/misc/freetype/imgui_freetype.h)
+
+    install(
+      TARGETS imgui_misc_freetype
+      EXPORT imgui_core_export
+      FILE_SET imgui_misc_freetype_set)
+  endif()
+
+  if(misc_debugger)
+   if(UNIX)
+     install(FILES ${_imdir}/misc/debuggers/imgui.gdb DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui)
+    endif()
+    if(WIN32)
+      install(FILES ${_imdir}/misc/debuggers/imgui.natvis ${_imdir}/misc/debuggers/imgui.natstepfilter DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui)
+    endif()
+  endif()
 endif()
 
 if(opengl2)
