@@ -45,6 +45,8 @@ option(dx10 "" OFF)
 option(dx11 "" OFF)
 option(dx12 "" OFF)
 
+option(docs "" OFF)
+
 option(visualize_targets "Visualize linkage graph" OFF)
 mark_as_advanced(FORCE visualize_targets)
 
@@ -520,6 +522,10 @@ if(dx12)
   install(TARGETS imgui_backend_dx12
     EXPORT imgui_core_export
     FILE_SET imgui_backend_dx12_set)
+endif()
+
+if(docs)
+  install(DIRECTORY ${_imdir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui FILES_MATCHING PATTERN "docs/*")
 endif()
 
 if(example_null)
