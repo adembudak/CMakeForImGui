@@ -137,10 +137,10 @@ if(with_miscellaneous)
 
   if(misc_debugger)
    if(UNIX)
-     install(FILES ${_imdir}/misc/debuggers/imgui.gdb DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui)
+     install(FILES ${_imdir}/misc/debuggers/imgui.gdb DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui/debugger)
     endif()
     if(WIN32)
-      install(FILES ${_imdir}/misc/debuggers/imgui.natvis ${_imdir}/misc/debuggers/imgui.natstepfilter DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui)
+      install(FILES ${_imdir}/misc/debuggers/imgui.natvis ${_imdir}/misc/debuggers/imgui.natstepfilter DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui/debugger)
     endif()
   endif()
 
@@ -148,7 +148,8 @@ if(with_miscellaneous)
     add_executable(binary_to_compressed_c)
     target_sources(binary_to_compressed_c PRIVATE ${_imdir}/misc/fonts/binary_to_compressed_c.cpp)
 
-    install(TARGETS binary_to_compressed_c)
+    install(TARGETS binary_to_compressed_c DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui/fonts)
+    install(DIRECTORY ${_imdir}/misc/fonts DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui FILES_MATCHING PATTERN "*.ttf")
   endif()
 endif()
 
