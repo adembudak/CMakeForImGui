@@ -34,6 +34,7 @@ option(glut "" OFF)
 option(sdl2 "" OFF)
 option(sdlrenderer2 "" OFF)
 option(sdl3 "" OFF)
+option(sdlgpu3 "" OFF)
 option(sdlrenderer3 "" OFF)
 option(opengl2 "" OFF)
 option(opengl3 "" OFF)
@@ -355,6 +356,21 @@ if(sdl3)
     target_sources(example_sdl3_vulkan PRIVATE ${_imdir}/examples/example_sdl3_vulkan/main.cpp)
     target_link_libraries(example_sdl3_vulkan PRIVATE imgui_backend_sdl3 imgui_backend_vulkan)
   endif()
+endif()
+
+if(sdlgpu3)
+  find_package(SDL3 CONFIG REQUIRED)
+
+  add_library(imgui_backend_sdlgpu3)
+  target_sources(imgui_backend_sdlgpu3 PRIVATE ${_imdir}/backends/imgui_impl_sdlgpu3.cpp)
+  target_sources(imgui_backend_sdlgpu3 PUBLIC FILE_SET imgui_backend_sdlgpu3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_sdlgpu3.h ${_imdir}/backends/imgui_impl_sdlgpu3_shaders.h)
+  target_link_libraries(imgui_backend_sdlgpu3 PUBLIC SDL3::SDL3)
+  target_link_libraries(imgui_backend_sdlgpu3 PUBLIC imgui_core)
+
+  install(
+    TARGETS imgui_backend_sdlgpu3
+    EXPORT imgui_core_export
+    FILE_SET imgui_backend_sdlgpu3_set)
 endif()
 
 if(sdlrenderer3)
