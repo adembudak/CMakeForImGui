@@ -46,4 +46,8 @@ if(TARGET Unofficial::DearImGui::imgui_backend_vulkan)
   find_dependency(Vulkan)
 endif()
 
+if(TARGET Unofficial::DearImGui::imgui_misc_freetype)
+  find_dependency(freetype)
+endif()
+
 check_required_components(CMakeForImGui)
