@@ -98,14 +98,14 @@ target_sources(
          ${_imdir}/imstb_textedit.h
          ${_imdir}/imstb_truetype.h)
 install(
-  EXPORT imgui_core_export
+  EXPORT imgui_export
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
   NAMESPACE Unofficial::DearImGui::
   FILE CMakeForImGuiTargets.cmake)
 
 install(
   TARGETS imgui_core
-  EXPORT imgui_core_export
+  EXPORT imgui_export
   FILE_SET imgui_core_set)
 
 install(FILES ${_imdir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui)
@@ -120,7 +120,7 @@ if(with_miscellaneous)
 
     install(
       TARGETS imgui_misc_cpp
-      EXPORT imgui_core_export
+      EXPORT imgui_export
       FILE_SET imgui_misc_cpp_set)
   endif()
 
@@ -136,7 +136,7 @@ if(with_miscellaneous)
 
     install(
       TARGETS imgui_misc_freetype
-      EXPORT imgui_core_export
+      EXPORT imgui_export
       FILE_SET imgui_misc_freetype_set)
   endif()
 
@@ -169,7 +169,7 @@ if(opengl2)
 
   install(
     TARGETS imgui_backend_opengl2
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_opengl2_set)
 endif()
 
@@ -184,7 +184,7 @@ if(opengl3)
 
   install(
     TARGETS imgui_backend_opengl3
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_opengl3_set)
 
 endif()
@@ -200,7 +200,7 @@ if(vulkan)
 
   install(
     TARGETS imgui_backend_vulkan
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_vulkan_set)
 endif()
 
@@ -214,7 +214,7 @@ if(allegro5)
 
   install(
     TARGETS imgui_backend_allegro5
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_allegro5_set)
 
   if(example_allegro5)
@@ -236,7 +236,7 @@ if(glfw)
 
   install(
     TARGETS imgui_backend_glfw
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_glfw_set)
 
   if(example_glfw_opengl3)
@@ -269,7 +269,7 @@ if(glut)
 
   install(
     TARGETS imgui_backend_glut
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_glut_set)
 
   if(example_glut_opengl2)
@@ -290,7 +290,7 @@ if(sdl2)
 
   install(
     TARGETS imgui_backend_sdl2
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_sdl2_set)
 
   if(example_sdl2_opengl2)
@@ -323,7 +323,7 @@ if(sdlrenderer2)
 
   install(
     TARGETS imgui_backend_sdlrenderer2
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_sdlrenderer2_set)
 
   if(example_sdl2_sdlrenderer2)
@@ -344,7 +344,7 @@ if(sdl3)
 
   install(
     TARGETS imgui_backend_sdl3
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_sdl3_set)
 
   if(example_sdl3_opengl3)
@@ -371,7 +371,7 @@ if(sdlgpu3)
 
   install(
     TARGETS imgui_backend_sdlgpu3
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_sdlgpu3_set)
 
   if(example_sdl3_sdlgpu3)
@@ -393,7 +393,7 @@ if(sdlrenderer3)
 
   install(
     TARGETS imgui_backend_sdlrenderer3
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_sdlrenderer3_set)
 
   if(example_sdl3_sdlrenderer3)
@@ -410,7 +410,7 @@ if(win32)
    target_link_libraries(imgui_backend_win32 PUBLIC imgui_core)
 
    install(TARGETS imgui_backend_win32
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_win32_set)
 
    if(example_win32_opengl3)
@@ -501,7 +501,7 @@ if(dx9)
   target_sources(imgui_backend_dx9 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/d3d9.h)
 
   install(TARGETS imgui_backend_dx9
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_dx9_set)
 endif()
 
@@ -515,7 +515,7 @@ if(dx10)
   target_sources(imgui_backend_dx10 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d10_1.h ${Windows_SDK_INCLUDE_DIR_1}/d3d10.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
 
   install(TARGETS imgui_backend_dx10
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_dx10_set)
 endif()
 
@@ -529,7 +529,7 @@ if(dx11)
   target_sources(imgui_backend_dx11 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d11.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
 
   install(TARGETS imgui_backend_dx11
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_dx11_set)
 endif()
 
@@ -544,7 +544,7 @@ if(dx12)
   target_sources(imgui_backend_dx12 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/dxgi1_4.h)
 
   install(TARGETS imgui_backend_dx12
-    EXPORT imgui_core_export
+    EXPORT imgui_export
     FILE_SET imgui_backend_dx12_set)
 endif()
 
