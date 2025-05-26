@@ -2,17 +2,17 @@
 
 [CMake](https://cmake.org) build script support for [Dear ImGui](https://github.com/ocornut/imgui). This builds and installs the library and backends, also builds example programs.
 
-## Building with CMake:
+## Building
 
 ```cmake
 cmake -DIMGUI_SOURCE_DIR=path.to.imgui -S . -B build
 ```
 
-Setting `IMGUI_SOURCE_DIR` variable on configuration step is mandatory. An example usage might be like:
+Setting `IMGUI_SOURCE_DIR` variable on configuration step is mandatory. An example usage might look like this:
 
 ```cmake
-cmake -DIMGUI_SOURCE_DIR=imgui-1.91.9b -S . -B build
-cmake -G"Ninja Multi-Config" -Dsdl2=ON -Dopengl3=ON -S . -B build
+cmake -G"Ninja Multi-Config" -DIMGUI_SOURCE_DIR=imgui-1.91.9b -S . -B build
+cmake -Dsdl2=ON -Dopengl3=ON -S . -B build
 cmake --build build --config Release
 cmake --install build --config Release
 ```
@@ -39,16 +39,18 @@ Following options are available:
 | dx11           | Unofficial::DearImGui::imgui_backend_dx11             |
 | dx12           | Unofficial::DearImGui::imgui_backend_dx12             |
 
-All the options are `OFF` by default.
+All options are `OFF` by default.
 
-Example programs set as dependent option, like:
+Example programs set as dependent options, like:
 ```cmake
 cmake_dependent_option(example_sdl2_opengl3 "" OFF "examples AND sdl2 AND opengl3" OFF)
 ```
-to make `example_sdl2_opengl3` option available, the `examples` option and corresponding backends; `sdl2` and `opengl3` should be `ON`.
+To make `example_sdl2_opengl3` option available, the `examples` option and the corresponding backends (`sdl2` and `opengl3`) must be `ON`.
 
-## Usage:
-[This repo](https://github.com/adembudak/CMakeForImGui.test) shows how to build programs from the library client perspective:
+## Usage
+
+[This repo](https://github.com/adembudak/CMakeForImGui.test) demonstrates how to build programs as a client of the library:
+
 
 ```cmake
 # project setup
@@ -65,7 +67,7 @@ What is missing:
 - Apple Metal backend
 - Apple OpenGL backend
 - Apple OS X backend
-    and corresponding example programs
+    and their corresponding example programs
 
 See help-wanted tags in issues.
 
