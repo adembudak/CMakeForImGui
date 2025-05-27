@@ -48,6 +48,8 @@ option(dx12 "" OFF)
 
 option(docs "" OFF)
 
+option(uninstall "" ON)
+
 option(visualize_targets "Visualize linkage graph" OFF)
 mark_as_advanced(FORCE visualize_targets)
 
@@ -550,6 +552,26 @@ endif()
 
 if(docs)
   install(DIRECTORY ${_imdir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui FILES_MATCHING PATTERN "docs/*")
+endif()
+
+if(uninstall)
+  file(CONFIGURE OUTPUT cmake_uninstall.cmake
+       CONTENT
+[=[
+if(NOT EXISTS @PROJECT_BINARY_DIR@/install_manifest.txt)
+  message(FATAL_ERROR "Couldn't find @PROJECT_BINARY_DIR@/install_manifest.txt")
+endif()
+
+file(STRINGS @PROJECT_BINARY_DIR@/install_manifest.txt files_to_uninstall)
+
+foreach(file ${files_to_uninstall})
+  execute_process(COMMAND @CMAKE_COMMAND@ -E rm $ENV{DESTDIR}${file} COMMAND_ECHO STDOUT)
+endforeach()
+]=] @ONLY)
+
+  add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${PROJECT_BINARY_DIR}/cmake_uninstall.cmake
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 endif()
 
 if(example_null)
