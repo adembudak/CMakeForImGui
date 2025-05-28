@@ -135,6 +135,7 @@ if(with_miscellaneous)
     target_link_libraries(imgui_misc_freetype PRIVATE Freetype::Freetype)
     target_link_libraries(imgui_core PUBLIC imgui_misc_freetype)
     target_sources(imgui_misc_freetype PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imdir}/misc/freetype TYPE HEADERS FILES ${_imdir}/misc/freetype/imgui_freetype.h)
+    target_compile_definitions(imgui_core PUBLIC IMGUI_ENABLE_FREETYPE)
 
     install(
       TARGETS imgui_misc_freetype
