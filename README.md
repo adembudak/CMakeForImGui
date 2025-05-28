@@ -17,7 +17,7 @@ cmake --build build --config Release
 cmake --install build --config Release
 ```
 
-Following options are available:
+Following backend options are available:
 
 | Build option   | Generated target                                      |
 |----------------|-------------------------------------------------------|
@@ -39,17 +39,17 @@ Following options are available:
 | dx11           | Unofficial::DearImGui::imgui_backend_dx11             |
 | dx12           | Unofficial::DearImGui::imgui_backend_dx12             |
 
-All options are `OFF` by default.
+All backend options are `OFF` by default.
 
 Example programs set as dependent options, like:
 ```cmake
 cmake_dependent_option(example_sdl2_opengl3 "" OFF "examples AND sdl2 AND opengl3" OFF)
 ```
-To make `example_sdl2_opengl3` option available, the `examples` option and the corresponding backends (`sdl2` and `opengl3`) must be `ON`.
+The `example_sdl2_opengl3` option will be available only when the `examples` option and the corresponding backends (`sdl2` and `opengl3`) are `ON`. This is true for all the other examples. No install rules are written for example programs.
 
 ## Usage
 
-[This repo](https://github.com/adembudak/CMakeForImGui.test) demonstrates how to build programs as a client of the library:
+All the include paths are kept as is. [This repo](https://github.com/adembudak/CMakeForImGui.test) demonstrates how to build programs as a client of the library:
 
 
 ```cmake
