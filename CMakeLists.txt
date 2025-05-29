@@ -48,8 +48,7 @@ option(dx12 "" OFF)
 
 option(BUILD_SHARED_LIBS "" OFF)
 
-option(docs "" OFF)
-
+option(install "" ON)
 option(uninstall "" ON)
 
 option(visualize_targets "Visualize linkage graph" OFF)
@@ -101,18 +100,6 @@ target_sources(
          ${_imdir}/imstb_rectpack.h
          ${_imdir}/imstb_textedit.h
          ${_imdir}/imstb_truetype.h)
-install(
-  EXPORT imgui_export
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
-  NAMESPACE Unofficial::DearImGui::
-  FILE CMakeForImGuiTargets.cmake)
-
-install(
-  TARGETS imgui_core
-  EXPORT imgui_export
-  FILE_SET imgui_core_set)
-
-install(FILES ${_imdir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui)
 
 if(with_miscellaneous)
   if(misc_cpp)
@@ -146,8 +133,8 @@ if(with_miscellaneous)
   endif()
 
   if(misc_debugger)
-   if(UNIX)
-     install(FILES ${_imdir}/misc/debuggers/imgui.gdb DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui/debugger)
+    if(UNIX)
+      install(FILES ${_imdir}/misc/debuggers/imgui.gdb DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui/debugger)
     endif()
     if(WIN32)
       install(FILES ${_imdir}/misc/debuggers/imgui.natvis ${_imdir}/misc/debuggers/imgui.natstepfilter DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui/debugger)
@@ -159,7 +146,11 @@ if(with_miscellaneous)
     target_sources(binary_to_compressed_c PRIVATE ${_imdir}/misc/fonts/binary_to_compressed_c.cpp)
 
     install(TARGETS binary_to_compressed_c DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui/fonts)
-    install(DIRECTORY ${_imdir}/misc/fonts DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui FILES_MATCHING PATTERN "*.ttf")
+    install(
+      DIRECTORY ${_imdir}/misc/fonts
+      DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui
+      FILES_MATCHING
+      PATTERN "*.ttf")
   endif()
 endif()
 
@@ -171,11 +162,6 @@ if(opengl2)
   target_link_libraries(imgui_backend_opengl2 PUBLIC imgui_core)
   target_link_libraries(imgui_backend_opengl2 PUBLIC OpenGL::GL)
   target_sources(imgui_backend_opengl2 PUBLIC FILE_SET imgui_backend_opengl2_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_opengl2.h)
-
-  install(
-    TARGETS imgui_backend_opengl2
-    EXPORT imgui_export
-    FILE_SET imgui_backend_opengl2_set)
 endif()
 
 if(opengl3)
@@ -186,12 +172,6 @@ if(opengl3)
   target_link_libraries(imgui_backend_opengl3 PUBLIC imgui_core)
   target_link_libraries(imgui_backend_opengl3 PUBLIC OpenGL::GL)
   target_sources(imgui_backend_opengl3 PUBLIC FILE_SET imgui_backend_opengl3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_opengl3.h)
-
-  install(
-    TARGETS imgui_backend_opengl3
-    EXPORT imgui_export
-    FILE_SET imgui_backend_opengl3_set)
-
 endif()
 
 if(vulkan)
@@ -202,11 +182,6 @@ if(vulkan)
   target_link_libraries(imgui_backend_vulkan PUBLIC imgui_core)
   target_link_libraries(imgui_backend_vulkan PUBLIC Vulkan::Vulkan)
   target_sources(imgui_backend_vulkan PUBLIC FILE_SET imgui_backend_vulkan_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_vulkan.h)
-
-  install(
-    TARGETS imgui_backend_vulkan
-    EXPORT imgui_export
-    FILE_SET imgui_backend_vulkan_set)
 endif()
 
 if(allegro5)
@@ -217,17 +192,11 @@ if(allegro5)
   target_link_libraries(imgui_backend_allegro5 PUBLIC Allegro::allegro Allegro::allegro_primitives)
   target_sources(imgui_backend_allegro5 PUBLIC FILE_SET imgui_backend_allegro5_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_allegro5.h)
 
-  install(
-    TARGETS imgui_backend_allegro5
-    EXPORT imgui_export
-    FILE_SET imgui_backend_allegro5_set)
-
   if(example_allegro5)
     add_executable(example_allegro5)
     target_sources(example_allegro5 PRIVATE ${_imdir}/examples/example_allegro5/main.cpp)
     target_link_libraries(example_allegro5 PRIVATE imgui_backend_allegro5)
   endif()
-
 endif()
 
 if(glfw)
@@ -238,11 +207,6 @@ if(glfw)
   target_sources(imgui_backend_glfw PUBLIC FILE_SET imgui_backend_glfw_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_glfw.h)
   target_link_libraries(imgui_backend_glfw PUBLIC glfw)
   target_link_libraries(imgui_backend_glfw PUBLIC imgui_core imgui_backend_opengl3)
-
-  install(
-    TARGETS imgui_backend_glfw
-    EXPORT imgui_export
-    FILE_SET imgui_backend_glfw_set)
 
   if(example_glfw_opengl3)
     add_executable(example_glfw_opengl3)
@@ -272,11 +236,6 @@ if(glut)
   target_link_libraries(imgui_backend_glut PUBLIC FreeGLUT::freeglut)
   target_link_libraries(imgui_backend_glut PUBLIC imgui_core)
 
-  install(
-    TARGETS imgui_backend_glut
-    EXPORT imgui_export
-    FILE_SET imgui_backend_glut_set)
-
   if(example_glut_opengl2)
     add_executable(example_glut_opengl2)
     target_sources(example_glut_opengl2 PRIVATE ${_imdir}/examples/example_glut_opengl2/main.cpp)
@@ -292,11 +251,6 @@ if(sdl2)
   target_sources(imgui_backend_sdl2 PUBLIC FILE_SET imgui_backend_sdl2_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_sdl2.h)
   target_link_libraries(imgui_backend_sdl2 PUBLIC SDL2::SDL2)
   target_link_libraries(imgui_backend_sdl2 PUBLIC imgui_core)
-
-  install(
-    TARGETS imgui_backend_sdl2
-    EXPORT imgui_export
-    FILE_SET imgui_backend_sdl2_set)
 
   if(example_sdl2_opengl2)
     add_executable(example_sdl2_opengl2)
@@ -326,11 +280,6 @@ if(sdlrenderer2)
   target_link_libraries(imgui_backend_sdlrenderer2 PUBLIC SDL2::SDL2)
   target_link_libraries(imgui_backend_sdlrenderer2 PUBLIC imgui_core)
 
-  install(
-    TARGETS imgui_backend_sdlrenderer2
-    EXPORT imgui_export
-    FILE_SET imgui_backend_sdlrenderer2_set)
-
   if(example_sdl2_sdlrenderer2)
     add_executable(example_sdl2_sdlrenderer2)
     target_sources(example_sdl2_sdlrenderer2 PRIVATE ${_imdir}/examples/example_sdl2_sdlrenderer2/main.cpp)
@@ -346,11 +295,6 @@ if(sdl3)
   target_sources(imgui_backend_sdl3 PUBLIC FILE_SET imgui_backend_sdl3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_sdl3.h)
   target_link_libraries(imgui_backend_sdl3 PUBLIC SDL3::SDL3)
   target_link_libraries(imgui_backend_sdl3 PUBLIC imgui_core)
-
-  install(
-    TARGETS imgui_backend_sdl3
-    EXPORT imgui_export
-    FILE_SET imgui_backend_sdl3_set)
 
   if(example_sdl3_opengl3)
     add_executable(example_sdl3_opengl3)
@@ -370,14 +314,10 @@ if(sdlgpu3)
 
   add_library(imgui_backend_sdlgpu3)
   target_sources(imgui_backend_sdlgpu3 PRIVATE ${_imdir}/backends/imgui_impl_sdlgpu3.cpp)
-  target_sources(imgui_backend_sdlgpu3 PUBLIC FILE_SET imgui_backend_sdlgpu3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_sdlgpu3.h ${_imdir}/backends/imgui_impl_sdlgpu3_shaders.h)
+  target_sources(imgui_backend_sdlgpu3 PUBLIC FILE_SET imgui_backend_sdlgpu3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_sdlgpu3.h
+                                              ${_imdir}/backends/imgui_impl_sdlgpu3_shaders.h)
   target_link_libraries(imgui_backend_sdlgpu3 PUBLIC SDL3::SDL3)
   target_link_libraries(imgui_backend_sdlgpu3 PUBLIC imgui_core)
-
-  install(
-    TARGETS imgui_backend_sdlgpu3
-    EXPORT imgui_export
-    FILE_SET imgui_backend_sdlgpu3_set)
 
   if(example_sdl3_sdlgpu3)
     add_executable(example_sdl3_sdlgpu3)
@@ -391,15 +331,11 @@ if(sdlrenderer3)
 
   add_library(imgui_backend_sdlrenderer3)
   target_sources(imgui_backend_sdlrenderer3 PRIVATE ${_imdir}/backends/imgui_impl_sdlrenderer3.cpp)
-  target_sources(imgui_backend_sdlrenderer3 PUBLIC FILE_SET imgui_backend_sdlrenderer3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_sdlrenderer3.h)
+  target_sources(imgui_backend_sdlrenderer3 PUBLIC FILE_SET imgui_backend_sdlrenderer3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES
+                                                   ${_imdir}/backends/imgui_impl_sdlrenderer3.h)
 
   target_link_libraries(imgui_backend_sdlrenderer3 PUBLIC SDL3::SDL3)
   target_link_libraries(imgui_backend_sdlrenderer3 PUBLIC imgui_core imgui_backend_sdl3)
-
-  install(
-    TARGETS imgui_backend_sdlrenderer3
-    EXPORT imgui_export
-    FILE_SET imgui_backend_sdlrenderer3_set)
 
   if(example_sdl3_sdlrenderer3)
     add_executable(example_sdl3_sdlrenderer3)
@@ -409,32 +345,28 @@ if(sdlrenderer3)
 endif()
 
 if(win32)
-   add_library(imgui_backend_win32)
-   target_sources(imgui_backend_win32 PRIVATE ${_imdir}/backends/imgui_impl_win32.cpp)
-   target_sources(imgui_backend_win32 PUBLIC FILE_SET imgui_backend_win32_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_win32.h)
-   target_link_libraries(imgui_backend_win32 PUBLIC imgui_core)
+  add_library(imgui_backend_win32)
+  target_sources(imgui_backend_win32 PRIVATE ${_imdir}/backends/imgui_impl_win32.cpp)
+  target_sources(imgui_backend_win32 PUBLIC FILE_SET imgui_backend_win32_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_win32.h)
+  target_link_libraries(imgui_backend_win32 PUBLIC imgui_core)
 
-   install(TARGETS imgui_backend_win32
-    EXPORT imgui_export
-    FILE_SET imgui_backend_win32_set)
+  if(example_win32_opengl3)
+    add_executable(example_win32_opengl3)
+    target_sources(example_win32_opengl3 PRIVATE ${_imdir}/examples/example_win32_opengl3/main.cpp)
+    target_link_libraries(example_win32_opengl3 PRIVATE imgui_backend_win32 imgui_backend_opengl3)
+  endif()
 
-   if(example_win32_opengl3)
-     add_executable(example_win32_opengl3)
-     target_sources(example_win32_opengl3 PRIVATE ${_imdir}/examples/example_win32_opengl3/main.cpp)
-     target_link_libraries(example_win32_opengl3 PRIVATE imgui_backend_win32 imgui_backend_opengl3)
-   endif()
+  if(example_win32_vulkan)
+    add_executable(example_win32_vulkan)
+    target_sources(example_win32_vulkan PRIVATE ${_imdir}/examples/example_win32_vulkan/main.cpp)
+    target_link_libraries(example_win32_vulkan PRIVATE imgui_backend_win32 imgui_backend_vulkan)
+  endif()
 
-   if(example_win32_vulkan)
-     add_executable(example_win32_vulkan)
-     target_sources(example_win32_vulkan PRIVATE ${_imdir}/examples/example_win32_vulkan/main.cpp)
-     target_link_libraries(example_win32_vulkan PRIVATE imgui_backend_win32 imgui_backend_vulkan)
-   endif()
-
-   if(example_win32_directx9)
-     add_executable(example_win32_directx9)
-     target_sources(example_win32_directx9 PRIVATE ${_imdir}/examples/example_win32_directx9/main.cpp)
-     target_link_libraries(example_win32_directx9 PRIVATE imgui_backend_win32 imgui_backend_dx9)
-   endif()
+  if(example_win32_directx9)
+    add_executable(example_win32_directx9)
+    target_sources(example_win32_directx9 PRIVATE ${_imdir}/examples/example_win32_directx9/main.cpp)
+    target_link_libraries(example_win32_directx9 PRIVATE imgui_backend_win32 imgui_backend_dx9)
+  endif()
 
   if(example_win32_directx10)
     add_executable(example_win32_directx10)
@@ -462,14 +394,15 @@ endif()
 if(dx9 OR dx10 OR dx11 OR dx12)
   set(sdk_version ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION})
 
-  find_path(Windows_SDK_INCLUDE_DIR d3d9.h PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots;KitsRoot10]" "C:/Program Files (x86)/Windows Kits/10"
-    PATH_SUFFIXES "Include/${sdk_version}/shared"
-    NO_CACHE REQUIRED)
-
-  find_path(Windows_SDK_INCLUDE_DIR_1 d3d10.h d3d10_1.h d3d11.h d3d12.h d3dcompiler.h
+  find_path(
+    Windows_SDK_INCLUDE_DIR d3d9.h
     PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots;KitsRoot10]" "C:/Program Files (x86)/Windows Kits/10"
-    PATH_SUFFIXES "Include/${sdk_version}/um"
-    NO_CACHE REQUIRED)
+    PATH_SUFFIXES "Include/${sdk_version}/shared" NO_CACHE REQUIRED)
+
+  find_path(
+    Windows_SDK_INCLUDE_DIR_1 d3d10.h d3d10_1.h d3d11.h d3d12.h d3dcompiler.h
+    PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots;KitsRoot10]" "C:/Program Files (x86)/Windows Kits/10"
+    PATH_SUFFIXES "Include/${sdk_version}/um" NO_CACHE REQUIRED)
 
   set(_arch ${CMAKE_VS_PLATFORM_NAME})
   if("${_arch}" STREQUAL "Win32")
@@ -490,10 +423,11 @@ if(dx9 OR dx10 OR dx11 OR dx12)
     message(FATAL_ERROR "-- Unsupported architecture: ${_arch}")
   endif()
 
-  find_path(Windows_SDK_LIB_DIR NAMES d3d9.lib d3d10.lib d3d10_1.lib d3d11.lib d3d12.lib d3dcompiler.lib
-    PATHS "[HKLM/SOFTWARE/Microsoft/Windows Kits/Installed Roots;KitsRoot10]" PATH_SUFFIXES "Lib/${sdk_version}/um/${arch}"
-          "C:/Program Files (x86)/Windows Kits/10/Lib/${sdk_version}/um/${arch}"
-    REGISTRY_VIEW HOST NO_CACHE REQUIRED)
+  find_path(
+    Windows_SDK_LIB_DIR
+    NAMES d3d9.lib d3d10.lib d3d10_1.lib d3d11.lib d3d12.lib d3dcompiler.lib
+    PATHS "[HKLM/SOFTWARE/Microsoft/Windows Kits/Installed Roots;KitsRoot10]"
+    PATH_SUFFIXES "Lib/${sdk_version}/um/${arch}" "C:/Program Files (x86)/Windows Kits/10/Lib/${sdk_version}/um/${arch}" REGISTRY_VIEW HOST NO_CACHE REQUIRED)
 endif()
 
 if(dx9)
@@ -504,10 +438,6 @@ if(dx9)
   target_link_libraries(imgui_backend_dx9 PUBLIC d3d9.lib)
   target_link_libraries(imgui_backend_dx9 PUBLIC imgui_core)
   target_sources(imgui_backend_dx9 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/d3d9.h)
-
-  install(TARGETS imgui_backend_dx9
-    EXPORT imgui_export
-    FILE_SET imgui_backend_dx9_set)
 endif()
 
 if(dx10)
@@ -517,11 +447,8 @@ if(dx10)
   target_link_directories(imgui_backend_dx10 PRIVATE ${Windows_SDK_LIB_DIR})
   target_link_libraries(imgui_backend_dx10 PUBLIC d3d10_1.lib d3d10.lib d3dcompiler.lib)
   target_link_libraries(imgui_backend_dx10 PUBLIC imgui_core)
-  target_sources(imgui_backend_dx10 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d10_1.h ${Windows_SDK_INCLUDE_DIR_1}/d3d10.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
-
-  install(TARGETS imgui_backend_dx10
-    EXPORT imgui_export
-    FILE_SET imgui_backend_dx10_set)
+  target_sources(imgui_backend_dx10 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d10_1.h
+                                            ${Windows_SDK_INCLUDE_DIR_1}/d3d10.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
 endif()
 
 if(dx11)
@@ -531,11 +458,8 @@ if(dx11)
   target_link_directories(imgui_backend_dx11 PRIVATE ${Windows_SDK_LIB_DIR})
   target_link_libraries(imgui_backend_dx11 PUBLIC d3d11.lib d3dcompiler.lib)
   target_link_libraries(imgui_backend_dx11 PUBLIC imgui_core)
-  target_sources(imgui_backend_dx11 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d11.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
-
-  install(TARGETS imgui_backend_dx11
-    EXPORT imgui_export
-    FILE_SET imgui_backend_dx11_set)
+  target_sources(imgui_backend_dx11 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d11.h
+                                            ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
 endif()
 
 if(dx12)
@@ -545,22 +469,150 @@ if(dx12)
   target_link_directories(imgui_backend_dx12 PRIVATE ${Windows_SDK_LIB_DIR})
   target_link_libraries(imgui_backend_dx12 PUBLIC d3d12.lib dxgi.lib d3dcompiler.lib)
   target_link_libraries(imgui_backend_dx12 PUBLIC imgui_core)
-  target_sources(imgui_backend_dx12 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d12.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
+  target_sources(imgui_backend_dx12 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d12.h
+                                            ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
   target_sources(imgui_backend_dx12 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/dxgi1_4.h)
-
-  install(TARGETS imgui_backend_dx12
-    EXPORT imgui_export
-    FILE_SET imgui_backend_dx12_set)
 endif()
 
-if(docs)
-  install(DIRECTORY ${_imdir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui FILES_MATCHING PATTERN "docs/*")
+if(install)
+  install(
+    EXPORT imgui_export
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
+    NAMESPACE Unofficial::DearImGui::
+    FILE CMakeForImGuiTargets.cmake)
+
+  install(
+    TARGETS imgui_core
+    EXPORT imgui_export
+    FILE_SET imgui_core_set)
+
+  install(FILES ${_imdir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui)
+
+  install(
+    DIRECTORY ${_imdir}/docs
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui
+    FILES_MATCHING
+    PATTERN "docs/*")
+
+  if(TARGET imgui_backend_opengl2)
+    install(
+      TARGETS imgui_backend_opengl2
+      EXPORT imgui_export
+      FILE_SET imgui_backend_opengl2_set)
+  endif()
+
+  if(TARGET imgui_backend_opengl3)
+    install(
+      TARGETS imgui_backend_opengl3
+      EXPORT imgui_export
+      FILE_SET imgui_backend_opengl3_set)
+  endif()
+
+  if(TARGET imgui_backend_vulkan)
+    install(
+      TARGETS imgui_backend_vulkan
+      EXPORT imgui_export
+      FILE_SET imgui_backend_vulkan_set)
+  endif()
+
+  if(TARGET imgui_backend_allegro5)
+    install(
+      TARGETS imgui_backend_allegro5
+      EXPORT imgui_export
+      FILE_SET imgui_backend_allegro5_set)
+  endif()
+
+  if(TARGET imgui_backend_glfw)
+    install(
+      TARGETS imgui_backend_glfw
+      EXPORT imgui_export
+      FILE_SET imgui_backend_glfw_set)
+  endif()
+
+  if(TARGET imgui_backend_glut)
+    install(
+      TARGETS imgui_backend_glut
+      EXPORT imgui_export
+      FILE_SET imgui_backend_glut_set)
+  endif()
+
+  if(TARGET imgui_backend_sdl2)
+    install(
+      TARGETS imgui_backend_sdl2
+      EXPORT imgui_export
+      FILE_SET imgui_backend_sdl2_set)
+  endif()
+
+  if(TARGET imgui_backend_sdlrenderer2)
+    install(
+      TARGETS imgui_backend_sdlrenderer2
+      EXPORT imgui_export
+      FILE_SET imgui_backend_sdlrenderer2_set)
+  endif()
+
+  if(TARGET imgui_backend_sdl3)
+    install(
+      TARGETS imgui_backend_sdl3
+      EXPORT imgui_export
+      FILE_SET imgui_backend_sdl3_set)
+  endif()
+
+  if(TARGET imgui_backend_sdlgpu3)
+    install(
+      TARGETS imgui_backend_sdlgpu3
+      EXPORT imgui_export
+      FILE_SET imgui_backend_sdlgpu3_set)
+  endif()
+
+  if(TARGET imgui_backend_sdlrenderer3)
+    install(
+      TARGETS imgui_backend_sdlrenderer3
+      EXPORT imgui_export
+      FILE_SET imgui_backend_sdlrenderer3_set)
+  endif()
+
+  if(TARGET imgui_backend_win32)
+    install(
+      TARGETS imgui_backend_win32
+      EXPORT imgui_export
+      FILE_SET imgui_backend_win32_set)
+  endif()
+
+  if(TARGET imgui_backend_dx9)
+    install(
+      TARGETS imgui_backend_dx9
+      EXPORT imgui_export
+      FILE_SET imgui_backend_dx9_set)
+  endif()
+
+  if(TARGET imgui_backend_dx10)
+    install(
+      TARGETS imgui_backend_dx10
+      EXPORT imgui_export
+      FILE_SET imgui_backend_dx10_set)
+  endif()
+
+  if(TARGET imgui_backend_dx11)
+    install(
+      TARGETS imgui_backend_dx11
+      EXPORT imgui_export
+      FILE_SET imgui_backend_dx11_set)
+  endif()
+
+  if(TARGET imgui_backend_dx12)
+    install(
+      TARGETS imgui_backend_dx12
+      EXPORT imgui_export
+      FILE_SET imgui_backend_dx12_set)
+  endif()
+
 endif()
 
 if(uninstall)
-  file(CONFIGURE OUTPUT cmake_uninstall.cmake
-       CONTENT
-[=[
+  file(CONFIGURE
+    OUTPUT cmake_uninstall.cmake
+    CONTENT
+    [=[
 if(NOT EXISTS @PROJECT_BINARY_DIR@/install_manifest.txt)
   message(FATAL_ERROR "Couldn't find @PROJECT_BINARY_DIR@/install_manifest.txt")
 endif()
@@ -570,9 +622,11 @@ file(STRINGS @PROJECT_BINARY_DIR@/install_manifest.txt files_to_uninstall)
 foreach(file ${files_to_uninstall})
   execute_process(COMMAND @CMAKE_COMMAND@ -E rm $ENV{DESTDIR}${file} COMMAND_ECHO STDOUT)
 endforeach()
-]=] @ONLY)
+]=]
+    @ONLY)
 
-  add_custom_target(uninstall
+  add_custom_target(
+    uninstall
     COMMAND ${CMAKE_COMMAND} -P ${PROJECT_BINARY_DIR}/cmake_uninstall.cmake
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 endif()
@@ -602,18 +656,11 @@ set(GRAPHVIZ_GENERATE_DEPENDERS FALSE)
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 endif()
 
-configure_package_config_file(
-  CMakeForImGuiConfig.cmake.in
-  CMakeForImGuiConfig.cmake
-  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui)
+configure_package_config_file(CMakeForImGuiConfig.cmake.in CMakeForImGuiConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui)
 
 write_basic_package_version_file(
   ${PROJECT_BINARY_DIR}/CMakeForImGuiConfigVersion.cmake
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY AnyNewerVersion)
 
-install(FILES
-  ${PROJECT_BINARY_DIR}/CMakeForImGuiConfig.cmake
-  ${PROJECT_BINARY_DIR}/CMakeForImGuiConfigVersion.cmake
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui)
-
+install(FILES ${PROJECT_BINARY_DIR}/CMakeForImGuiConfig.cmake ${PROJECT_BINARY_DIR}/CMakeForImGuiConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui)
