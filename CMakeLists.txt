@@ -62,6 +62,7 @@ cmake_dependent_option(example_glut_opengl2 "" OFF "examples AND glut AND opengl
 cmake_dependent_option(example_sdl2_opengl2 "" OFF "examples AND sdl2 AND opengl2" OFF)
 cmake_dependent_option(example_sdl2_opengl3 "" OFF "examples AND sdl2 AND opengl3" OFF)
 cmake_dependent_option(example_sdl2_vulkan "" OFF "examples AND sdl2 AND vulkan" OFF)
+cmake_dependent_option(example_sdl2_directx11 "" OFF "examples AND sdl2 AND dx11" OFF)
 
 cmake_dependent_option(example_sdl2_sdlrenderer2 "" OFF "examples AND sdlrenderer2 AND sdl2" OFF)
 
@@ -284,6 +285,12 @@ if(sdl2)
     add_executable(example_sdl2_vulkan)
     target_sources(example_sdl2_vulkan PRIVATE ${_imdir}/examples/example_sdl2_vulkan/main.cpp)
     target_link_libraries(example_sdl2_vulkan PRIVATE imgui_backend_sdl2 imgui_backend_vulkan)
+  endif()
+
+  if(example_sdl2_directx11)
+    add_executable(example_sdl2_directx11)
+    target_sources(example_sdl2_directx11 PRIVATE ${_imdir}/examples/example_sdl2_directx11/main.cpp)
+    target_link_libraries(example_sdl2_directx11 PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main> imgui_backend_sdl2 imgui_backend_dx11)
   endif()
 endif()
 
