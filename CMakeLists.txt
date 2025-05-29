@@ -536,6 +536,7 @@ if(install)
   foreach(backend IN LISTS imgui_backend_list)
     get_property(name TARGET ${backend} PROPERTY NAME)
     get_property(file_set TARGET ${backend} PROPERTY HEADER_SETS)
+    list(REMOVE_ITEM file_set HEADERS)
 
     install(TARGETS ${name}
 	    EXPORT imgui_export
