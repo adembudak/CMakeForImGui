@@ -412,6 +412,12 @@ if(win32)
   endif()
 endif()
 
+if(example_null)
+  add_executable(example_null)
+  target_sources(example_null PRIVATE ${_imdir}/examples/example_null/main.cpp)
+  target_link_libraries(example_null PRIVATE imgui_core)
+endif()
+
 if(NOT WIN32 AND (win32 OR dx9 OR dx10 OR dx11 OR dx12))
   message(FATAL_ERROR "Win32 and DirectX targets are only available on Windows")
 endif()
@@ -558,12 +564,6 @@ endforeach()
     uninstall
     COMMAND ${CMAKE_COMMAND} -P ${PROJECT_BINARY_DIR}/cmake_uninstall.cmake
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-endif()
-
-if(example_null)
-  add_executable(example_null)
-  target_sources(example_null PRIVATE ${_imdir}/examples/example_null/main.cpp)
-  target_link_libraries(example_null PRIVATE imgui_core)
 endif()
 
 if(visualize_targets)
