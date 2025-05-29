@@ -263,7 +263,7 @@ if(sdl2)
   add_library(imgui_backend_sdl2)
   target_sources(imgui_backend_sdl2 PRIVATE ${_imdir}/backends/imgui_impl_sdl2.cpp)
   target_sources(imgui_backend_sdl2 PUBLIC FILE_SET imgui_backend_sdl2_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_sdl2.h)
-  target_link_libraries(imgui_backend_sdl2 PUBLIC SDL2::SDL2)
+  target_link_libraries(imgui_backend_sdl2 PUBLIC $<IF:$<BOOL:${BUILD_SHARED_LIBS}>,SDL2::SDL2,SDL2::SDL2-static>)
   target_link_libraries(imgui_backend_sdl2 PUBLIC imgui_core)
 
   list(APPEND imgui_backend_list imgui_backend_sdl2)
