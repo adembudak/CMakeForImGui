@@ -46,6 +46,8 @@ option(dx10 "" OFF)
 option(dx11 "" OFF)
 option(dx12 "" OFF)
 
+option(BUILD_SHARED_LIBS "" OFF)
+
 option(docs "" OFF)
 
 option(uninstall "" ON)
