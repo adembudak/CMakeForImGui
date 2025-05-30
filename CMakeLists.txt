@@ -28,6 +28,7 @@ cmake_dependent_option(misc_freetype "" OFF "with_miscellaneous" OFF)
 cmake_dependent_option(misc_debugger "" OFF "with_miscellaneous" OFF)
 cmake_dependent_option(misc_fonts "" OFF "with_miscellaneous" OFF)
 
+option(android "" OFF)
 option(allegro5 "" OFF)
 option(glfw "" OFF)
 option(glut "" OFF)
@@ -170,12 +171,12 @@ if(opengl2)
 endif()
 
 if(opengl3)
-  find_package(OpenGL 3 REQUIRED)
+  include(FindOpenGL)
 
   add_library(imgui_backend_opengl3)
   target_sources(imgui_backend_opengl3 PRIVATE ${_imdir}/backends/imgui_impl_opengl3.cpp)
   target_link_libraries(imgui_backend_opengl3 PUBLIC imgui_core)
-  target_link_libraries(imgui_backend_opengl3 PUBLIC OpenGL::GL)
+  target_link_libraries(imgui_backend_opengl3 PUBLIC $<IF:$<TARGET_EXISTS:imgui_backend_android>,EGL,OpenGL::GL>)
   target_sources(imgui_backend_opengl3 PUBLIC FILE_SET imgui_backend_opengl3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_opengl3.h)
 
   list(APPEND imgui_backend_list imgui_backend_opengl3)
@@ -191,6 +192,50 @@ if(vulkan)
   target_sources(imgui_backend_vulkan PUBLIC FILE_SET imgui_backend_vulkan_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_vulkan.h)
 
   list(APPEND imgui_backend_list imgui_backend_vulkan)
+endif()
+
+if(android)
+  if(NOT DEFINED CMAKE_ANDROID_NDK AND NOT DEFINED $ENV{ANDROID_NDK})
+    message(FATAL_ERROR "Android NDK toolchain not found")
+  endif()
+
+  include(CMakePrintHelpers)
+  cmake_print_variables(CMAKE_SYSTEM_NAME CMAKE_ANDROID_NDK CMAKE_TOOLCHAIN_FILE ANDROID_TOOLCHAIN ANDROID_TOOLCHAIN_NAME ANDROID_ABI ANDROID_PLATFORM ANDROID_STL ANDROID_PIE ANDROID_CPP_FEATURES ANDROID_ALLOW_UNDEFINED_SYMBOLS ANDROID_ARM_MODE ANDROID_NATIVE_API_LEVEL)
+
+  if(CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a")
+    set(triplet arm-linux-androideabi)
+
+  elseif(CMAKE_ANDROID_ARCH_ABI STREQUAL "arm64-v8a")
+    set(triplet aarch64-linux-android)
+
+  elseif(CMAKE_ANDROID_ARCH_ABI STREQUAL "x86")
+    set(triplet i686-linux-android)
+
+  elseif(CMAKE_ANDROID_ARCH_ABI STREQUAL "x86_64")
+    set(triplet x86_64-linux-android)
+
+  elseif(CMAKE_ANDROID_ARCH_ABI STREQUAL "risv64")
+    set(triplet riscv64-linux-android)
+
+  else()
+    set(triplet arm-linux-androideabi)
+  endif()
+
+  set(api_level ${ANDROID_NATIVE_API_LEVEL})
+ 
+  set(Android_NDK_INCLUDE_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include)
+  set(Android_NDK_LIB_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/${triplet}/${api_level})
+  
+  add_library(imgui_backend_android)
+  target_sources(imgui_backend_android PRIVATE ${_imdir}/backends/imgui_impl_android.cpp)
+  target_link_libraries(imgui_backend_android PUBLIC imgui_core)
+  target_sources(imgui_backend_android PUBLIC FILE_SET imgui_backend_android_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_android.h)
+  target_link_directories(imgui_backend_android PUBLIC ${Android_NDK_LIB_DIR})
+  target_link_libraries(imgui_backend_android PUBLIC log android)
+  target_sources(imgui_backend_android PRIVATE FILE_SET HEADERS BASE_DIRS ${Android_NDK_INCLUDE_DIR} FILES ${Android_NDK_INCLUDE_DIR}/android/native_window.h ${Android_NDK_INCLUDE_DIR}/android/input.h ${Android_NDK_INCLUDE_DIR}/android/keycodes.h ${Android_NDK_INCLUDE_DIR}/android/log.h)
+
+  list(APPEND imgui_backend_list imgui_backend_android)
+  endif()
 endif()
 
 if(allegro5)
