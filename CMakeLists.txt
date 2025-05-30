@@ -55,6 +55,8 @@ option(uninstall "" ON)
 option(visualize_targets "Visualize linkage graph" OFF)
 mark_as_advanced(FORCE visualize_targets)
 
+cmake_dependent_option(example_android_opengl3 "" OFF "examples AND android" OFF)
+
 cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND glfw AND opengl2" OFF)
 cmake_dependent_option(example_glfw_opengl3 "" OFF "examples AND glfw AND opengl3" OFF)
 cmake_dependent_option(example_glfw_vulkan "" OFF "examples AND glfw AND vulkan" OFF)
@@ -235,6 +237,15 @@ if(android)
   target_sources(imgui_backend_android PRIVATE FILE_SET HEADERS BASE_DIRS ${Android_NDK_INCLUDE_DIR} FILES ${Android_NDK_INCLUDE_DIR}/android/native_window.h ${Android_NDK_INCLUDE_DIR}/android/input.h ${Android_NDK_INCLUDE_DIR}/android/keycodes.h ${Android_NDK_INCLUDE_DIR}/android/log.h)
 
   list(APPEND imgui_backend_list imgui_backend_android)
+
+  if(example_android_opengl3)
+    add_library(example_android_opengl3 SHARED)
+    target_sources(example_android_opengl3 PRIVATE ${_imdir}/examples/example_android_opengl3/main.cpp)
+    target_include_directories(example_android_opengl3 PUBLIC $ENV{ANDROID_NDK}/sources/android/native_app_glue)
+    target_link_libraries(example_android_opengl3 PRIVATE imgui_backend_android imgui_backend_opengl3)
+    target_link_libraries(example_android_opengl3 PRIVATE android EGL GLESv3 log)
+    target_compile_definitions(example_android_opengl3 PRIVATE IMGUI_IMPL_OPENGL_ES3)
+    target_link_options(example_android_opengl3 PRIVATE "-u ANativeActivity_onCreate")
   endif()
 endif()
 
