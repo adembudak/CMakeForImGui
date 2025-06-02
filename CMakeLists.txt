@@ -234,11 +234,21 @@ if(android)
   list(APPEND imgui_backend_list imgui_backend_android)
 
   if(example_android_opengl3)
+    include(CMakePushCheckState)
+    cmake_push_check_state(RESET)
+
+    enable_language(C)
+    add_library(android_native_app_glue STATIC)
+    target_sources(android_native_app_glue PRIVATE $ENV{ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
+    target_sources(android_native_app_glue PUBLIC FILE_SET HEADERS BASE_DIRS $ENV{ANDROID_NDK}/sources/android/native_app_glue FILES $ENV{ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.h)
+    set_target_properties(android_native_app_glue PROPERTIES LINKER_LANGUAGE C)
+
+    cmake_pop_check_state()
+    
     add_library(example_android_opengl3 SHARED)
     target_sources(example_android_opengl3 PRIVATE ${_imdir}/examples/example_android_opengl3/main.cpp)
-    target_include_directories(example_android_opengl3 PUBLIC $ENV{ANDROID_NDK}/sources/android/native_app_glue)
     target_link_libraries(example_android_opengl3 PRIVATE imgui_backend_android imgui_backend_opengl3)
-    target_link_libraries(example_android_opengl3 PRIVATE android EGL GLESv3 log)
+    target_link_libraries(example_android_opengl3 PRIVATE android_native_app_glue android EGL GLESv3 log)
     target_compile_definitions(example_android_opengl3 PRIVATE IMGUI_IMPL_OPENGL_ES3)
     target_link_options(example_android_opengl3 PRIVATE "-u ANativeActivity_onCreate")
 
