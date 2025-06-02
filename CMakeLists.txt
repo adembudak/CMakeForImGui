@@ -47,6 +47,11 @@ option(dx10 "" OFF)
 option(dx11 "" OFF)
 option(dx12 "" OFF)
 
+option(imgui_club "" OFF)
+cmake_dependent_option(imgui_memory_editor "" OFF imgui_club OFF)
+cmake_dependent_option(imgui_multicontext_compositor "" OFF imgui_club OFF)
+cmake_dependent_option(imgui_threaded_rendering "" OFF imgui_club OFF)
+
 option(BUILD_SHARED_LIBS "" OFF)
 
 option(install "" ON)
@@ -588,6 +593,36 @@ if(dx12)
   target_sources(imgui_backend_dx12 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/dxgi1_4.h)
 
   list(APPEND imgui_backend_list imgui_backend_dx12)
+endif()
+
+if(imgui_club)
+  if(NOT IMGUI_CLUB_SOURCE_DIR)
+    message(FATAL_ERROR "set IMGUI_CLUB_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_CLUB_SOURCE_DIR=path.to.imgui_club ...")
+  endif()
+  set(_imclub_dir ${IMGUI_CLUB_SOURCE_DIR})
+
+  if(imgui_memory_editor)
+    add_library(imgui_memory_editor INTERFACE)
+    target_sources(imgui_memory_editor INTERFACE FILE_SET imgui_memory_editor_set BASE_DIRS ${_imclub_dir}/imgui_memory_editor TYPE HEADERS FILES ${_imclub_dir}/imgui_memory_editor/imgui_memory_editor.h)
+
+    install(TARGETS imgui_memory_editor EXPORT imgui_export FILE_SET imgui_memory_editor_set)
+  endif()
+
+  if(imgui_multicontext_compositor)
+    add_library(imgui_multicontext_compositor)
+    target_sources(imgui_multicontext_compositor PRIVATE ${_imclub_dir}/imgui_multicontext_compositor/imgui_multicontext_compositor.cpp)
+    target_sources(imgui_multicontext_compositor PUBLIC FILE_SET imgui_multicontext_compositor_set BASE_DIRS ${_imclub_dir}/imgui_multicontext_compositor TYPE HEADERS FILES ${_imclub_dir}/imgui_multicontext_compositor/imgui_multicontext_compositor.h)
+    target_link_libraries(imgui_multicontext_compositor PUBLIC imgui_core)
+
+    install(TARGETS imgui_multicontext_compositor EXPORT imgui_export FILE_SET imgui_multicontext_compositor_set)
+  endif()
+
+  if(imgui_threaded_rendering)
+    add_library(imgui_threaded_rendering INTERFACE)
+    target_sources(imgui_threaded_rendering INTERFACE FILE_SET imgui_threaded_rendering_set BASE_DIRS ${_imclub_dir}/imgui_threaded_rendering TYPE HEADERS FILES ${_imclub_dir}/imgui_threaded_rendering/imgui_threaded_rendering.h)
+
+    install(TARGETS imgui_threaded_rendering EXPORT imgui_export FILE_SET imgui_threaded_rendering_set)
+  endif()
 endif()
 
 if(install)
