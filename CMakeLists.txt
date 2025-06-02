@@ -10,6 +10,7 @@ include(CMakePackageConfigHelpers)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED 1)
+set(CMAKE_CXX_EXTENSIONS 0)
 
 if(NOT IMGUI_SOURCE_DIR)
   message(FATAL_ERROR "set IMGUI_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_SOURCE_DIR=path.to.imgui ...")
@@ -51,6 +52,8 @@ option(imgui_club "" OFF)
 cmake_dependent_option(imgui_memory_editor "" OFF imgui_club OFF)
 cmake_dependent_option(imgui_multicontext_compositor "" OFF imgui_club OFF)
 cmake_dependent_option(imgui_threaded_rendering "" OFF imgui_club OFF)
+
+option(implot "" OFF)
 
 option(BUILD_SHARED_LIBS "" OFF)
 
@@ -625,12 +628,28 @@ if(imgui_club)
   endif()
 endif()
 
+if(implot)
+  if(NOT IMPLOT_SOURCE_DIR)
+    message(FATAL_ERROR "set IMPLOT_SOURCE_DIR to proceed:\ne.g. cmake -DIMPLOT_SOURCE_DIR=path.to.implot ...")
+  endif()
+  set(_implot_dir ${IMPLOT_SOURCE_DIR})
+
+  add_library(implot)
+  target_sources(implot PRIVATE ${_implot_dir}/implot.cpp ${_implot_dir}/implot_items.cpp)
+  target_sources(implot PUBLIC FILE_SET implot_set BASE_DIRS implot TYPE HEADERS FILES ${_implot_dir}/implot.h ${_implot_dir}/implot_internal.h)
+  target_link_libraries(implot PUBLIC imgui_core)
+
+  add_library(implot_demo)
+  target_sources(implot_demo PRIVATE ${_implot_dir}/implot_demo.cpp)
+  target_link_libraries(implot_demo PRIVATE implot)
+
+  install(TARGETS implot implot_demo EXPORT imgui_export FILE_SET implot_set)
+endif()
+
 if(install)
   install(
     DIRECTORY ${_imdir}/docs
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui
-    FILES_MATCHING
-    PATTERN "docs/*")
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui FILES_MATCHING PATTERN "docs/*")
 
   install(FILES ${_imdir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui)
 
