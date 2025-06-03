@@ -614,8 +614,6 @@ if(imgui_club)
     target_sources(imgui_multicontext_compositor PRIVATE ${_imclub_dir}/imgui_multicontext_compositor/imgui_multicontext_compositor.cpp)
     target_sources(imgui_multicontext_compositor PUBLIC FILE_SET imgui_multicontext_compositor_set BASE_DIRS ${_imclub_dir}/imgui_multicontext_compositor TYPE HEADERS FILES ${_imclub_dir}/imgui_multicontext_compositor/imgui_multicontext_compositor.h)
     target_link_libraries(imgui_multicontext_compositor PUBLIC imgui_core)
-
-
  endif()
 
   if(imgui_threaded_rendering)
@@ -632,14 +630,12 @@ if(implot)
 
   add_library(implot)
   target_sources(implot PRIVATE ${_implot_dir}/implot.cpp ${_implot_dir}/implot_items.cpp)
-  target_sources(implot PUBLIC FILE_SET implot_set BASE_DIRS implot TYPE HEADERS FILES ${_implot_dir}/implot.h ${_implot_dir}/implot_internal.h)
+  target_sources(implot PUBLIC FILE_SET implot_set BASE_DIRS ${_implot_dir} TYPE HEADERS FILES ${_implot_dir}/implot.h ${_implot_dir}/implot_internal.h)
   target_link_libraries(implot PUBLIC imgui_core)
 
   add_library(implot_demo)
   target_sources(implot_demo PRIVATE ${_implot_dir}/implot_demo.cpp)
   target_link_libraries(implot_demo PRIVATE implot)
-
-  install(TARGETS implot implot_demo EXPORT imgui_export FILE_SET implot_set)
 endif()
 
 if(install)
@@ -680,6 +676,16 @@ if(install)
     install(TARGETS imgui_threaded_rendering EXPORT imgui_club_export FILE_SET imgui_threaded_rendering_set)
     install(TARGETS imgui_memory_editor EXPORT imgui_club_export FILE_SET imgui_memory_editor_set)
     install(TARGETS imgui_multicontext_compositor EXPORT imgui_club_export FILE_SET imgui_multicontext_compositor_set)
+  endif()
+
+  if(implot)
+    install(
+      EXPORT implot_export
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
+      NAMESPACE Unofficial::ImPlot::
+      FILE CMakeForImGui-ImPlot-Targets.cmake)
+
+    install(TARGETS implot implot_demo EXPORT implot_export FILE_SET implot_set)
   endif()
 
   configure_package_config_file(CMakeForImGuiConfig.cmake.in CMakeForImGuiConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui)
