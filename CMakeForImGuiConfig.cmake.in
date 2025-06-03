@@ -6,6 +6,10 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGuiTargets.cmake")
   include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGuiTargets.cmake")
 endif()
 
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_export-Targets.cmake")
+  include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_export-Targets.cmake")
+endif()
+
 if(TARGET Unofficial::DearImGui::imgui_backend_allegro5)
   find_dependency(Allegro)
 endif()

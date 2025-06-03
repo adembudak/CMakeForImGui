@@ -227,10 +227,10 @@ if(android)
   endif()
 
   set(api_level ${ANDROID_NATIVE_API_LEVEL})
- 
+
   set(Android_NDK_INCLUDE_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include)
   set(Android_NDK_LIB_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/${triplet}/${api_level})
-  
+
   add_library(imgui_backend_android)
   target_sources(imgui_backend_android PRIVATE ${_imdir}/backends/imgui_impl_android.cpp)
   target_link_libraries(imgui_backend_android PUBLIC imgui_core)
@@ -252,7 +252,7 @@ if(android)
     set_target_properties(android_native_app_glue PROPERTIES LINKER_LANGUAGE C)
 
     cmake_pop_check_state()
-    
+
     add_library(example_android_opengl3 SHARED)
     target_sources(example_android_opengl3 PRIVATE ${_imdir}/examples/example_android_opengl3/main.cpp)
     target_link_libraries(example_android_opengl3 PRIVATE imgui_backend_android imgui_backend_opengl3)
@@ -607,8 +607,6 @@ if(imgui_club)
   if(imgui_memory_editor)
     add_library(imgui_memory_editor INTERFACE)
     target_sources(imgui_memory_editor INTERFACE FILE_SET imgui_memory_editor_set BASE_DIRS ${_imclub_dir}/imgui_memory_editor TYPE HEADERS FILES ${_imclub_dir}/imgui_memory_editor/imgui_memory_editor.h)
-
-    install(TARGETS imgui_memory_editor EXPORT imgui_export FILE_SET imgui_memory_editor_set)
   endif()
 
   if(imgui_multicontext_compositor)
@@ -617,14 +615,12 @@ if(imgui_club)
     target_sources(imgui_multicontext_compositor PUBLIC FILE_SET imgui_multicontext_compositor_set BASE_DIRS ${_imclub_dir}/imgui_multicontext_compositor TYPE HEADERS FILES ${_imclub_dir}/imgui_multicontext_compositor/imgui_multicontext_compositor.h)
     target_link_libraries(imgui_multicontext_compositor PUBLIC imgui_core)
 
-    install(TARGETS imgui_multicontext_compositor EXPORT imgui_export FILE_SET imgui_multicontext_compositor_set)
-  endif()
+
+ endif()
 
   if(imgui_threaded_rendering)
     add_library(imgui_threaded_rendering INTERFACE)
     target_sources(imgui_threaded_rendering INTERFACE FILE_SET imgui_threaded_rendering_set BASE_DIRS ${_imclub_dir}/imgui_threaded_rendering TYPE HEADERS FILES ${_imclub_dir}/imgui_threaded_rendering/imgui_threaded_rendering.h)
-
-    install(TARGETS imgui_threaded_rendering EXPORT imgui_export FILE_SET imgui_threaded_rendering_set)
   endif()
 endif()
 
@@ -673,6 +669,18 @@ if(install)
 	    EXPORT imgui_export
 	    FILE_SET ${file_set})
   endforeach()
+
+  if(imgui_club)
+    install(
+      EXPORT imgui_club_export
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
+      NAMESPACE Unofficial::imgui_club::
+      FILE CMakeForImGui-imgui_club-Targets.cmake)
+
+    install(TARGETS imgui_threaded_rendering EXPORT imgui_club_export FILE_SET imgui_threaded_rendering_set)
+    install(TARGETS imgui_memory_editor EXPORT imgui_club_export FILE_SET imgui_memory_editor_set)
+    install(TARGETS imgui_multicontext_compositor EXPORT imgui_club_export FILE_SET imgui_multicontext_compositor_set)
+  endif()
 
   configure_package_config_file(CMakeForImGuiConfig.cmake.in CMakeForImGuiConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui)
 
