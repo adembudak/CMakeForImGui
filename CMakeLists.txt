@@ -673,9 +673,17 @@ if(install)
       NAMESPACE Unofficial::imgui_club::
       FILE CMakeForImGui-imgui_club-Targets.cmake)
 
-    install(TARGETS imgui_threaded_rendering EXPORT imgui_club_export FILE_SET imgui_threaded_rendering_set)
-    install(TARGETS imgui_memory_editor EXPORT imgui_club_export FILE_SET imgui_memory_editor_set)
-    install(TARGETS imgui_multicontext_compositor EXPORT imgui_club_export FILE_SET imgui_multicontext_compositor_set)
+    if(imgui_threaded_rendering)
+      install(TARGETS imgui_threaded_rendering EXPORT imgui_club_export FILE_SET imgui_threaded_rendering_set)
+    endif()
+
+    if(imgui_memory_editor)
+      install(TARGETS imgui_memory_editor EXPORT imgui_club_export FILE_SET imgui_memory_editor_set)
+    endif()
+
+    if(imgui_multicontext_compositor)
+      install(TARGETS imgui_multicontext_compositor EXPORT imgui_club_export FILE_SET imgui_multicontext_compositor_set)
+    endif()
   endif()
 
   if(implot)
