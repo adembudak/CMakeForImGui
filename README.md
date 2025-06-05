@@ -61,13 +61,14 @@ find_package(CMakeForImGui CONFIG REQUIRED)
 target_link_libraries(tgt PUBLIC Unofficial::DearImGui::sdl2 Unofficial::DearImGui::opengl3)
 ```
 
+## Help needed
+
 What is missing:
-- Android backend
 - WGPU backend
 - Apple Metal backend
 - Apple OpenGL backend
 - Apple OS X backend
-    and their corresponding example programs
+    and their example programs
 
-See help-wanted tags in issues.
+See [help-wanted tags](https://github.com/adembudak/CMakeForImGui/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22) in Issues.
 
