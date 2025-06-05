@@ -690,7 +690,11 @@ if(pkg-config)
   list(REMOVE_DUPLICATES pkg_config_requires_list)
 
   string(JOIN " " pkg_config_requires_string ${pkg_config_requires_list})
-  string(JOIN " -l" pkg_config_backends_string ${imgui_backends_list})
+
+  if(imgui_backends_list)
+    string(JOIN " -l" pkg_config_imgui_backends_string ${imgui_backends_list})
+    string(PREPEND pkg_config_imgui_backends_string "-l")
+  endif()
 
   file(CONFIGURE OUTPUT ${PROJECT_BINARY_DIR}/cmakeforimgui.pc CONTENT
 [=[
@@ -708,7 +712,7 @@ URL: @PROJECT_HOMEPAGE_URL@
 
 Requires: @pkg_config_requires_string@
 Conflicts:
-Libs: -L${libdir} -limgui_core -l@pkg_config_backends_string@ @pkg_config_imgui_misc_cpp_string@
+Libs: -L${libdir} -limgui_core @pkg_config_imgui_backends_string@ @pkg_config_imgui_misc_cpp_string@
 Libs.private:
 Cflags: -I${includedir}
 
