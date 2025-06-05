@@ -2,7 +2,10 @@
 
 cmake_minimum_required(VERSION 3.40.0)
 
-project(CMakeForImGui CXX)
+project(CMakeForImGui
+  DESCRIPTION "CMake build support for Dear ImGui"
+  HOMEPAGE_URL "https://github.com/adembudak/CMakeForImGui"
+  LANGUAGES CXX)
 
 include(CMakeDependentOption)
 include(GNUInstallDirs)
