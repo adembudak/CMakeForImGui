@@ -60,6 +60,8 @@ option(implot "" OFF)
 
 option(BUILD_SHARED_LIBS "" OFF)
 
+option(pkg-config "Generate cmakeforimgui.pc file" OFF)
+
 option(install "" ON)
 option(uninstall "" ON)
 
@@ -630,6 +632,89 @@ if(implot)
   add_library(implot_demo)
   target_sources(implot_demo PRIVATE ${_implot_dir}/implot_demo.cpp)
   target_link_libraries(implot_demo PRIVATE implot)
+endif()
+
+if(pkg-config)
+  set(pkg_config_requires_list)
+
+  if(TARGET imgui_misc_freetype)
+    set(pkg_config_imgui_misc_cpp_string imgui_misc_freetype)
+    string(PREPEND pkg_config_imgui_misc_cpp_string "-l")
+    list(APPEND pkg_config_requires_list freetype2)
+  endif()
+
+  if(imgui_backend_allegro5 IN_LIST imgui_backends_list)
+    list(APPEND pkg_config_requires_list allegro-5 allegro_primitives-5)
+  endif()
+
+  if(imgui_backend_glfw IN_LIST imgui_backends_list)
+    list(APPEND pkg_config_requires_list glfw3)
+  endif()
+
+  if(imgui_backend_glut IN_LIST imgui_backends_list)
+    list(APPEND pkg_config_requires_list glut)
+  endif()
+
+  if(imgui_backend_sdl2 IN_LIST imgui_backends_list)
+    list(APPEND pkg_config_requires_list sdl2)
+  endif()
+
+  if(imgui_backend_sdlrenderer2 IN_LIST imgui_backends_list)
+    list(APPEND pkg_config_requires_list sdl2)
+  endif()
+
+  if(imgui_backend_sdl3 IN_LIST imgui_backends_list)
+    list(APPEND pkg_config_requires_list sdl3)
+  endif()
+
+  if(imgui_backend_sdlgpu3 IN_LIST imgui_backends_list)
+    list(APPEND pkg_config_requires_list sdl3)
+  endif()
+
+  if(imgui_backend_sdlrenderer3 IN_LIST imgui_backends_list)
+    list(APPEND pkg_config_requires_list sdl3)
+  endif()
+
+  if(imgui_backend_opengl2 IN_LIST imgui_backends_list)
+    list(APPEND pkg_config_requires_list opengl)
+  endif()
+
+  if(imgui_backend_opengl3 IN_LIST imgui_backends_list)
+    list(APPEND pkg_config_requires_list opengl)
+  endif()
+
+  if(imgui_backend_vulkan IN_LIST imgui_backends_list)
+    list(APPEND pkg_config_requires_list vulkan)
+  endif()
+
+  list(REMOVE_DUPLICATES pkg_config_requires_list)
+
+  string(JOIN " " pkg_config_requires_string ${pkg_config_requires_list})
+  string(JOIN " -l" pkg_config_backends_string ${imgui_backends_list})
+
+  file(CONFIGURE OUTPUT ${PROJECT_BINARY_DIR}/cmakeforimgui.pc CONTENT
+[=[
+# SPDX-License-Identifier: MIT
+
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: @PROJECT_NAME@
+Description: @PROJECT_DESCRIPTION@
+Version: @PROJECT_VERSION@
+URL: @PROJECT_HOMEPAGE_URL@
+
+Requires: @pkg_config_requires_string@
+Conflicts:
+Libs: -L${libdir} -limgui_core -l@pkg_config_backends_string@ @pkg_config_imgui_misc_cpp_string@
+Libs.private:
+Cflags: -I${includedir}
+
+]=] @ONLY)
+
+install(FILES ${PROJECT_BINARY_DIR}/cmakeforimgui.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 endif()
 
 if(install)
