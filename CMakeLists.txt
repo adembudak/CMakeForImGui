@@ -95,7 +95,7 @@ cmake_dependent_option(example_win32_directx12 "" OFF "examples AND win32 AND dx
 
 cmake_dependent_option(example_null "" OFF examples OFF)
 
-set(imgui_backend_list)
+set(imgui_backends_list)
 
 add_library(imgui_core)
 target_sources(imgui_core PRIVATE ${_imdir}/imgui.cpp ${_imdir}/imgui_demo.cpp ${_imdir}/imgui_draw.cpp ${_imdir}/imgui_tables.cpp ${_imdir}/imgui_widgets.cpp)
@@ -167,7 +167,7 @@ if(opengl2)
   target_link_libraries(imgui_backend_opengl2 PUBLIC OpenGL::GL)
   target_sources(imgui_backend_opengl2 PUBLIC FILE_SET imgui_backend_opengl2_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_opengl2.h)
 
-  list(APPEND imgui_backend_list imgui_backend_opengl2)
+  list(APPEND imgui_backends_list imgui_backend_opengl2)
 endif()
 
 if(opengl3)
@@ -179,7 +179,7 @@ if(opengl3)
   target_link_libraries(imgui_backend_opengl3 PUBLIC $<IF:$<TARGET_EXISTS:imgui_backend_android>,EGL,OpenGL::GL>)
   target_sources(imgui_backend_opengl3 PUBLIC FILE_SET imgui_backend_opengl3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_opengl3.h)
 
-  list(APPEND imgui_backend_list imgui_backend_opengl3)
+  list(APPEND imgui_backends_list imgui_backend_opengl3)
 endif()
 
 if(vulkan)
@@ -191,7 +191,7 @@ if(vulkan)
   target_link_libraries(imgui_backend_vulkan PUBLIC Vulkan::Vulkan)
   target_sources(imgui_backend_vulkan PUBLIC FILE_SET imgui_backend_vulkan_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_vulkan.h)
 
-  list(APPEND imgui_backend_list imgui_backend_vulkan)
+  list(APPEND imgui_backends_list imgui_backend_vulkan)
 endif()
 
 if(android)
@@ -229,7 +229,7 @@ if(android)
   target_link_libraries(imgui_backend_android PUBLIC log android)
   target_sources(imgui_backend_android PRIVATE FILE_SET HEADERS BASE_DIRS ${Android_NDK_INCLUDE_DIR} FILES ${Android_NDK_INCLUDE_DIR}/android/native_window.h ${Android_NDK_INCLUDE_DIR}/android/input.h ${Android_NDK_INCLUDE_DIR}/android/keycodes.h ${Android_NDK_INCLUDE_DIR}/android/log.h)
 
-  list(APPEND imgui_backend_list imgui_backend_android)
+  list(APPEND imgui_backends_list imgui_backend_android)
 
   if(example_android_opengl3)
     include(CMakePushCheckState)
@@ -270,7 +270,7 @@ if(allegro5)
   target_link_libraries(imgui_backend_allegro5 PUBLIC Allegro::allegro Allegro::allegro_primitives)
   target_sources(imgui_backend_allegro5 PUBLIC FILE_SET imgui_backend_allegro5_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_allegro5.h)
 
-  list(APPEND imgui_backend_list imgui_backend_allegro5)
+  list(APPEND imgui_backends_list imgui_backend_allegro5)
 
   if(example_allegro5)
     add_executable(example_allegro5)
@@ -288,7 +288,7 @@ if(glfw)
   target_link_libraries(imgui_backend_glfw PUBLIC glfw)
   target_link_libraries(imgui_backend_glfw PUBLIC imgui_core imgui_backend_opengl3)
 
-  list(APPEND imgui_backend_list imgui_backend_glfw)
+  list(APPEND imgui_backends_list imgui_backend_glfw)
 
   if(example_glfw_opengl3)
     add_executable(example_glfw_opengl3)
@@ -318,7 +318,7 @@ if(glut)
   target_link_libraries(imgui_backend_glut PUBLIC FreeGLUT::freeglut)
   target_link_libraries(imgui_backend_glut PUBLIC imgui_core)
 
-  list(APPEND imgui_backend_list imgui_backend_glut)
+  list(APPEND imgui_backends_list imgui_backend_glut)
 
   if(example_glut_opengl2)
     add_executable(example_glut_opengl2)
@@ -336,7 +336,7 @@ if(sdl2)
   target_link_libraries(imgui_backend_sdl2 PUBLIC $<IF:$<BOOL:${BUILD_SHARED_LIBS}>,SDL2::SDL2,SDL2::SDL2-static>)
   target_link_libraries(imgui_backend_sdl2 PUBLIC imgui_core)
 
-  list(APPEND imgui_backend_list imgui_backend_sdl2)
+  list(APPEND imgui_backends_list imgui_backend_sdl2)
 
   if(example_sdl2_opengl2)
     add_executable(example_sdl2_opengl2)
@@ -372,7 +372,7 @@ if(sdlrenderer2)
   target_link_libraries(imgui_backend_sdlrenderer2 PUBLIC $<IF:$<BOOL:${BUILD_SHARED_LIBS}>,SDL2::SDL2,SDL2::SDL2-static>)
   target_link_libraries(imgui_backend_sdlrenderer2 PUBLIC imgui_core)
 
-  list(APPEND imgui_backend_list imgui_backend_sdlrenderer2)
+  list(APPEND imgui_backends_list imgui_backend_sdlrenderer2)
 
   if(example_sdl2_sdlrenderer2)
     add_executable(example_sdl2_sdlrenderer2)
@@ -390,7 +390,7 @@ if(sdl3)
   target_link_libraries(imgui_backend_sdl3 PUBLIC SDL3::SDL3)
   target_link_libraries(imgui_backend_sdl3 PUBLIC imgui_core)
 
-  list(APPEND imgui_backend_list imgui_backend_sdl3)
+  list(APPEND imgui_backends_list imgui_backend_sdl3)
 
   if(example_sdl3_opengl3)
     add_executable(example_sdl3_opengl3)
@@ -415,7 +415,7 @@ if(sdlgpu3)
   target_link_libraries(imgui_backend_sdlgpu3 PUBLIC SDL3::SDL3)
   target_link_libraries(imgui_backend_sdlgpu3 PUBLIC imgui_core)
 
-  list(APPEND imgui_backend_list imgui_backend_sdlgpu3)
+  list(APPEND imgui_backends_list imgui_backend_sdlgpu3)
 
   if(example_sdl3_sdlgpu3)
     add_executable(example_sdl3_sdlgpu3)
@@ -434,7 +434,7 @@ if(sdlrenderer3)
   target_link_libraries(imgui_backend_sdlrenderer3 PUBLIC SDL3::SDL3)
   target_link_libraries(imgui_backend_sdlrenderer3 PUBLIC imgui_core imgui_backend_sdl3)
 
-  list(APPEND imgui_backend_list imgui_backend_sdlrenderer3)
+  list(APPEND imgui_backends_list imgui_backend_sdlrenderer3)
 
   if(example_sdl3_sdlrenderer3)
     add_executable(example_sdl3_sdlrenderer3)
@@ -453,7 +453,7 @@ if(win32)
   target_sources(imgui_backend_win32 PUBLIC FILE_SET imgui_backend_win32_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_win32.h)
   target_link_libraries(imgui_backend_win32 PUBLIC imgui_core)
 
-  list(APPEND imgui_backend_list imgui_backend_win32)
+  list(APPEND imgui_backends_list imgui_backend_win32)
 
   if(example_win32_opengl3)
     add_executable(example_win32_opengl3)
@@ -546,7 +546,7 @@ if(dx9)
   target_link_libraries(imgui_backend_dx9 PUBLIC imgui_core)
   target_sources(imgui_backend_dx9 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/d3d9.h)
 
-  list(APPEND imgui_backend_list imgui_backend_dx9)
+  list(APPEND imgui_backends_list imgui_backend_dx9)
 endif()
 
 if(dx10)
@@ -559,7 +559,7 @@ if(dx10)
   target_sources(imgui_backend_dx10 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d10_1.h
                                             ${Windows_SDK_INCLUDE_DIR_1}/d3d10.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
 
-  list(APPEND imgui_backend_list imgui_backend_dx10)
+  list(APPEND imgui_backends_list imgui_backend_dx10)
 endif()
 
 if(dx11)
@@ -572,7 +572,7 @@ if(dx11)
   target_sources(imgui_backend_dx11 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d11.h
                                             ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
 
-  list(APPEND imgui_backend_list imgui_backend_dx11)
+  list(APPEND imgui_backends_list imgui_backend_dx11)
 endif()
 
 if(dx12)
@@ -586,7 +586,7 @@ if(dx12)
                                             ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
   target_sources(imgui_backend_dx12 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/dxgi1_4.h)
 
-  list(APPEND imgui_backend_list imgui_backend_dx12)
+  list(APPEND imgui_backends_list imgui_backend_dx12)
 endif()
 
 if(imgui_club)
@@ -647,7 +647,7 @@ if(install)
     EXPORT imgui_export
     FILE_SET imgui_core_set)
 
-  foreach(backend IN LISTS imgui_backend_list)
+  foreach(backend IN LISTS imgui_backends_list)
     get_property(name TARGET ${backend} PROPERTY NAME)
     get_property(file_set TARGET ${backend} PROPERTY HEADER_SETS)
     list(REMOVE_ITEM file_set HEADERS)
