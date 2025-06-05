@@ -99,21 +99,11 @@ set(imgui_backend_list)
 
 add_library(imgui_core)
 target_sources(imgui_core PRIVATE ${_imdir}/imgui.cpp ${_imdir}/imgui_demo.cpp ${_imdir}/imgui_draw.cpp ${_imdir}/imgui_tables.cpp ${_imdir}/imgui_widgets.cpp)
-target_sources(
-  imgui_core
-  PUBLIC FILE_SET
-         imgui_core_set
-         BASE_DIRS
-         ${_imdir}
-         TYPE
-         HEADERS
-         FILES
-         ${_imdir}/imgui.h
-         ${_imdir}/imconfig.h
-         ${_imdir}/imgui_internal.h
-         ${_imdir}/imstb_rectpack.h
-         ${_imdir}/imstb_textedit.h
-         ${_imdir}/imstb_truetype.h)
+target_sources(imgui_core PUBLIC
+  FILE_SET imgui_core_set
+  BASE_DIRS ${_imdir}
+  TYPE HEADERS
+  FILES ${_imdir}/imgui.h ${_imdir}/imconfig.h ${_imdir}/imgui_internal.h ${_imdir}/imstb_rectpack.h ${_imdir}/imstb_textedit.h ${_imdir}/imstb_truetype.h)
 
 if(with_miscellaneous)
   if(misc_cpp)
@@ -273,6 +263,7 @@ endif()
 
 if(allegro5)
   find_package(Allegro CONFIG REQUIRED)
+
   add_library(imgui_backend_allegro5)
   target_sources(imgui_backend_allegro5 PRIVATE ${_imdir}/backends/imgui_impl_allegro5.cpp)
   target_link_libraries(imgui_backend_allegro5 PUBLIC imgui_core)
