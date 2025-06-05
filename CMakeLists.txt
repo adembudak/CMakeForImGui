@@ -443,6 +443,10 @@ if(sdlrenderer3)
   endif()
 endif()
 
+if(NOT WIN32 AND (win32 OR dx9 OR dx10 OR dx11 OR dx12))
+  message(FATAL_ERROR "Win32 and DirectX targets are only available on Windows")
+endif()
+
 if(win32)
   add_library(imgui_backend_win32)
   target_sources(imgui_backend_win32 PRIVATE ${_imdir}/backends/imgui_impl_win32.cpp)
@@ -492,10 +496,6 @@ if(example_null)
   add_executable(example_null)
   target_sources(example_null PRIVATE ${_imdir}/examples/example_null/main.cpp)
   target_link_libraries(example_null PRIVATE imgui_core)
-endif()
-
-if(NOT WIN32 AND (win32 OR dx9 OR dx10 OR dx11 OR dx12))
-  message(FATAL_ERROR "Win32 and DirectX targets are only available on Windows")
 endif()
 
 if(dx9 OR dx10 OR dx11 OR dx12)
