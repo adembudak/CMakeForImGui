@@ -101,6 +101,7 @@ cmake_dependent_option(example_win32_directx12 "" OFF "examples AND win32 AND dx
 cmake_dependent_option(example_null "" OFF examples OFF)
 
 set(imgui_backends_list)
+set(pkg_config_requires_list)
 
 add_library(imgui_core)
 target_sources(imgui_core PRIVATE ${_imdir}/imgui.cpp ${_imdir}/imgui_demo.cpp ${_imdir}/imgui_draw.cpp ${_imdir}/imgui_tables.cpp ${_imdir}/imgui_widgets.cpp)
@@ -134,6 +135,10 @@ if(with_miscellaneous)
     target_link_libraries(imgui_core PUBLIC imgui_misc_freetype)
     target_sources(imgui_misc_freetype PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imdir}/misc/freetype TYPE HEADERS FILES ${_imdir}/misc/freetype/imgui_freetype.h)
     target_compile_definitions(imgui_core PUBLIC IMGUI_ENABLE_FREETYPE)
+
+    set(pkg_config_imgui_misc_cpp_string imgui_misc_freetype)
+    string(PREPEND pkg_config_imgui_misc_cpp_string "-l")
+    list(APPEND pkg_config_requires_list freetype2)
 
     install(
       TARGETS imgui_misc_freetype
@@ -173,6 +178,7 @@ if(opengl2)
   target_sources(imgui_backend_opengl2 PUBLIC FILE_SET imgui_backend_opengl2_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_opengl2.h)
 
   list(APPEND imgui_backends_list imgui_backend_opengl2)
+  list(APPEND pkg_config_requires_list opengl)
 endif()
 
 if(opengl3)
@@ -185,6 +191,7 @@ if(opengl3)
   target_sources(imgui_backend_opengl3 PUBLIC FILE_SET imgui_backend_opengl3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_opengl3.h)
 
   list(APPEND imgui_backends_list imgui_backend_opengl3)
+  list(APPEND pkg_config_requires_list opengl)
 endif()
 
 if(vulkan)
@@ -197,6 +204,7 @@ if(vulkan)
   target_sources(imgui_backend_vulkan PUBLIC FILE_SET imgui_backend_vulkan_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_vulkan.h)
 
   list(APPEND imgui_backends_list imgui_backend_vulkan)
+  list(APPEND pkg_config_requires_list vulkan)
 endif()
 
 if(android)
@@ -276,6 +284,7 @@ if(allegro5)
   target_sources(imgui_backend_allegro5 PUBLIC FILE_SET imgui_backend_allegro5_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_allegro5.h)
 
   list(APPEND imgui_backends_list imgui_backend_allegro5)
+  list(APPEND pkg_config_requires_list allegro-5 allegro_primitives-5)
 
   if(example_allegro5)
     add_executable(example_allegro5)
@@ -294,6 +303,7 @@ if(glfw)
   target_link_libraries(imgui_backend_glfw PUBLIC imgui_core imgui_backend_opengl3)
 
   list(APPEND imgui_backends_list imgui_backend_glfw)
+  list(APPEND pkg_config_requires_list glfw3)
 
   if(example_glfw_opengl3)
     add_executable(example_glfw_opengl3)
@@ -324,6 +334,7 @@ if(glut)
   target_link_libraries(imgui_backend_glut PUBLIC imgui_core)
 
   list(APPEND imgui_backends_list imgui_backend_glut)
+  list(APPEND pkg_config_requires_list glut)
 
   if(example_glut_opengl2)
     add_executable(example_glut_opengl2)
@@ -342,6 +353,7 @@ if(sdl2)
   target_link_libraries(imgui_backend_sdl2 PUBLIC imgui_core)
 
   list(APPEND imgui_backends_list imgui_backend_sdl2)
+  list(APPEND pkg_config_requires_list sdl2)
 
   if(example_sdl2_opengl2)
     add_executable(example_sdl2_opengl2)
@@ -378,6 +390,7 @@ if(sdlrenderer2)
   target_link_libraries(imgui_backend_sdlrenderer2 PUBLIC imgui_core)
 
   list(APPEND imgui_backends_list imgui_backend_sdlrenderer2)
+  list(APPEND pkg_config_requires_list sdl2)
 
   if(example_sdl2_sdlrenderer2)
     add_executable(example_sdl2_sdlrenderer2)
@@ -396,6 +409,7 @@ if(sdl3)
   target_link_libraries(imgui_backend_sdl3 PUBLIC imgui_core)
 
   list(APPEND imgui_backends_list imgui_backend_sdl3)
+  list(APPEND pkg_config_requires_list sdl3)
 
   if(example_sdl3_opengl3)
     add_executable(example_sdl3_opengl3)
@@ -421,6 +435,7 @@ if(sdlgpu3)
   target_link_libraries(imgui_backend_sdlgpu3 PUBLIC imgui_core)
 
   list(APPEND imgui_backends_list imgui_backend_sdlgpu3)
+  list(APPEND pkg_config_requires_list sdl3)
 
   if(example_sdl3_sdlgpu3)
     add_executable(example_sdl3_sdlgpu3)
@@ -440,6 +455,7 @@ if(sdlrenderer3)
   target_link_libraries(imgui_backend_sdlrenderer3 PUBLIC imgui_core imgui_backend_sdl3)
 
   list(APPEND imgui_backends_list imgui_backend_sdlrenderer3)
+  list(APPEND pkg_config_requires_list sdl3)
 
   if(example_sdl3_sdlrenderer3)
     add_executable(example_sdl3_sdlrenderer3)
@@ -635,60 +651,7 @@ if(implot)
 endif()
 
 if(pkg-config)
-  set(pkg_config_requires_list)
-
-  if(TARGET imgui_misc_freetype)
-    set(pkg_config_imgui_misc_cpp_string imgui_misc_freetype)
-    string(PREPEND pkg_config_imgui_misc_cpp_string "-l")
-    list(APPEND pkg_config_requires_list freetype2)
-  endif()
-
-  if(imgui_backend_allegro5 IN_LIST imgui_backends_list)
-    list(APPEND pkg_config_requires_list allegro-5 allegro_primitives-5)
-  endif()
-
-  if(imgui_backend_glfw IN_LIST imgui_backends_list)
-    list(APPEND pkg_config_requires_list glfw3)
-  endif()
-
-  if(imgui_backend_glut IN_LIST imgui_backends_list)
-    list(APPEND pkg_config_requires_list glut)
-  endif()
-
-  if(imgui_backend_sdl2 IN_LIST imgui_backends_list)
-    list(APPEND pkg_config_requires_list sdl2)
-  endif()
-
-  if(imgui_backend_sdlrenderer2 IN_LIST imgui_backends_list)
-    list(APPEND pkg_config_requires_list sdl2)
-  endif()
-
-  if(imgui_backend_sdl3 IN_LIST imgui_backends_list)
-    list(APPEND pkg_config_requires_list sdl3)
-  endif()
-
-  if(imgui_backend_sdlgpu3 IN_LIST imgui_backends_list)
-    list(APPEND pkg_config_requires_list sdl3)
-  endif()
-
-  if(imgui_backend_sdlrenderer3 IN_LIST imgui_backends_list)
-    list(APPEND pkg_config_requires_list sdl3)
-  endif()
-
-  if(imgui_backend_opengl2 IN_LIST imgui_backends_list)
-    list(APPEND pkg_config_requires_list opengl)
-  endif()
-
-  if(imgui_backend_opengl3 IN_LIST imgui_backends_list)
-    list(APPEND pkg_config_requires_list opengl)
-  endif()
-
-  if(imgui_backend_vulkan IN_LIST imgui_backends_list)
-    list(APPEND pkg_config_requires_list vulkan)
-  endif()
-
   list(REMOVE_DUPLICATES pkg_config_requires_list)
-
   string(JOIN " " pkg_config_requires_string ${pkg_config_requires_list})
 
   if(imgui_backends_list)
