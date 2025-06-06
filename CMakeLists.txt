@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-cmake_minimum_required(VERSION 3.40.0)
+cmake_minimum_required(VERSION 4.0.0)
 
 project(CMakeForImGui
   DESCRIPTION "CMake build support for Dear ImGui"
