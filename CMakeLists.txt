@@ -21,10 +21,15 @@ endif()
 
 set(_imdir ${IMGUI_SOURCE_DIR})
 
-file(STRINGS ${_imdir}/imgui.h imgui_version_string REGEX "IMGUI_VERSION[ \t]+\"[0-9]+\\.[0-9]+\\.[0-9]+")
-string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" imgui_version ${imgui_version_string})
+file(STRINGS ${_imdir}/imgui.h imgui_version_string REGEX "#define[ \t]+IMGUI_VERSION_NUM[ \t]+[0-9]+")
+string(REGEX MATCH "[0-9]+" imgui_version ${imgui_version_string})
 
-set(PROJECT_VERSION ${imgui_version})
+math(EXPR PROJECT_VERSION_MAJOR "(${imgui_version} / 10000)")
+math(EXPR PROJECT_VERSION_MINOR "(${imgui_version} / 100) % 100")
+math(EXPR PROJECT_VERSION_PATCH "(${imgui_version} / 10) % 10")
+math(EXPR PROJECT_VERSION_TWEAK "(${imgui_version} % 10)")
+
+set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.${PROJECT_VERSION_TWEAK}")
 
 option(with_miscellaneous "" OFF)
 cmake_dependent_option(misc_cpp "" OFF "with_miscellaneous" OFF)
