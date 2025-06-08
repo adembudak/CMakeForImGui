@@ -469,7 +469,7 @@ if(sdlrenderer3)
   endif()
 endif()
 
-if(NOT WIN32 AND (win32 OR dx9 OR dx10 OR dx11 OR dx12))
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows" AND (win32 OR dx9 OR dx10 OR dx11 OR dx12))
   message(FATAL_ERROR "Win32 and DirectX targets are available on Windows")
 endif()
 
