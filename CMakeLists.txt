@@ -243,8 +243,17 @@ if(android)
 
   set(api_level ${ANDROID_NATIVE_API_LEVEL})
 
-  set(Android_NDK_INCLUDE_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include)
-  set(Android_NDK_LIB_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/${triplet}/${api_level})
+  cmake_host_system_information(RESULT os_name QUERY OS_NAME)
+  if(os_name STREQUAL "Darwin")
+     set(host_tag darwin-x86_64)
+  elseif(os_name STREQUAL "Linux")
+     set(host_tag linux-x86_64)
+  elseif(os_name STREQUAL "Windows")
+     set(host_tag windows-x86_64)
+  endif()
+
+  set(Android_NDK_INCLUDE_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/${host_tag}/sysroot/usr/include)
+  set(Android_NDK_LIB_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/${host_tag}/sysroot/usr/lib/${triplet}/${api_level})
 
   add_library(imgui_backend_android)
   target_sources(imgui_backend_android PRIVATE ${_imdir}/backends/imgui_impl_android.cpp)
