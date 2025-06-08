@@ -470,7 +470,7 @@ if(sdlrenderer3)
 endif()
 
 if(NOT WIN32 AND (win32 OR dx9 OR dx10 OR dx11 OR dx12))
-  message(FATAL_ERROR "Win32 and DirectX targets are only available on Windows")
+  message(FATAL_ERROR "Win32 and DirectX targets are available on Windows")
 endif()
 
 if(win32)
@@ -683,7 +683,6 @@ Conflicts:
 Libs: -L${libdir} -limgui_core @pkg_config_imgui_backends_string@ @pkg_config_imgui_misc_cpp_string@
 Libs.private:
 Cflags: -I${includedir}
-
 ]=] @ONLY)
 
   install(FILES ${PROJECT_BINARY_DIR}/cmakeforimgui.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
@@ -761,7 +760,7 @@ if(uninstall)
   file(CONFIGURE
     OUTPUT cmake_uninstall.cmake
     CONTENT
-    [=[
+[=[
 if(NOT EXISTS @PROJECT_BINARY_DIR@/install_manifest.txt)
   message(FATAL_ERROR "Couldn't find @PROJECT_BINARY_DIR@/install_manifest.txt")
 endif()
@@ -771,8 +770,7 @@ file(STRINGS @PROJECT_BINARY_DIR@/install_manifest.txt files_to_uninstall)
 foreach(file IN LISTS files_to_uninstall)
   execute_process(COMMAND @CMAKE_COMMAND@ -E rm $ENV{DESTDIR}${file} COMMAND_ECHO STDOUT)
 endforeach()
-]=]
-    @ONLY)
+]=] @ONLY)
 
   add_custom_target(
     uninstall
@@ -784,10 +782,10 @@ if(visualize_targets)
   if(NOT EXISTS ${PROJECT_BINARY_DIR}/CMakeGraphVizOptions.cmake)
     file(
       WRITE ${PROJECT_BINARY_DIR}/CMakeGraphVizOptions.cmake
-      "
-set(GRAPHVIZ_GENERATE_PER_TARGET FALSE)
-set(GRAPHVIZ_GENERATE_DEPENDERS FALSE)
-")
+[=[
+set(GRAPHVIZ_GENERATE_PER_TARGET 0)
+set(GRAPHVIZ_GENERATE_DEPENDERS 0)
+]=])
   endif()
 
   find_program(DOT_COMMAND dot REQUIRED)
