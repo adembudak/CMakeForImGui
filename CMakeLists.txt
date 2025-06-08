@@ -696,6 +696,13 @@ if(install)
     DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui FILES_MATCHING PATTERN "docs/*")
 
   install(FILES ${_imdir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui)
+  if(imgui_club)
+    install(FILES ${_imclub_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_club)
+  endif()
+
+  if(implot)
+    install(FILES ${_implot_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/implot)
+  endif()
 
   install(
     EXPORT imgui_export
