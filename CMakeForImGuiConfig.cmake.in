@@ -10,6 +10,10 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_export-Targets.cmake")
   include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_export-Targets.cmake")
 endif()
 
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_markdown-Targets.cmake")
+  include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_markdown-Targets.cmake")
+endif()
+
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-ImPlot-Targets.cmake")
   include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-ImPlot-Targets.cmake")
 endif()

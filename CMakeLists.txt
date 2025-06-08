@@ -63,10 +63,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 endif()
 
 option(imgui_club "" OFF)
-cmake_dependent_option(imgui_memory_editor "" OFF imgui_club OFF)
-cmake_dependent_option(imgui_multicontext_compositor "" OFF imgui_club OFF)
-cmake_dependent_option(imgui_threaded_rendering "" OFF imgui_club OFF)
-
+option(imgui_markdown "" OFF)
 option(implot "" OFF)
 
 option(BUILD_SHARED_LIBS "" OFF)
@@ -108,6 +105,10 @@ cmake_dependent_option(example_win32_directx9 "" OFF "examples AND win32 AND dx9
 cmake_dependent_option(example_win32_directx10 "" OFF "examples AND win32 AND dx10" OFF)
 cmake_dependent_option(example_win32_directx11 "" OFF "examples AND win32 AND dx11" OFF)
 cmake_dependent_option(example_win32_directx12 "" OFF "examples AND win32 AND dx12" OFF)
+
+cmake_dependent_option(imgui_memory_editor "" OFF imgui_club OFF)
+cmake_dependent_option(imgui_multicontext_compositor "" OFF imgui_club OFF)
+cmake_dependent_option(imgui_threaded_rendering "" OFF imgui_club OFF)
 
 cmake_dependent_option(example_null "" OFF examples OFF)
 
@@ -641,6 +642,16 @@ if(imgui_club)
   endif()
 endif()
 
+if(imgui_markdown)
+  if(NOT IMGUI_MARKDOWN_SOURCE_DIR)
+    message(FATAL_ERROR "set IMGUI_MARKDOWN_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_MARKDOWN_SOURCE_DIR=path.to.imgui_markdown...")
+  endif()
+  set(_immarkdown_dir ${IMGUI_MARKDOWN_SOURCE_DIR})
+
+  add_library(imgui_markdown INTERFACE)
+  target_sources(imgui_markdown INTERFACE FILE_SET imgui_markdown_set BASE_DIRS ${_immarkdown_dir} TYPE HEADERS FILES ${_immarkdown_dir}/imgui_markdown.h)
+endif()
+
 if(implot)
   if(NOT IMPLOT_SOURCE_DIR)
     message(FATAL_ERROR "set IMPLOT_SOURCE_DIR to proceed:\ne.g. cmake -DIMPLOT_SOURCE_DIR=path.to.implot ...")
@@ -696,13 +707,6 @@ if(install)
     DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui FILES_MATCHING PATTERN "docs/*")
 
   install(FILES ${_imdir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui)
-  if(imgui_club)
-    install(FILES ${_imclub_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_club)
-  endif()
-
-  if(implot)
-    install(FILES ${_implot_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/implot)
-  endif()
 
   install(
     EXPORT imgui_export
@@ -743,6 +747,20 @@ if(install)
     if(imgui_multicontext_compositor)
       install(TARGETS imgui_multicontext_compositor EXPORT imgui_club_export FILE_SET imgui_multicontext_compositor_set)
     endif()
+
+    install(FILES ${_imclub_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_club)
+  endif()
+
+  if(imgui_markdown)
+    install(
+      EXPORT imgui_markdown_export
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
+      NAMESPACE Unofficial::imgui_markdown::
+      FILE CMakeForImGui-imgui_markdown-Targets.cmake)
+
+    install(TARGETS imgui_markdown EXPORT imgui_markdown_export FILE_SET imgui_markdown_set)
+
+    install(FILES ${_immarkdown_dir}/License.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_markdown)
   endif()
 
   if(implot)
@@ -753,6 +771,8 @@ if(install)
       FILE CMakeForImGui-ImPlot-Targets.cmake)
 
     install(TARGETS implot implot_demo EXPORT implot_export FILE_SET implot_set)
+
+    install(FILES ${_implot_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/implot)
   endif()
 
   configure_package_config_file(CMakeForImGuiConfig.cmake.in CMakeForImGuiConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui)
