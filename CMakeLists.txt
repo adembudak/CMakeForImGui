@@ -225,9 +225,9 @@ if(android)
   endif()
 
   include(CMakePrintHelpers)
-  cmake_print_variables(CMAKE_SYSTEM_NAME CMAKE_ANDROID_NDK CMAKE_TOOLCHAIN_FILE ANDROID_TOOLCHAIN ANDROID_TOOLCHAIN_NAME $ENV{ANDROID_HOME} $ENV{ANDROID_NDK} ANDROID_ABI ANDROID_PLATFORM ANDROID_STL ANDROID_PIE ANDROID_CPP_FEATURES ANDROID_ALLOW_UNDEFINED_SYMBOLS ANDROID_ARM_MODE ANDROID_NATIVE_API_LEVEL)
+  cmake_print_variables(CMAKE_SYSTEM_NAME CMAKE_ANDROID_NDK CMAKE_TOOLCHAIN_FILE ANDROID_TOOLCHAIN ANDROID_TOOLCHAIN_NAME $ENV{ANDROID_HOME} $ENV{ANDROID_NDK} ANDROID_ABI ANDROID_STL ANDROID_PIE ANDROID_CPP_FEATURES ANDROID_ALLOW_UNDEFINED_SYMBOLS ANDROID_ARM_MODE ANDROID_PLATFORM ANDROID_NATIVE_API_LEVEL)
 
-  if(CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a")
+  if(CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a" OR CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a with NEON")
     set(triplet arm-linux-androideabi)
   elseif(CMAKE_ANDROID_ARCH_ABI STREQUAL "arm64-v8a")
     set(triplet aarch64-linux-android)
@@ -266,31 +266,18 @@ if(android)
   list(APPEND imgui_backends_list imgui_backend_android)
 
   if(example_android_opengl3)
-    include(CMakePushCheckState)
-    cmake_push_check_state(RESET)
-
-    enable_language(C)
-    add_library(android_native_app_glue STATIC)
-    target_sources(android_native_app_glue PRIVATE $ENV{ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
-    target_sources(android_native_app_glue PUBLIC FILE_SET HEADERS BASE_DIRS $ENV{ANDROID_NDK}/sources/android/native_app_glue FILES $ENV{ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.h)
-    set_target_properties(android_native_app_glue PROPERTIES LINKER_LANGUAGE C)
-
-    cmake_pop_check_state()
-
-    add_library(example_android_opengl3 SHARED)
-    target_sources(example_android_opengl3 PRIVATE ${_imdir}/examples/example_android_opengl3/main.cpp)
-    target_link_libraries(example_android_opengl3 PRIVATE imgui_backend_android imgui_backend_opengl3)
-    target_link_libraries(example_android_opengl3 PRIVATE android_native_app_glue android EGL GLESv3 log)
-    target_compile_definitions(example_android_opengl3 PRIVATE IMGUI_IMPL_OPENGL_ES3)
-    target_link_options(example_android_opengl3 PRIVATE "-u ANativeActivity_onCreate")
-
+    find_program(SDKMANAGER_COMMAND sdkmanager)
     find_program(GRADLE_COMMAND gradle)
 
-    if(DEFINED ENV{ANDROID_HOME} AND DEFINED ENV{ANDROID_NDK} AND GRADLE_COMMAND)
-      add_custom_command(TARGET example_android_opengl3 POST_BUILD
-        COMMAND ${GRADLE_COMMAND} --project-dir ${_imdir}/examples/example_android_opengl3/android --warning-mode=none :app:assemble
+    if(SDKMANAGER_COMMAND AND GRADLE_COMMAND)
+      add_custom_command(TARGET imgui_backend_android POST_BUILD
+        COMMAND ${SDKMANAGER_COMMAND} --install "build-tools;33.0.2" --sdk_root=$ENV{ANDROID_HOME}
+        COMMAND ${SDKMANAGER_COMMAND} --install "ndk;25.2.9519653" --sdk_root=$ENV{ANDROID_HOME}
+        COMMAND ${SDKMANAGER_COMMAND} --install "cmake;3.22.1" --sdk_root=$ENV{ANDROID_HOME}
+        COMMAND ${GRADLE_COMMAND} --project-dir ${_imdir}/examples/example_android_opengl3/android assembleRelease
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        COMMENT "Building .apk files\n${_imdir}/examples/example_android_opengl3/android/app/build/outputs/apk")
+        COMMENT "Building .apk files\n${_imdir}/examples/example_android_opengl3/android/app/build/outputs/apk/"
+        VERBATIM)
     endif()
   endif()
 endif()
