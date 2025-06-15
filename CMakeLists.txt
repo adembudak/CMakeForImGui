@@ -62,6 +62,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   option(dx12 "" OFF)
 endif()
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  option(osx "" OFF)
+  option(metal "" OFF)
+endif()
+
 option(imgui_club "" OFF)
 option(imgui_markdown "" OFF)
 option(implot "" OFF)
@@ -620,6 +625,14 @@ if(dx12)
   target_sources(imgui_backend_dx12 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/dxgi1_4.h)
 
   list(APPEND imgui_backends_list imgui_backend_dx12)
+endif()
+
+if(osx)
+  message(FATAL_ERROR "Build support for this backend is not added yet")
+endif()
+
+if(metal)
+  message(FATAL_ERROR "Build support for this backend is not added yet")
 endif()
 
 if(imgui_club)
