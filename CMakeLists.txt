@@ -65,6 +65,7 @@ endif()
 option(imgui_club "" OFF)
 option(imgui_markdown "" OFF)
 option(implot "" OFF)
+option(implot3d "" OFF)
 
 option(BUILD_SHARED_LIBS "" OFF)
 
@@ -671,6 +672,23 @@ if(implot)
   target_link_libraries(implot_demo PRIVATE implot)
 endif()
 
+if(implot3d)
+  if(NOT IMPLOT3D_SOURCE_DIR)
+    message(FATAL_ERROR "set IMPLOT3D_SOURCE_DIR to proceed:\ne.g. cmake -DIMPLOT3D_SOURCE_DIR=path.to.implot3D ...")
+  endif()
+  set(_implot3d_dir ${IMPLOT3D_SOURCE_DIR})
+
+  add_library(implot3d)
+
+  target_sources(implot3d PRIVATE ${_implot3d_dir}/implot3d.cpp ${_implot3d_dir}/implot3d_items.cpp ${_implot3d_dir}/implot3d_meshes.cpp)
+  target_sources(implot3d PUBLIC FILE_SET implot3d_set BASE_DIRS ${_implot3d_dir} TYPE HEADERS FILES ${_implot3d_dir}/implot3d.h ${_implot3d_dir}/implot3d_internal.h)
+  target_link_libraries(implot3d PUBLIC imgui_core)
+
+  add_library(implot3d_demo)
+  target_sources(implot3d_demo PRIVATE ${_implot3d_dir}/implot3d_demo.cpp)
+  target_link_libraries(implot3d_demo PRIVATE implot3d)
+endif()
+
 if(pkg-config)
   if(pkg_config_requires_list)
     list(SORT pkg_config_requires_list)
@@ -780,6 +798,18 @@ if(install)
     install(TARGETS implot implot_demo EXPORT implot_export FILE_SET implot_set)
 
     install(FILES ${_implot_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/implot)
+  endif()
+
+  if(implot3d)
+    install(
+      EXPORT implot3d_export
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
+      NAMESPACE Unofficial::ImPlot3D::
+      FILE CMakeForImGui-ImPlot3D-Targets.cmake)
+
+    install(TARGETS implot3d implot3d_demo EXPORT implot3d_export FILE_SET implot3d_set)
+
+    install(FILES ${_implot3d_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/implot3d)
   endif()
 
   configure_package_config_file(CMakeForImGuiConfig.cmake.in CMakeForImGuiConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui)
