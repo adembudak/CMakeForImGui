@@ -2,7 +2,7 @@
 
 [CMake](https://cmake.org) build script support for [Dear ImGui](https://github.com/ocornut/imgui). This builds and installs the library and backends, also builds example programs.
 
-## Building
+## 🏗️ Building
 
 ```cmake
 cmake -DIMGUI_SOURCE_DIR=path.to.imgui -S . -B build
@@ -48,10 +48,9 @@ cmake_dependent_option(example_sdl2_opengl3 "" OFF "examples AND sdl2 AND opengl
 ```
 The `example_sdl2_opengl3` option will be available only when the `examples` option and the corresponding backends (`sdl2` and `opengl3`) are `ON`. This is true for all the other examples. No install rules are written for example programs.
 
-## Usage
+## ⚙️ Usage
 
 All the include paths are kept as is. [This repo](https://github.com/adembudak/CMakeForImGui.test) demonstrates how to build programs as a client of the library:
-
 
 ```cmake
 # project setup
@@ -62,14 +61,13 @@ find_package(CMakeForImGui CONFIG REQUIRED)
 target_link_libraries(tgt PUBLIC Unofficial::DearImGui::sdl2 Unofficial::DearImGui::opengl3)
 ```
 
-## Help needed
+## 🙏 Help needed
 
-What is missing:
-- WGPU backend
-- Apple Metal backend
-- Apple OpenGL backend
-- Apple OS X backend
-    and their example programs
+The following backends and example programs are missing:
+
+- **WGPU backend**
+- **Metal backend (macOS)**
+- **macOS platform backend**
 
 See [help-wanted tags](https://github.com/adembudak/CMakeForImGui/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22) in Issues.
 
