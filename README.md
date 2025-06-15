@@ -2,7 +2,7 @@
 
 [CMake](https://cmake.org) build script support for [Dear ImGui](https://github.com/ocornut/imgui). This builds and installs the library and backends, also builds example programs.
 
-## 🏗️ Building
+## Building
 
 ```cmake
 cmake -DIMGUI_SOURCE_DIR=path.to.imgui -S . -B build
@@ -48,7 +48,16 @@ cmake_dependent_option(example_sdl2_opengl3 "" OFF "examples AND sdl2 AND opengl
 ```
 The `example_sdl2_opengl3` option will be available only when the `examples` option and the corresponding backends (`sdl2` and `opengl3`) are `ON`. This is true for all the other examples. No install rules are written for example programs.
 
-## ⚙️ Usage
+Following projects are also supported:
+
+| Project | Variable must be set | Build option(s) | Generated target(s) |
+|--------|-----------------------|------------------|----------------------|
+| [imgui_club](https://github.com/ocornut/imgui_club) | IMGUI_CLUB_SOURCE_DIR | imgui_club<br>imgui_memory_editor<br>imgui_multicontext_compositor<br>imgui_threaded_rendering | <br> Unofficial::imgui_club::imgui_memory_editor<br> Unofficial::imgui_club::imgui_multicontext_compositor<br> Unofficial::imgui_club::imgui_threaded_rendering |
+| [imgui_markdown](https://github.com/enkisoftware/imgui_markdown) | IMGUI_MARKDOWN_SOURCE_DIR | imgui_markdown | Unofficial::imgui_markdown::imgui_markdown |
+| [ImPlot](https://github.com/epezent/implot) | IMPLOT_SOURCE_DIR | implot | Unofficial::ImPlot::implot<br>Unofficial::ImPlot::implot_demo |
+| [ImPlot3D](https://github.com/brenocq/implot3d) | IMPLOT3D_SOURCE_DIR | implot3d | Unofficial::ImPlot3D::implot3d<br>Unofficial::ImPlot3D::implot3d_demo |
+
+## Usage
 
 All the include paths are kept as is. [This repo](https://github.com/adembudak/CMakeForImGui.test) demonstrates how to build programs as a client of the library:
 
@@ -61,9 +70,9 @@ find_package(CMakeForImGui CONFIG REQUIRED)
 target_link_libraries(tgt PUBLIC Unofficial::DearImGui::sdl2 Unofficial::DearImGui::opengl3)
 ```
 
-## 🙏 Help needed
+## Help needed
 
-The following backends and example programs are missing:
+The following backends and their example programs are missing:
 
 - **WGPU backend**
 - **Metal backend (macOS)**
