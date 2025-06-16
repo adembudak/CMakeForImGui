@@ -119,6 +119,7 @@ cmake_dependent_option(imgui_threaded_rendering "" OFF imgui_club OFF)
 cmake_dependent_option(example_null "" OFF examples OFF)
 
 set(imgui_backends_list)
+set(imgui_thirdparty_list)
 set(pkg_config_requires_list)
 
 add_library(imgui_core)
@@ -651,6 +652,8 @@ if(imgui_club)
     target_sources(imgui_multicontext_compositor PRIVATE ${_imclub_dir}/imgui_multicontext_compositor/imgui_multicontext_compositor.cpp)
     target_sources(imgui_multicontext_compositor PUBLIC FILE_SET imgui_multicontext_compositor_set BASE_DIRS ${_imclub_dir}/imgui_multicontext_compositor TYPE HEADERS FILES ${_imclub_dir}/imgui_multicontext_compositor/imgui_multicontext_compositor.h)
     target_link_libraries(imgui_multicontext_compositor PUBLIC imgui_core)
+
+    list(APPEND imgui_thirdparty_list imgui_multicontext_compositor)
  endif()
 
   if(imgui_threaded_rendering)
@@ -683,6 +686,8 @@ if(implot)
   add_library(implot_demo)
   target_sources(implot_demo PRIVATE ${_implot_dir}/implot_demo.cpp)
   target_link_libraries(implot_demo PRIVATE implot)
+
+  list(APPEND imgui_thirdparty_list implot_demo implot)
 endif()
 
 if(implot3d)
@@ -692,7 +697,6 @@ if(implot3d)
   set(_implot3d_dir ${IMPLOT3D_SOURCE_DIR})
 
   add_library(implot3d)
-
   target_sources(implot3d PRIVATE ${_implot3d_dir}/implot3d.cpp ${_implot3d_dir}/implot3d_items.cpp ${_implot3d_dir}/implot3d_meshes.cpp)
   target_sources(implot3d PUBLIC FILE_SET implot3d_set BASE_DIRS ${_implot3d_dir} TYPE HEADERS FILES ${_implot3d_dir}/implot3d.h ${_implot3d_dir}/implot3d_internal.h)
   target_link_libraries(implot3d PUBLIC imgui_core)
@@ -700,6 +704,8 @@ if(implot3d)
   add_library(implot3d_demo)
   target_sources(implot3d_demo PRIVATE ${_implot3d_dir}/implot3d_demo.cpp)
   target_link_libraries(implot3d_demo PRIVATE implot3d)
+
+  list(APPEND imgui_thirdparty_list implot3d_demo implot3d)
 endif()
 
 if(pkg-config)
@@ -713,6 +719,11 @@ if(pkg-config)
     set(pkg_config_imgui_backends_list ${imgui_backends_list})
     list(TRANSFORM pkg_config_imgui_backends_list PREPEND "-l")
     string(JOIN " " pkg_config_imgui_backends_string ${pkg_config_imgui_backends_list})
+  endif()
+
+  if(imgui_thirdparty_list)
+    list(TRANSFORM imgui_thirdparty_list PREPEND "-l")
+    string(JOIN " " imgui_thirdparty_string ${imgui_thirdparty_list})
   endif()
 
   file(CONFIGURE OUTPUT ${PROJECT_BINARY_DIR}/cmakeforimgui.pc CONTENT
@@ -731,7 +742,7 @@ URL: @PROJECT_HOMEPAGE_URL@
 
 Requires: @pkg_config_requires_string@
 Conflicts:
-Libs: -L${libdir} -limgui_core @pkg_config_imgui_backends_string@ @pkg_config_imgui_misc_cpp_string@
+Libs: -L${libdir} -limgui_core @pkg_config_imgui_backends_string@ @pkg_config_imgui_misc_cpp_string@ @imgui_thirdparty_string@
 Libs.private:
 Cflags: -I${includedir}
 ]=] @ONLY)
