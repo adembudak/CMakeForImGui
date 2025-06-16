@@ -69,6 +69,17 @@ find_package(CMakeForImGui CONFIG REQUIRED)
 # ...
 target_link_libraries(tgt PUBLIC Unofficial::DearImGui::sdl2 Unofficial::DearImGui::opengl3)
 ```
+### With `pkg-config` command
+
+The build script can be used to generate **pkg-config** file:
+```cmake
+cmake -Dpkg-config=ON -S . -B build
+```
+
+This generates a `cmakeforimgui.pc` file in build directory which can be installed and used like:
+```bash
+c++ -o out main.cpp $(pkg-config --cflags --libs cmakeforimgui)
+```
 
 ## Help needed
 
