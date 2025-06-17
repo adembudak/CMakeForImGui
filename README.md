@@ -21,7 +21,7 @@ Following backend options are available:
 
 | Build option   | Generated target                                      |
 |----------------|-------------------------------------------------------|
-| (default)      | Unofficial::DearImGui::imgui_core                     |
+| (default)      | Unofficial::DearImGui::imgui_core<br> Unofficial::DearImGui::imgui_demo |
 | android        | Unofficial::DearImGui::imgui_backend_android          |
 | opengl2        | Unofficial::DearImGui::imgui_backend_opengl2          |
 | opengl3        | Unofficial::DearImGui::imgui_backend_opengl3          |
