@@ -11,10 +11,6 @@ include(CMakeDependentOption)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED 1)
-set(CMAKE_CXX_EXTENSIONS 0)
-
 if(NOT IMGUI_SOURCE_DIR)
   message(FATAL_ERROR "set IMGUI_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_SOURCE_DIR=path.to.imgui ...")
 endif()
@@ -129,6 +125,7 @@ target_sources(imgui_core PUBLIC
   BASE_DIRS ${_imdir}
   TYPE HEADERS
   FILES ${_imdir}/imgui.h ${_imdir}/imconfig.h ${_imdir}/imgui_internal.h ${_imdir}/imstb_rectpack.h ${_imdir}/imstb_textedit.h ${_imdir}/imstb_truetype.h)
+target_compile_features(imgui_core PUBLIC cxx_std_11)
 
 add_library(imgui_demo)
 target_sources(imgui_demo PRIVATE ${_imdir}/imgui_demo.cpp)
@@ -141,6 +138,7 @@ if(with_miscellaneous)
     target_sources(imgui_misc_cpp PRIVATE FILE_SET HEADERS BASE_DIRS ${_imdir} FILES ${_imdir}/imgui.h)
     target_link_libraries(imgui_core PUBLIC imgui_misc_cpp)
     target_sources(imgui_misc_cpp PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imdir}/misc/cpp TYPE HEADERS FILES ${_imdir}/misc/cpp/imgui_stdlib.h)
+    target_compile_features(imgui_misc_cpp PRIVATE cxx_std_11)
 
     install(
       TARGETS imgui_misc_cpp
@@ -158,6 +156,7 @@ if(with_miscellaneous)
     target_link_libraries(imgui_core PUBLIC imgui_misc_freetype)
     target_sources(imgui_misc_freetype PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imdir}/misc/freetype TYPE HEADERS FILES ${_imdir}/misc/freetype/imgui_freetype.h)
     target_compile_definitions(imgui_core PUBLIC IMGUI_ENABLE_FREETYPE)
+    target_compile_features(imgui_misc_freetype PRIVATE cxx_std_11)
 
     set(pkg_config_imgui_misc_cpp_string imgui_misc_freetype)
     string(PREPEND pkg_config_imgui_misc_cpp_string "-l")
@@ -181,6 +180,7 @@ if(with_miscellaneous)
   if(misc_fonts)
     add_executable(binary_to_compressed_c)
     target_sources(binary_to_compressed_c PRIVATE ${_imdir}/misc/fonts/binary_to_compressed_c.cpp)
+    target_compile_features(binary_to_compressed_c PRIVATE cxx_std_11)
 
     install(TARGETS binary_to_compressed_c DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui/fonts)
     install(
