@@ -759,7 +759,7 @@ if(install)
     DIRECTORY ${_imdir}/docs
     DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui FILES_MATCHING PATTERN "docs/*")
 
-  install(FILES ${_imdir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui)
+  install(FILES ${_imdir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
 
   install(
     EXPORT imgui_export
@@ -825,7 +825,7 @@ if(install)
 
     install(TARGETS implot implot_demo EXPORT implot_export FILE_SET implot_set)
 
-    install(FILES ${_implot_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/implot)
+    install(FILES ${_implot_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/ImPlot)
   endif()
 
   if(implot3d)
@@ -837,7 +837,7 @@ if(install)
 
     install(TARGETS implot3d implot3d_demo EXPORT implot3d_export FILE_SET implot3d_set)
 
-    install(FILES ${_implot3d_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/implot3d)
+    install(FILES ${_implot3d_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/ImPlot3D)
   endif()
 
   configure_package_config_file(CMakeForImGuiConfig.cmake.in CMakeForImGuiConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui)
