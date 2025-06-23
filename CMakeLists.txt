@@ -10,6 +10,8 @@ project(CMakeForImGui
 include(CMakeDependentOption)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
+include(CMakePrintHelpers)
+include(FeatureSummary)
 
 if(NOT IMGUI_SOURCE_DIR)
   message(FATAL_ERROR "set IMGUI_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_SOURCE_DIR=path.to.imgui ...")
@@ -192,7 +194,7 @@ if(with_miscellaneous)
 endif()
 
 if(opengl2)
-  find_package(OpenGL 2 REQUIRED)
+  find_package(OpenGL 2 QUIET REQUIRED)
 
   add_library(imgui_backend_opengl2)
   target_sources(imgui_backend_opengl2 PRIVATE ${_imdir}/backends/imgui_impl_opengl2.cpp)
@@ -235,7 +237,6 @@ if(android)
     message(FATAL_ERROR "Android NDK toolchain not found")
   endif()
 
-  include(CMakePrintHelpers)
   cmake_print_variables(CMAKE_SYSTEM_NAME CMAKE_ANDROID_NDK CMAKE_TOOLCHAIN_FILE ANDROID_TOOLCHAIN ANDROID_TOOLCHAIN_NAME $ENV{ANDROID_HOME} $ENV{ANDROID_NDK} ANDROID_ABI ANDROID_STL ANDROID_PIE ANDROID_CPP_FEATURES ANDROID_ALLOW_UNDEFINED_SYMBOLS ANDROID_ARM_MODE ANDROID_PLATFORM ANDROID_NATIVE_API_LEVEL)
 
   if(CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a" OR CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a with NEON")
@@ -885,4 +886,23 @@ set(GRAPHVIZ_GENERATE_DEPENDERS 0)
     COMMAND ${CMAKE_COMMAND} --graphviz=targets.dot ${PROJECT_BINARY_DIR}
     COMMAND ${DOT_COMMAND} -Tpng targets.dot -o targets.png
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+endif()
+
+feature_summary(WHAT ALL)
+
+set(options android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan examples win32 dx9 dx10 dx11 dx12 osx metal with_miscellaneous
+  imgui_club imgui_markdown implot implot3d BUILD_SHARED_LIBS pkg-config install uninstall visualize_targets)
+list(SORT options)
+
+foreach(o IN LISTS options)
+  if(${o})
+    list(APPEND activated_options ${o})
+  endif()
+endforeach()
+
+if(activated_options)
+  message(STATUS "Configuration summary:\n")
+  foreach(o IN LISTS activated_options)
+    message(" * ${o}: ${${o}}")
+  endforeach()
 endif()
