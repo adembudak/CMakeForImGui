@@ -1,5 +1,3 @@
-# CMake support for ImGui
-
 [CMake](https://cmake.org) build script support for [Dear ImGui](https://github.com/ocornut/imgui). This builds and installs the library and backends, also builds example programs.
 
 ## Building
@@ -46,7 +44,7 @@ Example programs set as dependent options, like:
 ```cmake
 cmake_dependent_option(example_sdl2_opengl3 "" OFF "examples AND sdl2 AND opengl3" OFF)
 ```
-The `example_sdl2_opengl3` option will be available only when the `examples` option and the corresponding backends (`sdl2` and `opengl3`) are `ON`. This is true for all the other examples. No install rules are written for example programs.
+The `example_sdl2_opengl3` option will be available only when the `examples` option and the corresponding backends (`sdl2` and `opengl3`) are `ON`. The same is true for all the other examples. No install rules are written for example programs and they're all `OFF` by default.
 
 Following projects are also supported:
 
