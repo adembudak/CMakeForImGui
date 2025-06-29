@@ -69,6 +69,7 @@ option(imgui_club "" OFF)
 option(imgui_markdown "" OFF)
 option(implot "" OFF)
 option(implot3d "" OFF)
+option(imguifiledialog "" OFF)
 
 option(BUILD_SHARED_LIBS "" OFF)
 
@@ -713,6 +714,22 @@ if(implot3d)
   list(APPEND imgui_thirdparty_list implot3d_demo implot3d)
 endif()
 
+if(imguifiledialog)
+  if(NOT IMGUIFILEDIALOG_SOURCE_DIR)
+    message(FATAL_ERROR "set IMGUIFILEDIALOG_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUIFILEDIALOG_SOURCE_DIR=path.to.imguifiledialog...")
+  endif()
+  set(_imfiledialog_dir ${IMGUIFILEDIALOG_SOURCE_DIR})
+
+  find_path(Dirent dirent.h PATHS ${_imfiledialog_dir} PATH_SUFFIXES dirent DOC "https://github.com/tronkko/dirent" NO_CACHE REQUIRED NO_CMAKE_SYSTEM_PATH)
+  find_path(stb std_image.h stb_image_resize2.h PATHS ${_imfiledialog_dir} PATH_SUFFIXES stb DOC "https://github.com/nothings/stb" NO_CACHE REQUIRED NO_CMAKE_SYSTEM_PATH)
+
+  add_library(imguifiledialog)
+  target_sources(imguifiledialog PRIVATE ${_imfiledialog_dir}/ImGuiFileDialog.cpp)
+  target_sources(imguifiledialog PUBLIC FILE_SET imguifiledialog_set BASE_DIRS ${_imfiledialog_dir} TYPE HEADERS FILES ${_imfiledialog_dir}/ImGuiFileDialog.h ${_imfiledialog_dir}/ImGuiFileDialogConfig.h)
+  target_sources(imguifiledialog PRIVATE FILE_SET HEADERS BASE_DIRS ${_imfiledialog_dir} FILES ${_imfiledialog_dir}/stb/stb_image.h ${_imfiledialog_dir}/stb/stb_image_resize2.h ${_imfiledialog_dir}/dirent/dirent.h)
+  target_link_libraries(imguifiledialog PUBLIC imgui_core)
+endif()
+
 if(pkg-config)
   if(pkg_config_requires_list)
     list(SORT pkg_config_requires_list)
@@ -843,6 +860,18 @@ if(install)
     install(FILES ${_implot3d_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/ImPlot3D)
   endif()
 
+  if(imguifiledialog)
+    install(EXPORT imguifiledialog_export
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
+      NAMESPACE Unofficial::ImGuiFileDialog::
+      FILE CMakeForImGui-ImGuiFileDialog-Targets.cmake)
+
+    install(TARGETS imguifiledialog EXPORT imguifiledialog_export FILE_SET imguifiledialog_set)
+
+    install(FILES ${_imfiledialog_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/ImGuiFileDialog)
+    install(FILES ${_imfiledialog_dir}/Documentation.md DESTINATION ${CMAKE_INSTALL_DATADIR}/ImGuiFileDialog/docs)
+  endif()
+
   configure_package_config_file(CMakeForImGuiConfig.cmake.in ${PROJECT_BINARY_DIR}/CMakeForImGuiConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui)
   write_basic_package_version_file(${PROJECT_BINARY_DIR}/CMakeForImGuiConfigVersion.cmake VERSION ${PROJECT_VERSION} COMPATIBILITY ExactVersion)
 
@@ -893,7 +922,7 @@ endif()
 feature_summary(WHAT ALL)
 
 set(options android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan examples win32 dx9 dx10 dx11 dx12 osx metal with_miscellaneous
-  imgui_club imgui_markdown implot implot3d BUILD_SHARED_LIBS pkg-config install uninstall visualize_targets)
+  imgui_club imgui_markdown implot implot3d imguifiledialog BUILD_SHARED_LIBS pkg-config install uninstall visualize_targets)
 list(SORT options)
 
 foreach(o IN LISTS options)
