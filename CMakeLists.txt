@@ -756,6 +756,8 @@ Cflags: -I${includedir}
 endif()
 
 if(install)
+  set_property(GLOBAL PROPERTY INSTALL_PARALLEL ON)
+
   install(
     DIRECTORY ${_imdir}/docs
     DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui FILES_MATCHING PATTERN "docs/*")
