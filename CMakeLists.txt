@@ -925,7 +925,7 @@ feature_summary(WHAT ALL)
 
 set(options android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan examples win32 dx9 dx10 dx11 dx12 osx metal with_miscellaneous
   imgui_club imgui_markdown implot implot3d imguifiledialog BUILD_SHARED_LIBS pkg-config install uninstall visualize_targets)
-list(SORT options)
+list(SORT options CASE INSENSITIVE)
 
 foreach(o IN LISTS options)
   if(${o})
