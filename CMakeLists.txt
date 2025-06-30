@@ -917,7 +917,8 @@ set(GRAPHVIZ_GENERATE_DEPENDERS 0)
     graph
     COMMAND ${CMAKE_COMMAND} --graphviz=targets.dot ${PROJECT_BINARY_DIR}
     COMMAND ${DOT_COMMAND} -Tpng targets.dot -o targets.png
-    WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+    VERBATIM)
 endif()
 
 feature_summary(WHAT ALL)
