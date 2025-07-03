@@ -83,6 +83,7 @@ option(visualize_targets "Visualize linkage graph" OFF)
 mark_as_advanced(FORCE visualize_targets)
 
 cmake_dependent_option(sdlgpu3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
+cmake_dependent_option(sdl3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.89.2)" OFF)
 
 cmake_dependent_option(example_android_opengl3 "" OFF "examples AND android" OFF)
 
