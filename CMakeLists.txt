@@ -379,8 +379,8 @@ if(sdl2)
   find_package(SDL2 CONFIG REQUIRED)
 
   add_library(imgui_backend_sdl2)
-  target_sources(imgui_backend_sdl2 PRIVATE ${_imdir}/backends/imgui_impl_sdl2.cpp)
-  target_sources(imgui_backend_sdl2 PUBLIC FILE_SET imgui_backend_sdl2_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_sdl2.h)
+  target_sources(imgui_backend_sdl2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imdir}/backends/imgui_impl_sdl2.cpp,${_imdir}/backends/imgui_impl_sdl.cpp>)
+  target_sources(imgui_backend_sdl2 PUBLIC FILE_SET imgui_backend_sdl2_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imdir}/backends/imgui_impl_sdl2.h,${_imdir}/backends/imgui_impl_sdl.h>)
   target_link_libraries(imgui_backend_sdl2 PUBLIC $<IF:$<BOOL:${BUILD_SHARED_LIBS}>,SDL2::SDL2,SDL2::SDL2-static>)
   target_link_libraries(imgui_backend_sdl2 PUBLIC imgui_core)
 
