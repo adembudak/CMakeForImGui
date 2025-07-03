@@ -82,6 +82,8 @@ option(uninstall "" ON)
 option(visualize_targets "Visualize linkage graph" OFF)
 mark_as_advanced(FORCE visualize_targets)
 
+cmake_dependent_option(sdlgpu3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
+
 cmake_dependent_option(example_android_opengl3 "" OFF "examples AND android" OFF)
 
 cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND glfw AND opengl2" OFF)
@@ -454,27 +456,22 @@ if(sdl3)
 endif()
 
 if(sdlgpu3)
-  if(${IMGUI_VERSION} VERSION_LESS 1.91.7)
-    message(WARNING "sdlgpu3 backend available by v1.91.7")
-    set(sdlgpu3 OFF)
-  else()
-    find_package(SDL3 CONFIG REQUIRED)
+  find_package(SDL3 CONFIG REQUIRED)
 
-    add_library(imgui_backend_sdlgpu3)
-    target_sources(imgui_backend_sdlgpu3 PRIVATE ${_imdir}/backends/imgui_impl_sdlgpu3.cpp)
-    target_sources(imgui_backend_sdlgpu3 PUBLIC FILE_SET imgui_backend_sdlgpu3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_sdlgpu3.h
-                                                ${_imdir}/backends/imgui_impl_sdlgpu3_shaders.h)
-    target_link_libraries(imgui_backend_sdlgpu3 PUBLIC SDL3::SDL3)
-    target_link_libraries(imgui_backend_sdlgpu3 PUBLIC imgui_core)
+  add_library(imgui_backend_sdlgpu3)
+  target_sources(imgui_backend_sdlgpu3 PRIVATE ${_imdir}/backends/imgui_impl_sdlgpu3.cpp)
+  target_sources(imgui_backend_sdlgpu3 PUBLIC FILE_SET imgui_backend_sdlgpu3_set BASE_DIRS ${_imdir}/backends TYPE HEADERS FILES ${_imdir}/backends/imgui_impl_sdlgpu3.h
+                                              ${_imdir}/backends/imgui_impl_sdlgpu3_shaders.h)
+  target_link_libraries(imgui_backend_sdlgpu3 PUBLIC SDL3::SDL3)
+  target_link_libraries(imgui_backend_sdlgpu3 PUBLIC imgui_core)
 
-    list(APPEND imgui_backends_list imgui_backend_sdlgpu3)
-    list(APPEND pkg_config_requires_list sdl3)
+  list(APPEND imgui_backends_list imgui_backend_sdlgpu3)
+  list(APPEND pkg_config_requires_list sdl3)
 
-    if(example_sdl3_sdlgpu3)
-      add_executable(example_sdl3_sdlgpu3)
-      target_sources(example_sdl3_sdlgpu3 PRIVATE ${_imdir}/examples/example_sdl3_sdlgpu3/main.cpp)
-      target_link_libraries(example_sdl3_sdlgpu3 PRIVATE imgui_backend_sdlgpu3 imgui_backend_sdl3 imgui_demo)
-    endif()
+  if(example_sdl3_sdlgpu3)
+    add_executable(example_sdl3_sdlgpu3)
+    target_sources(example_sdl3_sdlgpu3 PRIVATE ${_imdir}/examples/example_sdl3_sdlgpu3/main.cpp)
+    target_link_libraries(example_sdl3_sdlgpu3 PRIVATE imgui_backend_sdlgpu3 imgui_backend_sdl3 imgui_demo)
   endif()
 endif()
 
