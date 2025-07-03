@@ -3,6 +3,7 @@
 cmake_minimum_required(VERSION 4.0.0)
 
 project(CMakeForImGui
+  VERSION 0.1.0.0
   DESCRIPTION "CMake build support for Dear ImGui"
   HOMEPAGE_URL "https://github.com/adembudak/CMakeForImGui"
   LANGUAGES CXX)
@@ -22,12 +23,12 @@ set(_imdir ${IMGUI_SOURCE_DIR})
 file(STRINGS ${_imdir}/imgui.h imgui_version_string REGEX "#define[ \t]+IMGUI_VERSION_NUM[ \t]+[0-9]+")
 string(REGEX MATCH "[0-9]+" imgui_version ${imgui_version_string})
 
-math(EXPR PROJECT_VERSION_MAJOR "(${imgui_version} / 10000)")
-math(EXPR PROJECT_VERSION_MINOR "(${imgui_version} / 100) % 100")
-math(EXPR PROJECT_VERSION_PATCH "(${imgui_version} / 10) % 10")
-math(EXPR PROJECT_VERSION_TWEAK "(${imgui_version} % 10)")
+math(EXPR IMGUI_VERSION_MAJOR "(${imgui_version} / 10000)")
+math(EXPR IMGUI_VERSION_MINOR "(${imgui_version} / 100) % 100")
+math(EXPR IMGUI_VERSION_PATCH "(${imgui_version} / 10) % 10")
+math(EXPR IMGUI_VERSION_TWEAK "(${imgui_version} % 10)")
 
-set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.${PROJECT_VERSION_TWEAK}")
+set(IMGUI_VERSION "${IMGUI_VERSION_MAJOR}.${IMGUI_VERSION_MINOR}.${IMGUI_VERSION_PATCH}.${IMGUI_VERSION_TWEAK}")
 
 option(with_miscellaneous "" OFF)
 cmake_dependent_option(misc_cpp "" OFF with_miscellaneous OFF)
@@ -874,7 +875,7 @@ if(install)
   endif()
 
   configure_package_config_file(CMakeForImGuiConfig.cmake.in ${PROJECT_BINARY_DIR}/CMakeForImGuiConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui)
-  write_basic_package_version_file(${PROJECT_BINARY_DIR}/CMakeForImGuiConfigVersion.cmake VERSION ${PROJECT_VERSION} COMPATIBILITY ExactVersion)
+  write_basic_package_version_file(${PROJECT_BINARY_DIR}/CMakeForImGuiConfigVersion.cmake VERSION ${IMGUI_VERSION} COMPATIBILITY ExactVersion)
 
   install(FILES ${PROJECT_BINARY_DIR}/CMakeForImGuiConfig.cmake ${PROJECT_BINARY_DIR}/CMakeForImGuiConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui)
 endif()
