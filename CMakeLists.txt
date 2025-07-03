@@ -113,7 +113,7 @@ cmake_dependent_option(example_win32_directx11 "" OFF "examples AND win32 AND dx
 cmake_dependent_option(example_win32_directx12 "" OFF "examples AND win32 AND dx12" OFF)
 
 cmake_dependent_option(imgui_memory_editor "" OFF imgui_club OFF)
-cmake_dependent_option(imgui_multicontext_compositor "" OFF imgui_club OFF)
+cmake_dependent_option(imgui_multicontext_compositor "" OFF "imgui_club AND (${IMGUI_VERSION} VERSION_GREATER 1.90.8)" OFF)
 cmake_dependent_option(imgui_threaded_rendering "" OFF imgui_club OFF)
 
 cmake_dependent_option(example_null "" OFF examples OFF)
