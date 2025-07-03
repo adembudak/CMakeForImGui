@@ -933,15 +933,7 @@ set(options android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrendere
   imgui_club imgui_markdown implot implot3d imguifiledialog BUILD_SHARED_LIBS pkg-config install uninstall visualize_targets)
 list(SORT options CASE INSENSITIVE)
 
+message(STATUS "Configuration summary:\n")
 foreach(o IN LISTS options)
-  if(${o})
-    list(APPEND activated_options ${o})
-  endif()
+  message(" * ${o}: ${${o}}")
 endforeach()
-
-if(activated_options)
-  message(STATUS "Configuration summary:\n")
-  foreach(o IN LISTS activated_options)
-    message(" * ${o}: ${${o}}")
-  endforeach()
-endif()
