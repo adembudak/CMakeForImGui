@@ -80,6 +80,10 @@ This generates a `cmakeforimgui.pc` file in build directory which can be install
 c++ -o out main.cpp $(pkg-config --cflags --libs cmakeforimgui)
 ```
 
+## Using with older versions of the Dear ImGui
+
+Limited amount of checking has done for moved, removed or renamed files of the previous versions of the Dear ImGui. This build script will work best with recent the versions of the project, i.e. v1.90+ and it will certainly not work for the versions older than v1.80.
+
 ## Help needed
 
 The following backends and their example programs are missing:
@@ -89,4 +93,5 @@ The following backends and their example programs are missing:
 - **macOS platform backend**
 
 See [help-wanted tags](https://github.com/adembudak/CMakeForImGui/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22) in Issues.
+
 
