@@ -85,6 +85,7 @@ mark_as_advanced(FORCE visualize_targets)
 cmake_dependent_option(sdl3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.89.2)" OFF)
 cmake_dependent_option(sdlgpu3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
 cmake_dependent_option(sdlrenderer3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.89.5)" OFF)
+cmake_dependent_option(sdlrenderer2 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.84.2)" OFF)
 
 cmake_dependent_option(implot3d "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.90.0)" OFF)
 cmake_dependent_option(imguifiledialog "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.92.0)" OFF)
