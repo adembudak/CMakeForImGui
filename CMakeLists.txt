@@ -51,6 +51,7 @@ option(sdlrenderer3 "" OFF)
 option(opengl2 "" OFF)
 option(opengl3 "" OFF)
 option(vulkan "" OFF)
+option(wgpu "" OFF)
 option(examples "" OFF)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -82,10 +83,11 @@ option(uninstall "" ON)
 option(visualize_targets "Visualize linkage graph" OFF)
 mark_as_advanced(FORCE visualize_targets)
 
-cmake_dependent_option(sdl3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.89.2)" OFF)
-cmake_dependent_option(sdlgpu3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
-cmake_dependent_option(sdlrenderer3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.89.5)" OFF)
 cmake_dependent_option(sdlrenderer2 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.84.2)" OFF)
+cmake_dependent_option(sdl3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.89.2)" OFF)
+cmake_dependent_option(sdlrenderer3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.89.5)" OFF)
+cmake_dependent_option(sdlgpu3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
+cmake_dependent_option(wgpu "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.80.0)" OFF)
 
 cmake_dependent_option(implot3d "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.90.0)" OFF)
 cmake_dependent_option(imguifiledialog "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.92.0)" OFF)
@@ -240,6 +242,10 @@ if(vulkan)
 
   list(APPEND imgui_backends_list imgui_backend_vulkan)
   list(APPEND pkg_config_requires_list vulkan)
+endif()
+
+if(wgpu)
+  message(FATAL_ERROR "Build support for this backend is not added yet")
 endif()
 
 if(android)
@@ -931,7 +937,7 @@ endif()
 
 feature_summary(WHAT ALL)
 
-set(options android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan examples win32 dx9 dx10 dx11 dx12 osx metal with_miscellaneous
+set(options android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu examples win32 dx9 dx10 dx11 dx12 osx metal with_miscellaneous
   imgui_club imgui_markdown implot implot3d imguifiledialog BUILD_SHARED_LIBS pkg-config install uninstall visualize_targets)
 list(SORT options CASE INSENSITIVE)
 
