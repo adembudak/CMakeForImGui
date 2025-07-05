@@ -89,6 +89,7 @@ cmake_dependent_option(sdlrenderer3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.
 cmake_dependent_option(sdlgpu3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
 cmake_dependent_option(wgpu "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.80.0)" OFF)
 
+cmake_dependent_option(implot "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.89.0)" OFF)
 cmake_dependent_option(implot3d "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.90.0)" OFF)
 cmake_dependent_option(imguifiledialog "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.92.0)" OFF)
 
