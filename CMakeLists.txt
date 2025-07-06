@@ -134,7 +134,7 @@ set(imgui_thirdparty_list)
 set(pkg_config_requires_list)
 
 add_library(imgui_core)
-target_sources(imgui_core PRIVATE ${_imgui_dir}/imgui.cpp ${_imgui_dir}/imgui_draw.cpp ${_imgui_dir}/imgui_tables.cpp ${_imgui_dir}/imgui_widgets.cpp)
+target_sources(imgui_core PRIVATE ${_imgui_dir}/imgui.cpp ${_imgui_dir}/imgui_draw.cpp ${_imgui_dir}/imgui_widgets.cpp $<$<VERSION_GREATER:${IMGUI_VERSION},1.79.0>:${_imgui_dir}/imgui_tables.cpp>)
 target_sources(imgui_core PUBLIC
   FILE_SET imgui_core_set
   BASE_DIRS ${_imgui_dir}
