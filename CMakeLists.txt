@@ -817,8 +817,7 @@ endif()
 if(install)
   set_property(GLOBAL PROPERTY INSTALL_PARALLEL ON)
 
-  install(
-    DIRECTORY ${_imgui_dir}/docs
+  install(DIRECTORY $<$<VERSION_GREATER:${IMGUI_VERSION},1.63.0.1>:${_imgui_dir}/docs>
     DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui FILES_MATCHING PATTERN "docs/*")
 
   install(FILES ${_imgui_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
