@@ -199,10 +199,11 @@ if(with_miscellaneous)
 
   if(misc_debugger)
     if(UNIX)
-      install(FILES ${_imgui_dir}/misc/debuggers/imgui.gdb DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/debugger)
+      install(FILES $<$<VERSION_GREATER:${IMGUI_VERSION},1.81>:${_imgui_dir}/misc/debuggers/imgui.gdb> DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/debugger)
     endif()
     if(WIN32)
-      install(FILES ${_imgui_dir}/misc/debuggers/imgui.natvis ${_imgui_dir}/misc/debuggers/imgui.natstepfilter DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/debugger)
+       install(FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.81>,${_imgui_dir}/misc/debuggers/imgui.natvis,${_imgui_dir}/misc/natvis/imgui.natvis>
+         $<$<VERSION_GREATER:${IMGUI_VERSION},1.81>:${_imgui_dir}/misc/debuggers/imgui.natstepfilter> DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/debugger)
     endif()
   endif()
 
