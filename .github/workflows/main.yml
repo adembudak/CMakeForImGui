@@ -1,0 +1,55 @@
+name: GitHub Actions
+run-name: ${{ github.actor }} is testing out ${{ github.repository }}
+
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Triggered by ${{ github.event_name }} on ${{ github.repository }} using ${{ github.ref}} branch and running on ${{ runner.os }}."
+
+      - name: ls
+        run: |
+          pwd
+          ls ${{ github.workspace }}
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '4.0.0'
+
+      - name: CMake version
+        run: cmake --version
+
+      - name: Check out CMakeForImGui
+        uses: actions/checkout@v4
+        with:
+          path: CMakeForImGui
+
+      - name: ls
+        run: |
+          pwd
+          ls ${{ github.workspace }}
+
+      - name: Check out ImGui repository
+        uses: actions/checkout@v4
+        with:
+          repository: ocornut/imgui
+          fetch-depth: 0
+          fetch-tags: true
+          show-progress: false
+          path: imgui
+
+      - name: ls
+        run: |
+          pwd
+          ls ${{ github.workspace }}
+
+      - name: CMake Configure
+        run: "cmake -DIMGUI_SOURCE_DIR=${{ github.workspace }}/imgui -S ${{ github.workspace }}/CMakeForImGui -B build"
+
+      - name: CMake Build
+        run: cmake --build build
+
+      - run: echo "Job exited by ${{ job.status }}."
+
