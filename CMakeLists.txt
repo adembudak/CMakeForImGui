@@ -426,6 +426,7 @@ endif()
 
 if(sdlrenderer2)
   find_package(SDL2 CONFIG REQUIRED)
+
   add_library(imgui_backend_sdlrenderer2)
   target_sources(imgui_backend_sdlrenderer2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.5>,${_imgui_dir}/backends/imgui_impl_sdlrenderer2.cpp,${_imgui_dir}/backends/imgui_impl_sdlrenderer.cpp>)
   target_sources(imgui_backend_sdlrenderer2 PUBLIC FILE_SET imgui_backend_sdlrenderer2_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.5>,${_imgui_dir}/backends/imgui_impl_sdlrenderer2.h,${_imgui_dir}/backends/imgui_impl_sdlrenderer.h>)
@@ -793,7 +794,7 @@ if(install)
 
   install(
     DIRECTORY ${_imgui_dir}/docs
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui FILES_MATCHING PATTERN "docs/*")
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
 
   install(FILES ${_imgui_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
 
