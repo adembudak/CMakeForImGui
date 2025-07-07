@@ -792,8 +792,9 @@ endif()
 if(install)
   set_property(GLOBAL PROPERTY INSTALL_PARALLEL ON)
 
+  cmake_path(CONVERT ${_imgui_dir}/docs TO_CMAKE_PATH_LIST _imgui_docs_dir)
   install(
-    DIRECTORY ${_imgui_dir}/docs
+    DIRECTORY ${_imgui_docs_dir}
     DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
 
   install(FILES ${_imgui_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
