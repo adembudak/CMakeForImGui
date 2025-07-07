@@ -2,9 +2,17 @@ name: GitHub Actions
 run-name: ${{ github.actor }} is testing out ${{ github.repository }}
 
 on: [push]
+
 jobs:
-  Explore-GitHub-Actions:
-    runs-on: ubuntu-latest
+  Configure-Build-Install:
+    strategy:
+      matrix:
+          os:
+            - ubuntu-latest
+            - macos-latest
+            - windows-latest
+
+    runs-on: ${{ matrix.os }}
     steps:
       - run: echo "Triggered by ${{ github.event_name }} on ${{ github.repository }} using ${{ github.ref}} branch and running on ${{ runner.os }}."
 
@@ -45,11 +53,19 @@ jobs:
           pwd
           ls ${{ github.workspace }}
 
-      - name: CMake Configure
-        run: "cmake -DIMGUI_SOURCE_DIR=${{ github.workspace }}/imgui -S ${{ github.workspace }}/CMakeForImGui -B build"
+      - name: Configure
+        run: >
+          cmake
+          -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/installing.in.here
+          -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
+          -S ${{ github.workspace }}/CMakeForImGui
+          -B build
 
-      - name: CMake Build
-        run: cmake --build build
+      - name: Build
+        run: cmake --build build --config Debug
+
+      - name: Install
+        run: cmake --install build --config Debug
 
       - run: echo "Job exited by ${{ job.status }}."
 
