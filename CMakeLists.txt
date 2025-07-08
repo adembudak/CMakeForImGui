@@ -19,6 +19,10 @@ if(NOT IMGUI_SOURCE_DIR)
 endif()
 
 set(_imgui_dir ${IMGUI_SOURCE_DIR})
+set(_imgui_backends_dir ${_imgui_dir}/backends)
+set(_imgui_examples_dir ${_imgui_dir}/examples)
+set(_imgui_misc_dir ${_imgui_dir}/misc)
+set(_imgui_docs_dir ${_imgui_dir}/docs)
 
 file(STRINGS ${_imgui_dir}/imgui.h imgui_version_string REGEX "#define[ \t]+IMGUI_VERSION_NUM[ \t]+[0-9]+")
 string(REGEX MATCH "[0-9]+" imgui_version ${imgui_version_string})
