@@ -64,10 +64,6 @@ jobs:
       - name: Build
         run: cmake --build build --config Debug
 
-      - name: Set install path on Windows
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: cmake -D CMAKE_INSTALL_PREFIX=D:/a/CMakeForImGui/CMakeForImGui/installing.in.here -S ${{ github.workspace }}/CMakeForImGui -B build
-
       - name: Install
         run: cmake --install build --config Debug
 
