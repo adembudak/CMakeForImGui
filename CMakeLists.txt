@@ -188,12 +188,7 @@ if(with_miscellaneous)
   endif()
 
   if(misc_debugger)
-    if(UNIX)
-      install(FILES ${_imgui_misc_dir}/debuggers/imgui.gdb DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/debugger)
-    endif()
-    if(WIN32)
-      install(FILES ${_imgui_misc_dir}/debuggers/imgui.natvis ${_imgui_misc_dir}/debuggers/imgui.natstepfilter DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/debugger)
-    endif()
+    install(DIRECTORY ${_imgui_misc_dir}/debuggers DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   endif()
 
   if(misc_fonts)
