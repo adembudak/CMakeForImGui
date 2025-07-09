@@ -41,13 +41,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ocornut/imgui
-          fetch-depth: 0
-          fetch-tags: true
           show-progress: false
+          ref: ${{ matrix.tag }}
           path: imgui
-
-      - name: Checkout ImGui tagged branch
-        run: git checkout ${{ matrix.tag }}
 
       - name: Configure
         run: >
