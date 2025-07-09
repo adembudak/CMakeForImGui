@@ -42,6 +42,12 @@ jobs:
         with:
           path: CMakeForImGui
 
+      - name: Install GLFW3 dependencies on Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt update
+          sudo apt install --assume-yes --fix-missing libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config
+
       - name: Setup vcpkg
         uses: johnwason/vcpkg-action@v7
         id: vcpkg
@@ -56,7 +62,12 @@ jobs:
           -D VCPKG_MANIFEST_MODE=ON
           -D VCPKG_MANIFEST_DIR=${{ github.workspace }}/CMakeForImGui/.github/workflows
           -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
-          -D with_miscellaneous=ON -D misc_freetype=ON
+          -D with_miscellaneous=ON -D misc_freetype=ON -D misc_cpp=ON -D misc_debugger=ON -D misc_cpp=ON
+          -D glfw=ON
+          -D opengl2=ON
+          -D opengl3=ON
+          -D examples=ON
+          -D example_glfw_opengl2=ON -D example_glfw_opengl3=ON
           -S ${{ github.workspace }}/CMakeForImGui
           -B build
           --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
