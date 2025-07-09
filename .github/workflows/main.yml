@@ -9,11 +9,8 @@ jobs:
       matrix:
           os:
             - ubuntu-latest
-            - macos-latest
-            - windows-latest
           tag:
             - master
-            - v1.92.0
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -32,11 +29,6 @@ jobs:
       - name: CMake version
         run: cmake --version
 
-      - name: Check out CMakeForImGui
-        uses: actions/checkout@v4
-        with:
-          path: CMakeForImGui
-
       - name: Check out ImGui repository
         uses: actions/checkout@v4
         with:
@@ -45,13 +37,29 @@ jobs:
           ref: ${{ matrix.tag }}
           path: imgui
 
+      - name: Check out CMakeForImGui
+        uses: actions/checkout@v4
+        with:
+          path: CMakeForImGui
+
+      - name: Setup vcpkg
+        uses: johnwason/vcpkg-action@v7
+        id: vcpkg
+        with:
+          manifest-dir: ${{ github.workspace }}/CMakeForImGui/.github/workflows
+          triplet: x64-linux
+          token: ${{ github.token }}
+
       - name: Configure
         run: >
           cmake
-          -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/installing.in.here
+          -D VCPKG_MANIFEST_MODE=ON
+          -D VCPKG_MANIFEST_DIR=${{ github.workspace }}/CMakeForImGui/.github/workflows
           -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
+          -D with_miscellaneous=ON -D misc_freetype=ON
           -S ${{ github.workspace }}/CMakeForImGui
           -B build
+          --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: Build
         run: cmake --build build --config Debug
