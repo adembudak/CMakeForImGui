@@ -11,6 +11,9 @@ jobs:
             - ubuntu-latest
             - macos-latest
             - windows-latest
+          tag:
+            - master
+            - v1.92.0
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -43,6 +46,8 @@ jobs:
           show-progress: false
           path: imgui
 
+      - name: Checkout ImGui tagged branch
+        run: git checkout ${{ matrix.tag }}
 
       - name: Configure
         run: >
