@@ -66,8 +66,9 @@ jobs:
           -D glfw=ON
           -D opengl2=ON
           -D opengl3=ON
+          -D vulkan=ON
           -D examples=ON
-          -D example_glfw_opengl2=ON -D example_glfw_opengl3=ON
+          -D example_glfw_opengl2=ON -D example_glfw_opengl3=ON -Dexample_glfw_vulkan=ON
           -S ${{ github.workspace }}/CMakeForImGui
           -B build
           --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
