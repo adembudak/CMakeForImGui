@@ -63,6 +63,7 @@ jobs:
           -D VCPKG_MANIFEST_DIR=${{ github.workspace }}/CMakeForImGui/.github/workflows
           -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
           -D with_miscellaneous=ON -D misc_freetype=ON -D misc_cpp=ON -D misc_debugger=ON -D misc_cpp=ON
+          -D pkg-config=ON
           -D glfw=ON
           -D opengl2=ON
           -D opengl3=ON
@@ -70,11 +71,18 @@ jobs:
           -D examples=ON
           -D example_glfw_opengl2=ON -D example_glfw_opengl3=ON -Dexample_glfw_vulkan=ON
           -S ${{ github.workspace }}/CMakeForImGui
-          -B build
+          -B ${{ github.workspace }}/build
           --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: Build
-        run: cmake --build build --config Debug
+        run: cmake --build ${{ github.workspace }}/build --config Debug
+
+      - name: Get build artifacts
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: Get build directory
+          path: ${{ github.workspace }}/build/Debug
 
       - run: echo "Job exited by ${{ job.status }}."
 
