@@ -34,11 +34,6 @@ jobs:
         with:
           path: CMakeForImGui
 
-      - name: ls
-        run: |
-          pwd
-          ls ${{ github.workspace }}
-
       - name: Check out ImGui repository
         uses: actions/checkout@v4
         with:
@@ -48,10 +43,6 @@ jobs:
           show-progress: false
           path: imgui
 
-      - name: ls
-        run: |
-          pwd
-          ls ${{ github.workspace }}
 
       - name: Configure
         run: >
@@ -63,9 +54,6 @@ jobs:
 
       - name: Build
         run: cmake --build build --config Debug
-
-      - name: Install
-        run: cmake --install build --config Debug
 
       - run: echo "Job exited by ${{ job.status }}."
 
