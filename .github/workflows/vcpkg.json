@@ -3,6 +3,7 @@
 	"dependencies": [
 		"freetype",
 		"glfw3",
-		"vulkan"
+		"vulkan",
+		"sdl2"
 	]
 }

@@ -46,7 +46,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt update
-          sudo apt install --assume-yes --fix-missing libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config
+          sudo apt install --assume-yes --fix-missing libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config libltdl-dev
 
       - name: Setup vcpkg
         uses: johnwason/vcpkg-action@v7
@@ -68,11 +68,14 @@ jobs:
           -D opengl2=ON
           -D opengl3=ON
           -D vulkan=ON
+          -D sdl2=ON
           -D examples=ON
-          -D example_glfw_opengl2=ON -D example_glfw_opengl3=ON -Dexample_glfw_vulkan=ON
+          -D example_glfw_opengl2=ON -D example_glfw_opengl3=ON -D example_glfw_vulkan=ON
+          -D example_sdl2_opengl2=ON -D example_sdl2_opengl3=ON -D example_sdl2_vulkan=ON
           -S ${{ github.workspace }}/CMakeForImGui
           -B ${{ github.workspace }}/build
           --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+
 
       - name: Build
         run: cmake --build ${{ github.workspace }}/build --config Debug
@@ -82,7 +85,7 @@ jobs:
 
         with:
           name: Get build directory
-          path: ${{ github.workspace }}/build/Debug
+          path: ${{ github.workspace }}/build/**/example_*
 
       - run: echo "Job exited by ${{ job.status }}."
 
