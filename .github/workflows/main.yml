@@ -94,8 +94,9 @@ jobs:
           -D VCPKG_MANIFEST_MODE=ON
           -D VCPKG_MANIFEST_DIR=${{ github.workspace }}/CMakeForImGui/.github/workflows
           -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
-          -D misc=ON -D misc_freetype=ON -D misc_cpp=ON -D misc_debugger=ON -D misc_cpp=ON
+          -D misc=ON -D misc_freetype=ON -D misc_cpp=ON -D misc_debugger=ON -D misc_fonts=ON
           -D pkg-config=ON
+          -D allegro5=ON
           -D glut=ON
           -D glfw=ON
           -D opengl2=ON
@@ -115,6 +116,7 @@ jobs:
           -D example_sdl2_sdlrenderer2=ON
           -D example_sdl3_sdlrenderer3=ON
           -D example_glut_opengl2=ON
+          -D example_allegro5=ON
           -S ${{ github.workspace }}/CMakeForImGui
           -B ${{ github.workspace }}/build
           --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
