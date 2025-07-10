@@ -12,6 +12,9 @@ jobs:
           tag:
             - master
 
+          build-type:
+            - Debug
+
     runs-on: ${{ matrix.os }}
     steps:
       - run: echo "Triggered by ${{ github.event_name }} on ${{ github.repository }} using ${{ github.ref}} branch and running on ${{ runner.os }}."
@@ -69,7 +72,9 @@ jobs:
           -D opengl3=ON
           -D vulkan=ON
           -D sdl2=ON
+          -D sdlrenderer2=ON
           -D sdl3=ON
+          -D sdlrenderer3=ON
           -D sdlgpu3=ON
           -D examples=ON
           -D example_null=ON
@@ -77,19 +82,24 @@ jobs:
           -D example_sdl2_opengl2=ON -D example_sdl2_opengl3=ON -D example_sdl2_vulkan=ON
           -D example_sdl3_opengl3=ON -D example_sdl3_vulkan=ON
           -D example_sdl3_sdlgpu3=ON
+          -D example_sdl2_sdlrenderer2=ON
+          -D example_sdl3_sdlrenderer3=ON
           -S ${{ github.workspace }}/CMakeForImGui
           -B ${{ github.workspace }}/build
           --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
 
       - name: Build
-        run: cmake --build ${{ github.workspace }}/build --config Debug
+        run: >
+          cmake
+          --build ${{ github.workspace }}/build
+          --config ${{ matrix.build-type }}
 
       - name: Get build artifacts
         uses: actions/upload-artifact@v4
 
         with:
-          name: Get build directory
+          name: build.imgui-${{matrix.tag}}.${{ matrix.os }}.${{ matrix.build-type }}
           path: ${{ github.workspace }}/build/
 
       - run: echo "Job exited by ${{ job.status }}."
