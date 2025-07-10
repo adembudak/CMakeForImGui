@@ -5,8 +5,9 @@ on:
   push:
     branches:
       - main
-    paths:
-      - '!*.md'
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE.md'
 
 jobs:
   Configure-Build-Install:
@@ -118,6 +119,25 @@ jobs:
           -B ${{ github.workspace }}/build
           --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
+      - name: Extra configurations for Windows
+        if: matrix.os == 'windows-latest'
+        run: >
+          cmake
+          -D win32=ON
+          -D dx9=ON
+          -D dx10=ON
+          -D dx11=ON
+          -D dx12=ON
+          -D example_win32_opengl3=ON
+          -D example_win32_vulkan=ON
+          -D example_win32_directx9=ON
+          -D example_win32_directx10=ON
+          -D example_win32_directx11=ON
+          -D example_win32_directx12=ON
+          -D example_sdl2_directx11=ON
+          -S ${{ github.workspace }}/CMakeForImGui
+          -B ${{ github.workspace }}/build
+          --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: Build
         run: >
