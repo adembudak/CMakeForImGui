@@ -23,7 +23,7 @@ jobs:
 
             - os: windows-latest
               generator: 'Visual Studio 17 2022'
-              triplet: x64-windows-static
+              triplet: x64-windows
 
           tag:
             - master
