@@ -34,11 +34,11 @@ math(EXPR IMGUI_VERSION_TWEAK "(${imgui_version} % 10)")
 
 set(IMGUI_VERSION "${IMGUI_VERSION_MAJOR}.${IMGUI_VERSION_MINOR}.${IMGUI_VERSION_PATCH}.${IMGUI_VERSION_TWEAK}")
 
-option(with_miscellaneous "" OFF)
-cmake_dependent_option(misc_cpp "" OFF with_miscellaneous OFF)
-cmake_dependent_option(misc_freetype "" OFF with_miscellaneous OFF)
-cmake_dependent_option(misc_debugger "" OFF with_miscellaneous OFF)
-cmake_dependent_option(misc_fonts "" OFF with_miscellaneous OFF)
+option(misc "" OFF)
+cmake_dependent_option(misc_cpp "" OFF misc OFF)
+cmake_dependent_option(misc_freetype "" OFF misc OFF)
+cmake_dependent_option(misc_debugger "" OFF misc OFF)
+cmake_dependent_option(misc_fonts "" OFF misc OFF)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
   option(android "" OFF)
@@ -150,7 +150,7 @@ add_library(imgui_demo)
 target_sources(imgui_demo PRIVATE ${_imgui_dir}/imgui_demo.cpp)
 target_link_libraries(imgui_demo PRIVATE imgui_core)
 
-if(with_miscellaneous)
+if(misc)
   if(misc_cpp)
     add_library(imgui_misc_cpp)
     target_sources(imgui_misc_cpp PRIVATE ${_imgui_misc_dir}/cpp/imgui_stdlib.cpp)
@@ -945,8 +945,9 @@ endif()
 
 feature_summary(WHAT ALL)
 
-set(options android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu examples win32 dx9 dx10 dx11 dx12 osx metal with_miscellaneous
-  imgui_club imgui_markdown implot implot3d imguifiledialog BUILD_SHARED_LIBS pkg-config install uninstall visualize_targets)
+set(options android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu examples win32 dx9 dx10 dx11 dx12 osx metal
+misc misc_cpp misc_freetype misc_debugger misc_fonts
+imgui_club imgui_markdown implot implot3d imguifiledialog BUILD_SHARED_LIBS pkg-config install uninstall visualize_targets)
 list(SORT options CASE INSENSITIVE)
 
 message(STATUS "Configuration summary:\n")
