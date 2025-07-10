@@ -42,7 +42,7 @@ jobs:
         with:
           path: CMakeForImGui
 
-      - name: Install GLFW3 dependencies on Ubuntu
+      - name: Install required dependencies on Ubuntu
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt update
@@ -69,9 +69,12 @@ jobs:
           -D opengl3=ON
           -D vulkan=ON
           -D sdl2=ON
+          -D sdl3=ON
           -D examples=ON
+          -D example_null=ON
           -D example_glfw_opengl2=ON -D example_glfw_opengl3=ON -D example_glfw_vulkan=ON
           -D example_sdl2_opengl2=ON -D example_sdl2_opengl3=ON -D example_sdl2_vulkan=ON
+          -D example_sdl3_opengl3=ON -D example_sdl3_vulkan=ON
           -S ${{ github.workspace }}/CMakeForImGui
           -B ${{ github.workspace }}/build
           --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
@@ -85,7 +88,7 @@ jobs:
 
         with:
           name: Get build directory
-          path: ${{ github.workspace }}/build/**/example_*
+          path: ${{ github.workspace }}/build/
 
       - run: echo "Job exited by ${{ job.status }}."
 

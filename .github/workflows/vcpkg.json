@@ -4,6 +4,7 @@
 		"freetype",
 		"glfw3",
 		"vulkan",
-		"sdl2"
+		"sdl2",
+		"sdl3"
 	]
 }
