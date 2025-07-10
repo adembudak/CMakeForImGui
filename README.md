@@ -94,4 +94,5 @@ The following backends and their example programs are missing:
 
 See [help-wanted tags](https://github.com/adembudak/CMakeForImGui/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22) in Issues.
 
-
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Status](https://github.com/adembudak/CMakeForImGui/actions/workflows/main.yml/badge.svg)](https://github.com/adembudak/CMakeForImGui/actions/workflows/main.yml)
