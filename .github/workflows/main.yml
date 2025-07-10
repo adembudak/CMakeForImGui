@@ -9,6 +9,16 @@ jobs:
       matrix:
           os:
             - ubuntu-latest
+            - macos-latest
+          include:
+            - os: ubuntu-latest
+              generator: 'Unix Makefiles'
+              triplet: x64-linux
+
+            - os: macos-latest
+              generator: 'Ninja Multi-Config'
+              triplet: x64-osx
+
           tag:
             - master
 
@@ -23,6 +33,18 @@ jobs:
         run: |
           pwd
           ls ${{ github.workspace }}
+
+      - name: Install required packages on Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt update
+          sudo apt install --assume-yes --fix-missing libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config libltdl-dev
+
+      - name: Install required packages on MacOS
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install ninja
+          brew install --cask xquartz
 
       - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v2
@@ -45,23 +67,18 @@ jobs:
         with:
           path: CMakeForImGui
 
-      - name: Install required dependencies on Ubuntu
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt update
-          sudo apt install --assume-yes --fix-missing libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config libltdl-dev
-
       - name: Setup vcpkg
         uses: johnwason/vcpkg-action@v7
         id: vcpkg
         with:
           manifest-dir: ${{ github.workspace }}/CMakeForImGui/.github/workflows
-          triplet: x64-linux
+          triplet: ${{ matrix.triplet }}
           token: ${{ github.token }}
 
       - name: Configure
         run: >
           cmake
+          -G "${{ matrix.generator }}"
           -D VCPKG_MANIFEST_MODE=ON
           -D VCPKG_MANIFEST_DIR=${{ github.workspace }}/CMakeForImGui/.github/workflows
           -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
