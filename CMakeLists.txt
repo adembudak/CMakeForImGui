@@ -327,7 +327,7 @@ if(allegro5)
     add_executable(example_allegro5)
     target_sources(example_allegro5 PRIVATE ${_imgui_examples_dir}/example_allegro5/main.cpp)
     target_link_libraries(example_allegro5 PRIVATE imgui_backend_allegro5 imgui_demo)
-    target_link_libraries(example_allegro5 PRIVATE Allegro::allegro_main)
+    target_link_libraries(example_allegro5 PRIVATE $<$<PLATFORM_ID:Darwin>:"-framework OpenGL"> $<$<PLATFORM_ID:Darwin>:"-framework ApplicationServices">)
   endif()
 endif()
 
