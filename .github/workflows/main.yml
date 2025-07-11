@@ -35,7 +35,7 @@ jobs:
             - v1.92.1
 
           build-type:
-            - Release
+            - Debug
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -85,7 +85,6 @@ jobs:
         with:
           manifest-dir: ${{ github.workspace }}/CMakeForImGui/.github/workflows
           triplet: ${{ matrix.triplet }}
-          extra-args: "-DVCPKG_BUILD_TYPE=${{ matrix.build-type }}"
           token: ${{ github.token }}
 
       - name: Configure
