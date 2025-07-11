@@ -10,7 +10,7 @@ on:
       - 'LICENSE.md'
 
 jobs:
-  Configure-Build-Install:
+  Configure-Build:
     strategy:
       matrix:
           os:
@@ -32,7 +32,7 @@ jobs:
               triplet: x64-windows
 
           tag:
-            - master
+            - v1.92.1
 
           build-type:
             - Debug
