@@ -160,10 +160,7 @@ if(misc)
     target_sources(imgui_misc_cpp PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imgui_dir}/misc/cpp TYPE HEADERS FILES ${_imgui_misc_dir}/cpp/imgui_stdlib.h)
     target_compile_features(imgui_misc_cpp PRIVATE cxx_std_11)
 
-    install(
-      TARGETS imgui_misc_cpp
-      EXPORT imgui_export
-      FILE_SET imgui_misc_cpp_set)
+    install(TARGETS imgui_misc_cpp EXPORT imgui_export FILE_SET imgui_misc_cpp_set)
   endif()
 
   if(misc_freetype)
@@ -182,10 +179,7 @@ if(misc)
     string(PREPEND pkg_config_imgui_misc_cpp_string "-l")
     list(APPEND pkg_config_requires_list freetype2)
 
-    install(
-      TARGETS imgui_misc_freetype
-      EXPORT imgui_export
-      FILE_SET imgui_misc_freetype_set)
+    install(TARGETS imgui_misc_freetype EXPORT imgui_export FILE_SET imgui_misc_freetype_set)
   endif()
 
   if(misc_debugger)
@@ -198,11 +192,7 @@ if(misc)
     target_compile_features(binary_to_compressed_c PRIVATE cxx_std_11)
 
     install(TARGETS binary_to_compressed_c DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/fonts)
-    install(
-      DIRECTORY ${_imgui_dir}/misc/fonts
-      DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui
-      FILES_MATCHING
-      PATTERN "*.ttf")
+    install(DIRECTORY ${_imgui_dir}/misc/fonts DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui FILES_MATCHING PATTERN "*.ttf")
   endif()
 endif()
 
@@ -795,39 +785,21 @@ if(install)
     cmake_path(CONVERT ${_imgui_docs_dir} TO_CMAKE_PATH_LIST _imgui_docs_dir)
   endif()
 
-  install(
-    DIRECTORY ${_imgui_dir}/docs
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
-
+  install(DIRECTORY ${_imgui_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(FILES ${_imgui_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
-
-  install(
-    EXPORT imgui_export
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
-    NAMESPACE Unofficial::DearImGui::
-    FILE CMakeForImGuiTargets.cmake)
-
-  install(
-    TARGETS imgui_core imgui_demo
-    EXPORT imgui_export
-    FILE_SET imgui_core_set)
+  install(EXPORT imgui_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::DearImGui:: FILE CMakeForImGuiTargets.cmake)
+  install(TARGETS imgui_core imgui_demo EXPORT imgui_export FILE_SET imgui_core_set)
 
   foreach(backend IN LISTS imgui_backends_list)
     get_property(name TARGET ${backend} PROPERTY NAME)
     get_property(file_set TARGET ${backend} PROPERTY HEADER_SETS)
     list(REMOVE_ITEM file_set HEADERS)
 
-    install(TARGETS ${name}
-	    EXPORT imgui_export
-	    FILE_SET ${file_set})
+    install(TARGETS ${name} EXPORT imgui_export FILE_SET ${file_set})
   endforeach()
 
   if(imgui_club)
-    install(
-      EXPORT imgui_club_export
-      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
-      NAMESPACE Unofficial::imgui_club::
-      FILE CMakeForImGui-imgui_club-Targets.cmake)
+    install(EXPORT imgui_club_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::imgui_club:: FILE CMakeForImGui-imgui_club-Targets.cmake)
 
     if(imgui_threaded_rendering)
       install(TARGETS imgui_threaded_rendering EXPORT imgui_club_export FILE_SET imgui_threaded_rendering_set)
@@ -845,49 +817,26 @@ if(install)
   endif()
 
   if(imgui_markdown)
-    install(
-      EXPORT imgui_markdown_export
-      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
-      NAMESPACE Unofficial::imgui_markdown::
-      FILE CMakeForImGui-imgui_markdown-Targets.cmake)
-
+    install(EXPORT imgui_markdown_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::imgui_markdown:: FILE CMakeForImGui-imgui_markdown-Targets.cmake)
     install(TARGETS imgui_markdown EXPORT imgui_markdown_export FILE_SET imgui_markdown_set)
-
     install(FILES ${_immarkdown_dir}/License.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_markdown)
   endif()
 
   if(implot)
-    install(
-      EXPORT implot_export
-      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
-      NAMESPACE Unofficial::ImPlot::
-      FILE CMakeForImGui-ImPlot-Targets.cmake)
-
+    install(EXPORT implot_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::ImPlot:: FILE CMakeForImGui-ImPlot-Targets.cmake)
     install(TARGETS implot implot_demo EXPORT implot_export FILE_SET implot_set)
-
     install(FILES ${_implot_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/ImPlot)
   endif()
 
   if(implot3d)
-    install(
-      EXPORT implot3d_export
-      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
-      NAMESPACE Unofficial::ImPlot3D::
-      FILE CMakeForImGui-ImPlot3D-Targets.cmake)
-
+    install(EXPORT implot3d_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::ImPlot3D:: FILE CMakeForImGui-ImPlot3D-Targets.cmake)
     install(TARGETS implot3d implot3d_demo EXPORT implot3d_export FILE_SET implot3d_set)
-
     install(FILES ${_implot3d_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/ImPlot3D)
   endif()
 
   if(imguifiledialog)
-    install(EXPORT imguifiledialog_export
-      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui
-      NAMESPACE Unofficial::ImGuiFileDialog::
-      FILE CMakeForImGui-ImGuiFileDialog-Targets.cmake)
-
+    install(EXPORT imguifiledialog_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::ImGuiFileDialog:: FILE CMakeForImGui-ImGuiFileDialog-Targets.cmake)
     install(TARGETS imguifiledialog EXPORT imguifiledialog_export FILE_SET imguifiledialog_set)
-
     install(FILES ${_imfiledialog_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/ImGuiFileDialog)
     install(FILES ${_imfiledialog_dir}/Documentation.md DESTINATION ${CMAKE_INSTALL_DATADIR}/ImGuiFileDialog/docs)
   endif()
