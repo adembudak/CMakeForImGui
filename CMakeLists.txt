@@ -778,13 +778,6 @@ endif()
 if(install)
   set_property(GLOBAL PROPERTY INSTALL_PARALLEL ON)
 
-  if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    cmake_path(CONVERT ${_imgui_dir} TO_CMAKE_PATH_LIST _imgui_dir)
-    cmake_path(CONVERT ${_imgui_backends_dir} TO_CMAKE_PATH_LIST _imgui_backends_dir)
-    cmake_path(CONVERT ${_imgui_examples_dir} TO_CMAKE_PATH_LIST _imgui_examples_dir)
-    cmake_path(CONVERT ${_imgui_docs_dir} TO_CMAKE_PATH_LIST _imgui_docs_dir)
-  endif()
-
   install(DIRECTORY ${_imgui_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(FILES ${_imgui_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(EXPORT imgui_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::DearImGui:: FILE CMakeForImGuiTargets.cmake)
