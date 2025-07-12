@@ -15,7 +15,7 @@ jobs:
       matrix:
           os:
             - ubuntu-latest
-            - macos-latest
+            - macos-15
             - windows-latest
 
           include:
@@ -23,7 +23,7 @@ jobs:
               generator: 'Unix Makefiles'
               triplet: x64-linux
 
-            - os: macos-latest
+            - os: macos-15
               generator: 'Ninja Multi-Config'
               triplet: x64-osx
 
@@ -34,6 +34,7 @@ jobs:
           tag:
             - v1.92.1
             - v1.92.0
+            - v1.91.9
 
           build-type:
             - Debug
@@ -54,7 +55,7 @@ jobs:
           sudo apt install --assume-yes --fix-missing libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config libltdl-dev
 
       - name: Install required packages on MacOS
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macos-15'
         run: |
           brew install ninja
           brew install --cask xquartz
