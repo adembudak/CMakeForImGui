@@ -128,11 +128,14 @@ cmake_dependent_option(example_win32_directx10 "" OFF "examples AND win32 AND dx
 cmake_dependent_option(example_win32_directx11 "" OFF "examples AND win32 AND dx11" OFF)
 cmake_dependent_option(example_win32_directx12 "" OFF "examples AND win32 AND dx12" OFF)
 
+cmake_dependent_option(example_apple_opengl2 "" OFF osx OFF)
+cmake_dependent_option(example_apple_metal "" OFF metal OFF)
+
+cmake_dependent_option(example_null "" OFF examples OFF)
+
 cmake_dependent_option(imgui_memory_editor "" OFF imgui_club OFF)
 cmake_dependent_option(imgui_multicontext_compositor "" OFF "imgui_club AND (${IMGUI_VERSION} VERSION_GREATER 1.90.8)" OFF)
 cmake_dependent_option(imgui_threaded_rendering "" OFF imgui_club OFF)
-
-cmake_dependent_option(example_null "" OFF examples OFF)
 
 set(imgui_backends_list)
 set(imgui_thirdparty_list)
@@ -426,6 +429,7 @@ if(sdl3)
   target_sources(imgui_backend_sdl3 PUBLIC FILE_SET imgui_backend_sdl3_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_sdl3.h)
   target_link_libraries(imgui_backend_sdl3 PUBLIC SDL3::SDL3)
   target_link_libraries(imgui_backend_sdl3 PUBLIC imgui_core)
+  target_compile_definitions(imgui_backend_sdl3 PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},1.91.3>:SDL_TRUE_renamed_true=1 SDL_FALSE_renamed_false=0 SDL_INIT_TIMER=0x00000001u>)
 
   list(APPEND imgui_backends_list imgui_backend_sdl3)
   list(APPEND pkg_config_requires_list sdl3)
