@@ -33,6 +33,7 @@ jobs:
 
           tag:
             - v1.92.1
+            - v1.92.0
 
           build-type:
             - Debug
