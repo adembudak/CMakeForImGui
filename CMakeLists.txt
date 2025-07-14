@@ -417,7 +417,7 @@ if(sdlrenderer2)
 
   if(example_sdl2_sdlrenderer2)
     add_executable(example_sdl2_sdlrenderer2)
-    target_sources(example_sdl2_sdlrenderer2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.5>,${_imgui_examples_dir}/example_sdl2_sdlrenderer2/main.cpp,${_imgui_examples_dir}/example_sdl2_sdlrenderer/main.cpp>)
+    target_sources(example_sdl2_sdlrenderer2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.5>,${_imgui_examples_dir}/example_sdl2_sdlrenderer2/main.cpp,$<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imgui_examples_dir}/example_sdl2_sdlrenderer/main.cpp,${_imgui_examples_dir}/example_sdl_sdlrenderer/main.cpp>>)
     target_link_libraries(example_sdl2_sdlrenderer2 PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main> imgui_backend_sdlrenderer2 imgui_backend_sdl2 imgui_demo)
   endif()
 endif()
