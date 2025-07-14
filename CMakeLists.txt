@@ -328,7 +328,7 @@ if(glfw)
   if(example_glfw_opengl3)
     add_executable(example_glfw_opengl3)
     target_sources(example_glfw_opengl3 PRIVATE ${_imgui_examples_dir}/example_glfw_opengl3/main.cpp)
-    target_link_libraries(example_glfw_opengl3 PRIVATE imgui_backend_glfw imgui_demo)
+    target_link_libraries(example_glfw_opengl3 PRIVATE imgui_backend_glfw imgui_backend_opengl3 imgui_demo)
   endif()
 
   if(example_glfw_opengl2)
