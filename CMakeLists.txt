@@ -205,11 +205,18 @@ endif()
 if(opengl3)
   include(FindOpenGL)
 
+  if(${IMGUI_VERSION} VERSION_LESS 1.84)
+    find_package(GLEW REQUIRED)
+  endif()
+
   add_library(imgui_backend_opengl3)
   target_sources(imgui_backend_opengl3 PRIVATE ${_imgui_backends_dir}/imgui_impl_opengl3.cpp)
   target_link_libraries(imgui_backend_opengl3 PUBLIC imgui_core)
   target_link_libraries(imgui_backend_opengl3 PUBLIC $<IF:$<TARGET_EXISTS:imgui_backend_android>,EGL,OpenGL::GL>)
   target_sources(imgui_backend_opengl3 PUBLIC FILE_SET imgui_backend_opengl3_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_opengl3.h)
+
+  target_link_libraries(imgui_backend_opengl3 PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},1.84>:GLEW::GLEW>)
+  target_compile_definitions(imgui_backend_opengl3 PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},1.84>:IMGUI_IMPL_OPENGL_LOADER_GLEW>)
 
   list(APPEND imgui_backends_list imgui_backend_opengl3)
   list(APPEND pkg_config_requires_list opengl)
