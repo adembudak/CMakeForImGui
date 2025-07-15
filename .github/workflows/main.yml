@@ -10,85 +10,7 @@ on:
       - 'LICENSE.md'
 
 jobs:
-  Requirements-on-Ubuntu:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install required packages on Ubuntu
-        run: |
-          sudo apt update
-          sudo apt install --assume-yes --fix-missing libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config libltdl-dev
-
-      - name: Setup CMake
-        uses: jwlawson/actions-setup-cmake@v2
-        with:
-          cmake-version: '4.0.0'
-
-      - name: Check out ImGui repository
-        uses: actions/checkout@v4
-        with:
-          repository: ocornut/imgui
-          show-progress: false
-          fetch-depth: 0
-          path: imgui
-
-      - name: Check out CMakeForImGui repository
-        uses: actions/checkout@v4
-        with:
-          path: CMakeForImGui
-
-      - name: ls
-        run: |
-          pwd
-          ls
-  Requirements-on-macOS:
-    runs-on: macos-15
-    steps:
-      - name: Install required packages on MacOS
-        run: |
-          brew install ninja
-          brew install --cask xquartz
-
-      - name: Setup CMake
-        uses: jwlawson/actions-setup-cmake@v2
-        with:
-          cmake-version: '4.0.0'
-
-      - name: Check out ImGui repository
-        uses: actions/checkout@v4
-        with:
-          repository: ocornut/imgui
-          show-progress: false
-          fetch-depth: 0
-          path: imgui
-
-      - name: Check out CMakeForImGui repository
-        uses: actions/checkout@v4
-        with:
-          path: CMakeForImGui
-
-  Requirements-on-Windows:
-    runs-on: windows-latest
-    steps:
-      - name: Setup CMake
-        uses: jwlawson/actions-setup-cmake@v2
-        with:
-          cmake-version: '4.0.0'
-
-      - name: Check out ImGui repository
-        uses: actions/checkout@v4
-        with:
-          repository: ocornut/imgui
-          show-progress: false
-          fetch-depth: 0
-          path: imgui
-
-      - name: Check out CMakeForImGui repository
-        uses: actions/checkout@v4
-        with:
-          path: CMakeForImGui
-
   Configure-Build-Install-Uninstall-Package-Upload:
-    needs: [Requirements-on-Ubuntu, Requirements-on-macOS, Requirements-on-Windows]
     strategy:
       matrix:
           os:
@@ -110,7 +32,6 @@ jobs:
               triplet: x64-windows
 
           tag:
-            - master
             - v1.92.1
             - v1.92.0
             - v1.91.9
@@ -157,15 +78,56 @@ jobs:
     steps:
       - run: echo "Triggered by ${{ github.event_name }} on ${{ github.repository }} using ${{ github.ref}} branch and running on ${{ runner.os }}."
 
-      - name: Checkout to ImGui tag
-        working-directory: ${{ github.workspace }}/imgui
-        run: git checkout ${{ matrix.tag }}
+      - name: ls
+        run: |
+          pwd
+          ls ${{ github.workspace }}
+
+      - name: Install required packages on Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt update
+          sudo apt install --assume-yes --fix-missing libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config libltdl-dev
+
+      - name: Install required packages on MacOS
+        if: matrix.os == 'macos-15'
+        run: |
+          brew install ninja
+          brew install --cask xquartz
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '4.0.0'
+
+      - name: CMake version
+        run: cmake --version
+
+      - name: Check out ImGui repository
+        uses: actions/checkout@v4
+        with:
+          repository: ocornut/imgui
+          show-progress: false
+          ref: ${{ matrix.tag }}
+          path: imgui
+
+      - name: Check out CMakeForImGui
+        uses: actions/checkout@v4
+        with:
+          path: CMakeForImGui
+
+      - name: Setup vcpkg
+        uses: johnwason/vcpkg-action@v7
+        id: vcpkg
+        with:
+          manifest-dir: ${{ github.workspace }}/CMakeForImGui/.github/workflows
+          triplet: ${{ matrix.triplet }}
+          token: ${{ github.token }}
 
       - name: Configure
         run: >
           cmake
-          -S ${{ github.workspace }}/CMakeForImGui
-          -B ${{ github.workspace }}/build
+          -G "${{ matrix.generator }}"
           -D VCPKG_MANIFEST_MODE=ON
           -D VCPKG_MANIFEST_DIR=${{ github.workspace }}/CMakeForImGui/.github/workflows
           -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here
@@ -196,15 +158,14 @@ jobs:
           -D example_sdl3_sdlrenderer3=ON
           -D example_glut_opengl2=ON
           -D example_allegro5=OFF
-          -G "${{ matrix.generator }}"
+          -S ${{ github.workspace }}/CMakeForImGui
+          -B ${{ github.workspace }}/build
           --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
-      - name: Configuration options for Windows
+      - name: Extra configurations for Windows
         if: matrix.os == 'windows-latest'
         run: >
           cmake
-          -S ${{ github.workspace }}/CMakeForImGui
-          -B ${{ github.workspace }}/build
           -D win32=ON
           -D dx9=ON
           -D dx10=ON
@@ -217,6 +178,8 @@ jobs:
           -D example_win32_directx11=ON
           -D example_win32_directx12=ON
           -D example_sdl2_directx11=ON
+          -S ${{ github.workspace }}/CMakeForImGui
+          -B ${{ github.workspace }}/build
 
       - name: Build
         run: >
