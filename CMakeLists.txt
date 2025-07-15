@@ -904,6 +904,12 @@ set(GRAPHVIZ_GENERATE_DEPENDERS 0)
     VERBATIM)
 endif()
 
+set(CPACK_GENERATOR ZIP)
+set(CPACK_PACKAGE_FILE_NAME ${PROJECT_NAME}_${PROJECT_VERSION}-DearImGui_${IMGUI_VERSION}-${CMAKE_SYSTEM})
+set(CPACK_PACKAGE_DIRECTORY ${PROJECT_BINARY_DIR}/package)
+
+include(CPack)
+
 feature_summary(WHAT ALL)
 
 set(options android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
