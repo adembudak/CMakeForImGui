@@ -183,6 +183,13 @@ jobs:
           --build ${{ github.workspace }}/build
           --config ${{ matrix.build-type }}
 
+      - name: Fix install paths on Windows
+        if: matrix.os == 'windows-latest'
+        run: >
+          (Get-Content -Path "${{ github.workspace }}\\build\\cmake_install.cmake")
+          | ForEach-Object {$_ -replace 'D:\\a\\CMakeForImGui\\', 'D:/a/CMakeForImGui'}
+          | Set-Content -Path "${{ github.workspace }}\\build\\cmake_install.cmake"
+
       - name: Package
         run: >
           cmake
