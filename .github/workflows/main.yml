@@ -132,6 +132,9 @@ jobs:
           -D VCPKG_MANIFEST_DIR=${{ github.workspace }}/CMakeForImGui/.github/workflows
           -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here
           -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
+          -D install=ON
+          -D install_examples=ON
+          -D uninstall=ON
           -D misc=ON -D misc_freetype=ON -D misc_cpp=ON -D misc_debugger=ON -D misc_fonts=ON
           -D pkg-config=ON
           -D allegro5=ON

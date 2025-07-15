@@ -138,7 +138,10 @@ cmake_dependent_option(imgui_memory_editor "" OFF imgui_club OFF)
 cmake_dependent_option(imgui_multicontext_compositor "" OFF "imgui_club AND (${IMGUI_VERSION} VERSION_GREATER 1.90.8)" OFF)
 cmake_dependent_option(imgui_threaded_rendering "" OFF imgui_club OFF)
 
+cmake_dependent_option(install_examples "" OFF install OFF)
+
 set(imgui_backends_list)
+set(imgui_examples_list)
 set(imgui_thirdparty_list)
 set(pkg_config_requires_list)
 
@@ -317,6 +320,8 @@ if(allegro5)
     add_executable(example_allegro5)
     target_sources(example_allegro5 PRIVATE ${_imgui_examples_dir}/example_allegro5/main.cpp)
     target_link_libraries(example_allegro5 PRIVATE imgui_backend_allegro5 imgui_demo)
+
+    list(APPEND imgui_examples_list example_allegro5)
   endif()
 endif()
 
@@ -336,18 +341,24 @@ if(glfw)
     add_executable(example_glfw_opengl3)
     target_sources(example_glfw_opengl3 PRIVATE ${_imgui_examples_dir}/example_glfw_opengl3/main.cpp)
     target_link_libraries(example_glfw_opengl3 PRIVATE imgui_backend_glfw imgui_backend_opengl3 imgui_demo)
+
+    list(APPEND imgui_examples_list example_glfw_opengl3)
   endif()
 
   if(example_glfw_opengl2)
     add_executable(example_glfw_opengl2)
     target_sources(example_glfw_opengl2 PRIVATE ${_imgui_examples_dir}/example_glfw_opengl2/main.cpp)
     target_link_libraries(example_glfw_opengl2 PRIVATE imgui_backend_glfw imgui_backend_opengl2 imgui_demo)
+
+    list(APPEND imgui_examples_list example_glfw_opengl2)
   endif()
 
   if(example_glfw_vulkan)
     add_executable(example_glfw_vulkan)
     target_sources(example_glfw_vulkan PRIVATE ${_imgui_examples_dir}/example_glfw_vulkan/main.cpp)
     target_link_libraries(example_glfw_vulkan PRIVATE imgui_backend_glfw imgui_backend_vulkan imgui_demo)
+
+    list(APPEND imgui_examples_list example_glfw_vulkan)
   endif()
 endif()
 
@@ -367,6 +378,8 @@ if(glut)
     add_executable(example_glut_opengl2)
     target_sources(example_glut_opengl2 PRIVATE ${_imgui_examples_dir}/example_glut_opengl2/main.cpp)
     target_link_libraries(example_glut_opengl2 PRIVATE imgui_backend_glut imgui_backend_opengl2 imgui_demo)
+
+    list(APPEND imgui_examples_list example_glut_opengl2)
   endif()
 endif()
 
@@ -386,6 +399,8 @@ if(sdl2)
     add_executable(example_sdl2_opengl2)
     target_sources(example_sdl2_opengl2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imgui_dir}/examples/example_sdl2_opengl2/main.cpp,${_imgui_dir}/examples/example_sdl_opengl2/main.cpp>)
     target_link_libraries(example_sdl2_opengl2 PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main> imgui_backend_sdl2 imgui_backend_opengl2 imgui_demo)
+
+    list(APPEND imgui_examples_list example_sdl2_opengl2)
   endif()
 
   if(example_sdl2_opengl3)
@@ -395,18 +410,24 @@ if(sdl2)
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       set_target_properties(example_sdl2_opengl3 PROPERTIES SUFFIX ".html")
     endif()
+
+    list(APPEND imgui_examples_list example_sdl2_opengl3)
   endif()
 
   if(example_sdl2_vulkan)
     add_executable(example_sdl2_vulkan)
     target_sources(example_sdl2_vulkan PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imgui_dir}/examples/example_sdl2_vulkan/main.cpp,${_imgui_dir}/examples/example_sdl_vulkan/main.cpp>)
     target_link_libraries(example_sdl2_vulkan PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main> imgui_backend_sdl2 imgui_backend_vulkan imgui_demo)
+
+    list(APPEND imgui_examples_list example_sdl2_vulkan)
   endif()
 
   if(example_sdl2_directx11)
     add_executable(example_sdl2_directx11)
     target_sources(example_sdl2_directx11 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imgui_dir}/examples/example_sdl2_directx11/main.cpp,${_imgui_dir}/examples/example_sdl_directx11/main.cpp>)
     target_link_libraries(example_sdl2_directx11 PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main> imgui_backend_sdl2 imgui_backend_dx11 imgui_demo)
+
+    list(APPEND imgui_examples_list example_sdl2_directx11)
   endif()
 endif()
 
@@ -426,6 +447,8 @@ if(sdlrenderer2)
     add_executable(example_sdl2_sdlrenderer2)
     target_sources(example_sdl2_sdlrenderer2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.5>,${_imgui_examples_dir}/example_sdl2_sdlrenderer2/main.cpp,$<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imgui_examples_dir}/example_sdl2_sdlrenderer/main.cpp,${_imgui_examples_dir}/example_sdl_sdlrenderer/main.cpp>>)
     target_link_libraries(example_sdl2_sdlrenderer2 PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main> imgui_backend_sdlrenderer2 imgui_backend_sdl2 imgui_demo)
+
+    list(APPEND imgui_examples_list example_sdl2_sdlrenderer2)
   endif()
 endif()
 
@@ -447,12 +470,16 @@ if(sdl3)
     target_sources(example_sdl3_opengl3 PRIVATE ${_imgui_examples_dir}/example_sdl3_opengl3/main.cpp)
     target_link_libraries(example_sdl3_opengl3 PRIVATE imgui_backend_sdl3 imgui_backend_opengl3 imgui_demo)
     target_compile_definitions(example_sdl3_opengl3 PRIVATE $<$<VERSION_LESS:${IMGUI_VERSION},1.91.3>:SDL_INIT_TIMER=0x00000001u>)
+
+    list(APPEND imgui_examples_list example_sdl3_opengl3)
   endif()
 
   if(example_sdl3_vulkan)
     add_executable(example_sdl3_vulkan)
     target_sources(example_sdl3_vulkan PRIVATE ${_imgui_examples_dir}/example_sdl3_vulkan/main.cpp)
     target_link_libraries(example_sdl3_vulkan PRIVATE imgui_backend_sdl3 imgui_backend_vulkan imgui_demo)
+
+    list(APPEND imgui_examples_list example_sdl3_vulkan)
   endif()
 endif()
 
@@ -473,6 +500,8 @@ if(sdlgpu3)
     add_executable(example_sdl3_sdlgpu3)
     target_sources(example_sdl3_sdlgpu3 PRIVATE ${_imgui_examples_dir}/example_sdl3_sdlgpu3/main.cpp)
     target_link_libraries(example_sdl3_sdlgpu3 PRIVATE imgui_backend_sdlgpu3 imgui_backend_sdl3 imgui_demo)
+
+    list(APPEND imgui_examples_list example_sdl3_sdlgpu3)
   endif()
 endif()
 
@@ -494,6 +523,8 @@ if(sdlrenderer3)
     target_sources(example_sdl3_sdlrenderer3 PRIVATE ${_imgui_examples_dir}/example_sdl3_sdlrenderer3/main.cpp)
     target_link_libraries(example_sdl3_sdlrenderer3 PRIVATE imgui_backend_sdlrenderer3 imgui_backend_sdl3)
     target_compile_definitions(example_sdl3_sdlrenderer3 PRIVATE $<$<VERSION_LESS:${IMGUI_VERSION},1.91.3>:SDL_INIT_TIMER=0x00000001u>)
+
+    list(APPEND imgui_examples_list example_sdl3_sdlrenderer3)
   endif()
 endif()
 
@@ -509,36 +540,48 @@ if(win32)
     add_executable(example_win32_opengl3)
     target_sources(example_win32_opengl3 PRIVATE ${_imgui_examples_dir}/example_win32_opengl3/main.cpp)
     target_link_libraries(example_win32_opengl3 PRIVATE imgui_backend_win32 imgui_backend_opengl3 imgui_demo)
+
+    list(APPEND imgui_examples_list example_win32_opengl3)
   endif()
 
   if(example_win32_vulkan)
     add_executable(example_win32_vulkan)
     target_sources(example_win32_vulkan PRIVATE ${_imgui_examples_dir}/example_win32_vulkan/main.cpp)
     target_link_libraries(example_win32_vulkan PRIVATE imgui_backend_win32 imgui_backend_vulkan imgui_demo)
+
+    list(APPEND imgui_examples_list example_win32_vulkan)
   endif()
 
   if(example_win32_directx9)
     add_executable(example_win32_directx9)
     target_sources(example_win32_directx9 PRIVATE ${_imgui_examples_dir}/example_win32_directx9/main.cpp)
     target_link_libraries(example_win32_directx9 PRIVATE imgui_backend_win32 imgui_backend_dx9 imgui_demo)
+
+    list(APPEND imgui_examples_list example_win32_directx9)
   endif()
 
   if(example_win32_directx10)
     add_executable(example_win32_directx10)
     target_sources(example_win32_directx10 PRIVATE ${_imgui_examples_dir}/example_win32_directx10/main.cpp)
     target_link_libraries(example_win32_directx10 PRIVATE imgui_backend_win32 imgui_backend_dx10 imgui_demo)
+
+    list(APPEND imgui_examples_list example_win32_directx10)
   endif()
 
   if(example_win32_directx11)
     add_executable(example_win32_directx11)
     target_sources(example_win32_directx11 PRIVATE ${_imgui_examples_dir}/example_win32_directx11/main.cpp)
     target_link_libraries(example_win32_directx11 PRIVATE imgui_backend_win32 imgui_backend_dx11 imgui_demo)
+
+    list(APPEND imgui_examples_list example_win32_directx11)
   endif()
 
   if(example_win32_directx12)
     add_executable(example_win32_directx12)
     target_sources(example_win32_directx12 PRIVATE ${_imgui_examples_dir}/example_win32_directx12/main.cpp)
     target_link_libraries(example_win32_directx12 PRIVATE imgui_backend_win32 imgui_backend_dx12 imgui_demo)
+
+    list(APPEND imgui_examples_list example_win32_directx12)
   endif()
 endif()
 
@@ -546,6 +589,8 @@ if(example_null)
   add_executable(example_null)
   target_sources(example_null PRIVATE ${_imgui_examples_dir}/example_null/main.cpp)
   target_link_libraries(example_null PRIVATE imgui_core imgui_demo)
+
+  list(APPEND imgui_examples_list example_null)
 endif()
 
 if(dx9 OR dx10 OR dx11 OR dx12)
@@ -809,6 +854,10 @@ if(install)
     install(TARGETS ${name} EXPORT imgui_export FILE_SET ${file_set})
   endforeach()
 
+  if(install_examples)
+    install(TARGETS ${imgui_examples_list} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+  endif()
+
   if(imgui_club)
     install(EXPORT imgui_club_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::imgui_club:: FILE CMakeForImGui-imgui_club-Targets.cmake)
 
@@ -914,7 +963,7 @@ feature_summary(WHAT ALL)
 
 set(options android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
 misc misc_cpp misc_freetype misc_debugger misc_fonts
-imgui_club imgui_markdown implot implot3d imguifiledialog BUILD_SHARED_LIBS pkg-config install uninstall visualize_targets
+imgui_club imgui_markdown implot implot3d imguifiledialog BUILD_SHARED_LIBS pkg-config install install_examples uninstall visualize_targets
 examples
 example_null
 example_allegro5 example_android_opengl3
