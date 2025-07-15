@@ -195,6 +195,7 @@ jobs:
         run: >
           cmake
           --install ${{ github.workspace }}/build
+          --config ${{ matrix.build-type }}
 
       - name: Uninstall
         run: >
@@ -207,6 +208,7 @@ jobs:
           cmake
           --build ${{ github.workspace }}/build
           --target package
+          --config ${{ matrix.build-type }}
 
       - name: Upload
         uses: actions/upload-artifact@v4
