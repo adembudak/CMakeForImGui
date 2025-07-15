@@ -10,7 +10,7 @@ on:
       - 'LICENSE.md'
 
 jobs:
-  Configure-Build:
+  Configure-Build-Install-Uninstall-Package-Upload:
     strategy:
       matrix:
           os:
@@ -130,6 +130,7 @@ jobs:
           -G "${{ matrix.generator }}"
           -D VCPKG_MANIFEST_MODE=ON
           -D VCPKG_MANIFEST_DIR=${{ github.workspace }}/CMakeForImGui/.github/workflows
+          -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here
           -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
           -D misc=ON -D misc_freetype=ON -D misc_cpp=ON -D misc_debugger=ON -D misc_fonts=ON
           -D pkg-config=ON
@@ -190,13 +191,24 @@ jobs:
           | ForEach-Object {$_ -replace 'D:\\a\\CMakeForImGui\\', 'D:/a/CMakeForImGui'}
           | Set-Content -Path "${{ github.workspace }}\\build\\cmake_install.cmake"
 
+      - name: Install
+        run: >
+          cmake
+          --install ${{ github.workspace }}/build
+
+      - name: Uninstall
+        run: >
+          cmake
+          --build ${{ github.workspace }}/build
+          --target uninstall
+
       - name: Package
         run: >
           cmake
           --build ${{ github.workspace }}/build
           --target package
 
-      - name: Get build artifacts
+      - name: Upload
         uses: actions/upload-artifact@v4
 
         with:
