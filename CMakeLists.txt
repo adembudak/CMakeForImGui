@@ -122,7 +122,7 @@ cmake_dependent_option(example_sdl3_sdlgpu3 "" OFF "examples AND sdlgpu3" OFF)
 
 cmake_dependent_option(example_sdl3_sdlrenderer3 "" OFF "examples AND sdlrenderer3 AND sdl3" OFF)
 
-cmake_dependent_option(example_win32_opengl3 "" OFF "examples AND win32 AND opengl3" OFF)
+cmake_dependent_option(example_win32_opengl3 "" OFF "examples AND win32 AND opengl3 AND (${IMGUI_VERSION} VERSION_GREATER 1.89.5)" OFF)
 cmake_dependent_option(example_win32_vulkan "" OFF "examples AND win32 AND vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
 cmake_dependent_option(example_win32_directx9 "" OFF "examples AND win32 AND dx9" OFF)
 cmake_dependent_option(example_win32_directx10 "" OFF "examples AND win32 AND dx10" OFF)
