@@ -4,6 +4,7 @@
 		"allegro5",
 		"freetype",
 		"freeglut",
+		"glew",
 		"glfw3",
 		"vulkan",
 		"sdl2",
