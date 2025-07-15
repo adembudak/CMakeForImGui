@@ -38,7 +38,7 @@ message(STATUS "ImGui version ${IMGUI_VERSION}")
 option(misc "" OFF)
 cmake_dependent_option(misc_cpp "" OFF misc OFF)
 cmake_dependent_option(misc_freetype "" OFF misc OFF)
-cmake_dependent_option(misc_debugger "" OFF misc OFF)
+cmake_dependent_option(misc_debugger "" OFF "misc AND (${IMGUI_VERSION} VERSION_GREATER 1.81)" OFF)
 cmake_dependent_option(misc_fonts "" OFF misc OFF)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
