@@ -78,11 +78,6 @@ jobs:
     steps:
       - run: echo "Triggered by ${{ github.event_name }} on ${{ github.repository }} using ${{ github.ref}} branch and running on ${{ runner.os }}."
 
-      - name: ls
-        run: |
-          pwd
-          ls ${{ github.workspace }}
-
       - name: Install required packages on Ubuntu
         if: matrix.os == 'ubuntu-latest'
         run: |
@@ -100,9 +95,6 @@ jobs:
         with:
           cmake-version: '4.0.0'
 
-      - name: CMake version
-        run: cmake --version
-
       - name: Check out ImGui repository
         uses: actions/checkout@v4
         with:
@@ -114,6 +106,7 @@ jobs:
       - name: Check out CMakeForImGui
         uses: actions/checkout@v4
         with:
+          show-progress: false
           path: CMakeForImGui
 
       - name: Setup vcpkg
@@ -127,6 +120,8 @@ jobs:
       - name: Configure
         run: >
           cmake
+          -S ${{ github.workspace }}/CMakeForImGui
+          -B ${{ github.workspace }}/build
           -G "${{ matrix.generator }}"
           -D VCPKG_MANIFEST_MODE=ON
           -D VCPKG_MANIFEST_DIR=${{ github.workspace }}/CMakeForImGui/.github/workflows
@@ -158,14 +153,14 @@ jobs:
           -D example_sdl3_sdlrenderer3=ON
           -D example_glut_opengl2=ON
           -D example_allegro5=OFF
-          -S ${{ github.workspace }}/CMakeForImGui
-          -B ${{ github.workspace }}/build
           --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: Extra configurations for Windows
         if: matrix.os == 'windows-latest'
         run: >
           cmake
+          -S ${{ github.workspace }}/CMakeForImGui
+          -B ${{ github.workspace }}/build
           -D win32=ON
           -D dx9=ON
           -D dx10=ON
@@ -178,8 +173,6 @@ jobs:
           -D example_win32_directx11=ON
           -D example_win32_directx12=ON
           -D example_sdl2_directx11=ON
-          -S ${{ github.workspace }}/CMakeForImGui
-          -B ${{ github.workspace }}/build
 
       - name: Build
         run: >
@@ -221,4 +214,50 @@ jobs:
           path: ${{ github.workspace }}/build/package
 
       - run: echo "Job exited by ${{ job.status }}."
+
+  Build-Android-example:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '4.0.0'
+
+      - name: Check out ImGui repository
+        uses: actions/checkout@v4
+        with:
+          repository: ocornut/imgui
+          show-progress: false
+          ref: v1.92.1
+          path: imgui
+
+      - name: Check out CMakeForImGui
+        uses: actions/checkout@v4
+        with:
+          show-progress: false
+          path: CMakeForImGui
+
+      - name: Configure
+        run: >
+          cmake
+          -S ${{ github.workspace }}/CMakeForImGui
+          -B ${{ github.workspace }}/build
+          -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
+          -D android=ON
+          -D opengl3=ON
+          -D examples=ON
+          -D example_android_opengl3=ON
+          --toolchain ${ANDROID_NDK_ROOT}/build/cmake/android.toolchain.cmake
+
+      - name: Build
+        run: >
+          cmake
+          --build ${{ github.workspace }}/build
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: example_android_opengl3
+          path: ${{ github.workspace }}/imgui/examples/example_android_opengl3/android/app/build/outputs/apk
 

@@ -288,19 +288,13 @@ if(android)
   list(APPEND imgui_backends_list imgui_backend_android)
 
   if(example_android_opengl3)
-    find_program(SDKMANAGER_COMMAND sdkmanager)
-    find_program(GRADLE_COMMAND gradle)
+    find_program(GRADLE_COMMAND gradle REQUIRED)
 
-    if(SDKMANAGER_COMMAND AND GRADLE_COMMAND)
-      add_custom_command(TARGET imgui_backend_android POST_BUILD
-        COMMAND ${SDKMANAGER_COMMAND} --install "build-tools;33.0.2" --sdk_root=$ENV{ANDROID_HOME}
-        COMMAND ${SDKMANAGER_COMMAND} --install "ndk;25.2.9519653" --sdk_root=$ENV{ANDROID_HOME}
-        COMMAND ${SDKMANAGER_COMMAND} --install "cmake;3.22.1" --sdk_root=$ENV{ANDROID_HOME}
-        COMMAND ${GRADLE_COMMAND} --project-dir ${_imgui_examples_dir}/example_android_opengl3/android assembleRelease
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        COMMENT "Building .apk files\n${_imgui_examples_dir}/example_android_opengl3/android/app/build/outputs/apk/"
-        VERBATIM)
-    endif()
+    add_custom_command(TARGET imgui_backend_android POST_BUILD
+      COMMAND ${GRADLE_COMMAND} --project-dir ${_imgui_examples_dir}/example_android_opengl3/android assembleRelease
+      WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+      COMMENT "Building .apk files\n${_imgui_examples_dir}/example_android_opengl3/android/app/build/outputs/apk/"
+      VERBATIM)
   endif()
 endif()
 
