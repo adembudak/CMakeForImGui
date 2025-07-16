@@ -80,15 +80,11 @@ jobs:
 
       - name: Install required packages on Ubuntu
         if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt update
-          sudo apt install --assume-yes --fix-missing libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config libltdl-dev
+        run: sudo apt install --assume-yes --fix-missing libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config libltdl-dev
 
-      - name: Install required packages on MacOS
+      - name: Install required packages on macOS
         if: matrix.os == 'macos-15'
-        run: |
-          brew install ninja
-          brew install --cask xquartz
+        run: brew install --cask xquartz
 
       - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v2
