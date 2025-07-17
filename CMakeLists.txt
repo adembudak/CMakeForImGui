@@ -243,8 +243,13 @@ if(wgpu)
 endif()
 
 if(android)
-  if(NOT DEFINED CMAKE_ANDROID_NDK AND NOT DEFINED ENV{ANDROID_NDK})
-    message(FATAL_ERROR "Android NDK toolchain not found")
+  if(NOT DEFINED CMAKE_ANDROID_NDK)
+    message(FATAL_ERROR
+[=[
+Android NDK toolchain is not used
+  Try to utilize Android toolchain file when running cmake: --toolchain $ANDROID_NDK/build/cmake/android.toolchain.cmake
+  https://developer.android.com/ndk/guides/cmake#the_new_toolchain_file
+]=])
   endif()
 
   cmake_print_variables(CMAKE_SYSTEM_NAME CMAKE_ANDROID_NDK CMAKE_TOOLCHAIN_FILE ANDROID_TOOLCHAIN ANDROID_TOOLCHAIN_NAME $ENV{ANDROID_HOME} $ENV{ANDROID_NDK} ANDROID_ABI ANDROID_STL ANDROID_PIE ANDROID_CPP_FEATURES ANDROID_ALLOW_UNDEFINED_SYMBOLS ANDROID_ARM_MODE ANDROID_PLATFORM ANDROID_NATIVE_API_LEVEL)
