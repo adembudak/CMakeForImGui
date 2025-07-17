@@ -103,6 +103,8 @@ cmake_dependent_option(example_android_opengl3 "" OFF "examples AND android" OFF
 cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND glfw AND opengl2" OFF)
 cmake_dependent_option(example_glfw_opengl3 "" OFF "examples AND glfw AND opengl3" OFF)
 cmake_dependent_option(example_glfw_vulkan "" OFF "examples AND glfw AND vulkan" OFF)
+cmake_dependent_option(example_glfw_metal "" OFF "examples AND glfw AND metal" OFF)
+cmake_dependent_option(example_glfw_wgpu "" OFF "examples AND glfw AND wgpu" OFF)
 
 cmake_dependent_option(example_glut_opengl2 "" OFF "examples AND glut AND opengl2" OFF)
 
@@ -110,6 +112,7 @@ cmake_dependent_option(example_sdl2_opengl2 "" OFF "examples AND sdl2 AND opengl
 cmake_dependent_option(example_sdl2_opengl3 "" OFF "examples AND sdl2 AND opengl3" OFF)
 cmake_dependent_option(example_sdl2_vulkan "" OFF "examples AND sdl2 AND vulkan" OFF)
 cmake_dependent_option(example_sdl2_directx11 "" OFF "examples AND sdl2 AND dx11" OFF)
+cmake_dependent_option(example_sdl2_metal "" OFF "examples AND sdl2 AND metal" OFF)
 
 cmake_dependent_option(example_sdl2_sdlrenderer2 "" OFF "examples AND sdlrenderer2 AND sdl2" OFF)
 
@@ -831,14 +834,17 @@ if(install)
 
   if(misc)
     if(misc_cpp)
-     install(TARGETS imgui_misc_cpp EXPORT imgui_export FILE_SET imgui_misc_cpp_set)
+      install(TARGETS imgui_misc_cpp EXPORT imgui_export FILE_SET imgui_misc_cpp_set)
     endif()
+
     if(misc_freetype)
       install(TARGETS imgui_misc_freetype EXPORT imgui_export FILE_SET imgui_misc_freetype_set)
     endif()
+
     if(misc_debugger)
       install(DIRECTORY ${_imgui_misc_dir}/debuggers DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
     endif()
+
     if(misc_fonts)
       install(TARGETS binary_to_compressed_c DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/fonts)
       install(DIRECTORY ${_imgui_dir}/misc/fonts DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui FILES_MATCHING PATTERN "*.ttf")
