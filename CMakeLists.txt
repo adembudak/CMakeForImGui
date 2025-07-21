@@ -726,26 +726,23 @@ if(imgui_test_engine)
       ${_imgui_te_dir}/imgui_test_engine/imgui_te_utils.h
       ${_imgui_te_dir}/imgui_test_engine/thirdparty/stb/imstb_image_write.h
       ${_imgui_te_dir}/imgui_test_engine/thirdparty/Str/Str.h)
-  target_link_libraries(imgui_test_engine PUBLIC imgui_core)
+  target_link_libraries(imgui_test_engine PUBLIC imgui_core PRIVATE implot)
   target_compile_features(imgui_test_engine PUBLIC cxx_std_14)
   target_compile_definitions(imgui_test_engine PRIVATE IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL)
   target_compile_definitions(imgui_test_engine PRIVATE IMGUI_TEST_ENGINE_ENABLE_IMPLOT) # TODO: how to get value of this constant and conditonally link?
-  target_link_libraries(imgui_test_engine PUBLIC implot)
-
   add_library(imgui_capture_tool)
   target_sources(imgui_capture_tool PRIVATE ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.cpp)
   target_sources(imgui_capture_tool PUBLIC FILE_SET imgui_capture_tool_set BASE_DIRS ${_imgui_te_dir}/imgui_test_engine TYPE HEADERS FILES ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.h)
-  target_link_libraries(imgui_capture_tool PRIVATE imgui_core)
   target_link_libraries(imgui_capture_tool PRIVATE imgui_test_engine)
 
   add_library(imgui_app)
   target_sources(imgui_app PRIVATE ${_imgui_te_dir}/shared/imgui_app.cpp)
   target_sources(imgui_app PUBLIC FILE_SET HEADERS BASE_DIRS ${_imgui_te_dir} FILES ${_imgui_te_dir}/shared/imgui_app.h)
-  target_link_libraries(imgui_app PRIVATE imgui_core imgui_demo)
+  target_link_libraries(imgui_app PRIVATE imgui_demo)
   target_compile_definitions(imgui_app PUBLIC IMGUI_APP_GLFW_GL3)
   target_link_libraries(imgui_app PRIVATE imgui_backend_glfw imgui_backend_opengl3)
 
-  add_library(app_minimal)
+  add_executable(app_minimal)
   target_sources(app_minimal PRIVATE ${_imgui_te_dir}/app_minimal/app_minimal_main.cpp ${_imgui_te_dir}/app_minimal/app_minimal_tests.cpp)
   target_link_libraries(app_minimal PRIVATE imgui_app imgui_test_engine imgui_capture_tool)
   target_link_libraries(app_minimal PRIVATE imgui_demo)
@@ -774,8 +771,8 @@ if(imgui_test_engine)
 
   target_sources(imgui_test_suite PUBLIC FILE_SET HEADERS BASE_DIRS ${_imgui_te_dir} FILES ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.h)
 
-  target_link_libraries(imgui_test_suite PUBLIC imgui_core imgui_demo)
-  target_link_libraries(imgui_test_suite PUBLIC imgui_test_engine imgui_capture_tool app_minimal)
+  target_link_libraries(imgui_test_suite PUBLIC imgui_demo)
+  target_link_libraries(imgui_test_suite PUBLIC imgui_test_engine imgui_capture_tool imgui_app)
   target_compile_definitions(imgui_test_suite PUBLIC IMGUI_BROKEN_TESTS)
 endif()
 
