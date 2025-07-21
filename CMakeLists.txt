@@ -731,8 +731,8 @@ if(imgui_test_engine)
 
   target_link_libraries(imgui_test_engine PUBLIC imgui_core PRIVATE implot)
   target_compile_features(imgui_test_engine PUBLIC cxx_std_14)
-  target_compile_definitions(imgui_test_engine PRIVATE IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL)
-  target_compile_definitions(imgui_test_engine PRIVATE IMGUI_TEST_ENGINE_ENABLE_IMPLOT) # TODO: how to get value of this constant and conditonally link?
+  target_compile_definitions(imgui_test_engine PRIVATE IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL=1)
+  target_compile_definitions(imgui_test_engine PRIVATE IMGUI_TEST_ENGINE_ENABLE_IMPLOT) # TODO: how to get value of this constant and link conditonally?
 
   add_library(imgui_app)
   target_sources(imgui_app PRIVATE ${_imgui_te_dir}/shared/imgui_app.cpp)
