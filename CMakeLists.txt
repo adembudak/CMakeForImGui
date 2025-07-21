@@ -736,10 +736,10 @@ if(imgui_test_engine)
 
   add_library(imgui_app)
   target_sources(imgui_app PRIVATE ${_imgui_te_dir}/shared/imgui_app.cpp)
-  target_sources(imgui_app PUBLIC FILE_SET HEADERS BASE_DIRS ${_imgui_te_dir} FILES ${_imgui_te_dir}/shared/imgui_app.h)
+  target_sources(imgui_app PUBLIC FILE_SET imgui_app_set BASE_DIRS ${_imgui_te_dir} TYPE HEADERS FILES ${_imgui_te_dir}/shared/imgui_app.h)
   target_link_libraries(imgui_app PRIVATE imgui_demo)
-  target_compile_definitions(imgui_app PUBLIC IMGUI_APP_GLFW_GL3)
   target_link_libraries(imgui_app PRIVATE imgui_backend_glfw imgui_backend_opengl3)
+  target_compile_definitions(imgui_app PUBLIC IMGUI_APP_GLFW_GL3)
 
   add_executable(app_minimal)
   target_sources(app_minimal PRIVATE ${_imgui_te_dir}/app_minimal/app_minimal_main.cpp ${_imgui_te_dir}/app_minimal/app_minimal_tests.cpp)
