@@ -763,13 +763,11 @@ if(imgui_test_engine)
     ${_imgui_te_dir}/imgui_test_suite/imgui_tests_viewports.cpp
     ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets_inputtext.cpp)
 
-  target_sources(imgui_test_suite PUBLIC FILE_SET imgui_test_suite_set BASE_DIRS ${_imgui_te_dir}/imgui_test_suite
-    TYPE HEADERS
+  target_sources(imgui_test_suite PUBLIC FILE_SET HEADERS BASE_DIRS ${_imgui_te_dir}
     FILES
       ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.h
-      ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite_imconfig.h)
-
-  target_sources(imgui_test_suite PUBLIC FILE_SET HEADERS BASE_DIRS ${_imgui_te_dir} FILES ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.h)
+      ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite_imconfig.h
+      ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.h)
 
   target_link_libraries(imgui_test_suite PUBLIC imgui_demo)
   target_link_libraries(imgui_test_suite PUBLIC imgui_test_engine imgui_capture_tool imgui_app)
