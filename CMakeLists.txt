@@ -710,7 +710,8 @@ if(imgui_test_engine)
     ${_imgui_te_dir}/imgui_test_engine/imgui_te_exporters.cpp
     ${_imgui_te_dir}/imgui_test_engine/imgui_te_perftool.cpp
     ${_imgui_te_dir}/imgui_test_engine/imgui_te_ui.cpp
-    ${_imgui_te_dir}/imgui_test_engine/imgui_te_utils.cpp)
+    ${_imgui_te_dir}/imgui_test_engine/imgui_te_utils.cpp
+    ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.cpp)
 
   target_sources(imgui_test_engine PUBLIC FILE_SET imgui_test_engine_set BASE_DIRS ${_imgui_te_dir}/imgui_test_engine
     TYPE HEADERS
@@ -724,16 +725,14 @@ if(imgui_test_engine)
       ${_imgui_te_dir}/imgui_test_engine/imgui_te_perftool.h
       ${_imgui_te_dir}/imgui_test_engine/imgui_te_ui.h
       ${_imgui_te_dir}/imgui_test_engine/imgui_te_utils.h
+      ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.h
       ${_imgui_te_dir}/imgui_test_engine/thirdparty/stb/imstb_image_write.h
       ${_imgui_te_dir}/imgui_test_engine/thirdparty/Str/Str.h)
+
   target_link_libraries(imgui_test_engine PUBLIC imgui_core PRIVATE implot)
   target_compile_features(imgui_test_engine PUBLIC cxx_std_14)
   target_compile_definitions(imgui_test_engine PRIVATE IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL)
   target_compile_definitions(imgui_test_engine PRIVATE IMGUI_TEST_ENGINE_ENABLE_IMPLOT) # TODO: how to get value of this constant and conditonally link?
-  add_library(imgui_capture_tool)
-  target_sources(imgui_capture_tool PRIVATE ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.cpp)
-  target_sources(imgui_capture_tool PUBLIC FILE_SET imgui_capture_tool_set BASE_DIRS ${_imgui_te_dir}/imgui_test_engine TYPE HEADERS FILES ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.h)
-  target_link_libraries(imgui_capture_tool PRIVATE imgui_test_engine)
 
   add_library(imgui_app)
   target_sources(imgui_app PRIVATE ${_imgui_te_dir}/shared/imgui_app.cpp)
@@ -744,7 +743,7 @@ if(imgui_test_engine)
 
   add_executable(app_minimal)
   target_sources(app_minimal PRIVATE ${_imgui_te_dir}/app_minimal/app_minimal_main.cpp ${_imgui_te_dir}/app_minimal/app_minimal_tests.cpp)
-  target_link_libraries(app_minimal PRIVATE imgui_app imgui_test_engine imgui_capture_tool)
+  target_link_libraries(app_minimal PRIVATE imgui_app imgui_test_engine)
   target_link_libraries(app_minimal PRIVATE imgui_demo)
   if(misc_freetype)
     target_link_libraries(app_minimal PRIVATE imgui_misc_freetype)
@@ -770,7 +769,7 @@ if(imgui_test_engine)
       ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.h)
 
   target_link_libraries(imgui_test_suite PUBLIC imgui_demo)
-  target_link_libraries(imgui_test_suite PUBLIC imgui_test_engine imgui_capture_tool imgui_app)
+  target_link_libraries(imgui_test_suite PUBLIC imgui_test_engine imgui_app)
   target_compile_definitions(imgui_test_suite PUBLIC IMGUI_BROKEN_TESTS)
 endif()
 
