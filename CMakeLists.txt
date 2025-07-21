@@ -771,6 +771,8 @@ if(imgui_test_engine)
   target_link_libraries(imgui_test_suite PUBLIC imgui_demo)
   target_link_libraries(imgui_test_suite PUBLIC imgui_test_engine imgui_app)
   target_compile_definitions(imgui_test_suite PUBLIC IMGUI_BROKEN_TESTS)
+
+  list(APPEND imgui_thirdparty_list imgui_test_engine imgui_app)
 endif()
 
 if(imgui_club)
@@ -1058,7 +1060,7 @@ feature_summary(WHAT ALL)
 
 set(options android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
 misc misc_cpp misc_freetype misc_debugger misc_fonts
-imgui_club imgui_markdown implot implot3d imguifiledialog BUILD_SHARED_LIBS pkg-config install install_examples uninstall visualize_targets
+imgui_test_engine imgui_club imgui_markdown implot implot3d imguifiledialog BUILD_SHARED_LIBS pkg-config install install_examples uninstall visualize_targets
 examples
 example_null
 example_allegro5 example_android_opengl3
