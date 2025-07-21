@@ -942,6 +942,17 @@ if(install)
     install(TARGETS ${imgui_examples_list} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
   endif()
 
+  if(imgui_test_engine)
+    install(EXPORT imgui_test_engine_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::imgui_test_engine:: FILE CMakeForImGui-imgui_test_engine-Targets.cmake)
+
+    install(TARGETS imgui_test_engine EXPORT imgui_test_engine_export FILE_SET imgui_test_engine_set)
+    install(TARGETS imgui_app EXPORT imgui_test_engine_export FILE_SET imgui_app_set)
+    install(TARGETS imgui_test_suite RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+    install(DIRECTORY ${_imgui_te_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_test_engine)
+    install(DIRECTORY ${_imgui_te_dir}/build_scripts DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_test_engine)
+  endif()
+
   if(imgui_club)
     install(EXPORT imgui_club_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::imgui_club:: FILE CMakeForImGui-imgui_club-Targets.cmake)
 
