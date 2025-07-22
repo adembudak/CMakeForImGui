@@ -157,7 +157,7 @@ target_sources(imgui_core PUBLIC
   TYPE HEADERS
   FILES ${_imgui_dir}/imgui.h ${_imgui_dir}/imconfig.h ${_imgui_dir}/imgui_internal.h ${_imgui_dir}/imstb_rectpack.h ${_imgui_dir}/imstb_textedit.h ${_imgui_dir}/imstb_truetype.h)
 target_compile_features(imgui_core PUBLIC cxx_std_11)
-target_compile_definitions(imgui_core PUBLIC $<$<BOOL:${imgui_test_engine}>:IMGUI_ENABLE_TEST_ENGINE>)
+target_compile_definitions(imgui_core INTERFACE $<$<BOOL:${imgui_test_engine}>:IMGUI_ENABLE_TEST_ENGINE>)
 
 add_library(imgui_demo)
 target_sources(imgui_demo PRIVATE ${_imgui_dir}/imgui_demo.cpp)
@@ -179,7 +179,7 @@ if(misc)
     add_library(imgui_misc_freetype)
     target_sources(imgui_misc_freetype PRIVATE ${_imgui_misc_dir}/freetype/imgui_freetype.cpp)
     target_sources(imgui_misc_freetype PRIVATE FILE_SET HEADERS BASE_DIRS ${_imgui_dir} FILES ${_imgui_dir}/imgui.h)
-    target_link_libraries(imgui_misc_freetype PRIVATE Freetype::Freetype)
+    target_link_libraries(imgui_misc_freetype PUBLIC Freetype::Freetype)
     target_link_libraries(imgui_core PUBLIC imgui_misc_freetype)
     target_sources(imgui_misc_freetype PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imgui_dir}/misc/freetype TYPE HEADERS FILES ${_imgui_misc_dir}/freetype/imgui_freetype.h)
     target_compile_definitions(imgui_core PUBLIC IMGUI_ENABLE_FREETYPE)
