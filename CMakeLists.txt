@@ -35,6 +35,11 @@ math(EXPR IMGUI_VERSION_TWEAK "(${imgui_version} % 10)")
 set(IMGUI_VERSION "${IMGUI_VERSION_MAJOR}.${IMGUI_VERSION_MINOR}.${IMGUI_VERSION_PATCH}.${IMGUI_VERSION_TWEAK}")
 message(STATUS "ImGui version ${IMGUI_VERSION}")
 
+get_property(is_generator_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(NOT is_generator_multi_config)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release RelWithDebInfo MinSizeRel)
+endif()
+
 option(misc "" OFF)
 cmake_dependent_option(misc_cpp "" OFF misc OFF)
 cmake_dependent_option(misc_freetype "" OFF misc OFF)
