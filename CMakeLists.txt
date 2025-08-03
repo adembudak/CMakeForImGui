@@ -342,7 +342,7 @@ if(glfw)
   target_sources(imgui_backend_glfw PRIVATE ${_imgui_backends_dir}/imgui_impl_glfw.cpp)
   target_sources(imgui_backend_glfw PUBLIC FILE_SET imgui_backend_glfw_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_glfw.h)
   target_link_libraries(imgui_backend_glfw PUBLIC glfw)
-  target_link_libraries(imgui_backend_glfw PUBLIC imgui_core imgui_backend_opengl3)
+  target_link_libraries(imgui_backend_glfw PUBLIC imgui_core)
 
   list(APPEND imgui_backends_list imgui_backend_glfw)
   list(APPEND pkg_config_requires_list glfw3)
