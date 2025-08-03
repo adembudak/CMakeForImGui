@@ -609,7 +609,7 @@ if(example_null)
   list(APPEND imgui_examples_list example_null)
 endif()
 
-if(dx9 OR dx10 OR dx11 OR dx12)
+if((dx9 OR dx10 OR dx11 OR dx12) AND (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC"))
   set(sdk_version ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION})
 
   find_path(
