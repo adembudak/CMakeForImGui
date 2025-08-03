@@ -204,12 +204,15 @@ if(misc)
 endif()
 
 if(opengl2)
-  find_package(OpenGL 2 QUIET REQUIRED)
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  else()
+    find_package(OpenGL 2 QUIET REQUIRED)
+  endif()
 
   add_library(imgui_backend_opengl2)
   target_sources(imgui_backend_opengl2 PRIVATE ${_imgui_backends_dir}/imgui_impl_opengl2.cpp)
   target_link_libraries(imgui_backend_opengl2 PUBLIC imgui_core)
-  target_link_libraries(imgui_backend_opengl2 PUBLIC OpenGL::GL)
+  target_link_libraries(imgui_backend_opengl2 PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU>>,opengl32,OpenGL::GL>)
   target_sources(imgui_backend_opengl2 PUBLIC FILE_SET imgui_backend_opengl2_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_opengl2.h)
 
   list(APPEND imgui_backends_list imgui_backend_opengl2)
