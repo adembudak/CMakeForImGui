@@ -126,6 +126,7 @@ cmake_dependent_option(example_allegro5 "" OFF "examples AND allegro5" OFF)
 
 cmake_dependent_option(example_sdl3_opengl3 "" OFF "examples AND sdl3 AND opengl3" OFF)
 cmake_dependent_option(example_sdl3_vulkan "" OFF "examples AND sdl3 AND vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.4)" OFF)
+cmake_dependent_option(example_sdl3_metal "" OFF "examples AND sdl3 AND metal AND (${IMGUI_VERSION} VERSION_GREATER 1.92.1)" OFF)
 
 cmake_dependent_option(example_sdl3_sdlgpu3 "" OFF "examples AND sdlgpu3" OFF)
 
