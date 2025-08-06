@@ -243,12 +243,30 @@ if(opengl3)
 endif()
 
 if(vulkan)
-  find_package(Vulkan REQUIRED)
+  if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES .dll)
+
+    if(NOT VULKAN_RUNTIME_COMPONENTS_DIR)
+      message(FATAL_ERROR "set VULKAN_RUNTIME_COMPONENTS_DIR to proceed:\ne.g. cmake -DVULKAN_RUNTIME_COMPONENTS_DIR=VulkanRT-X64-x.y.zzz-Components...")
+    endif()
+
+    if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+      set(suffix x86)
+    endif()
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+      set(suffix x64)
+    endif()
+
+    find_library(Vulkan_Libraries vulkan-1.dll PATHS ${VULKAN_RUNTIME_COMPONENTS_DIR} PATH_SUFFIXES ${suffix} NO_CACHE REQUIRED NO_DEFAULT_PATH NO_CMAKE_SYSTEM_PATH)
+    find_package(VulkanHeaders REQUIRED)
+  else()
+    find_package(Vulkan REQUIRED)
+  endif()
 
   add_library(imgui_backend_vulkan)
   target_sources(imgui_backend_vulkan PRIVATE ${_imgui_backends_dir}/imgui_impl_vulkan.cpp)
   target_link_libraries(imgui_backend_vulkan PUBLIC imgui_core)
-  target_link_libraries(imgui_backend_vulkan PUBLIC Vulkan::Vulkan)
+  target_link_libraries(imgui_backend_vulkan PUBLIC $<IF:$<AND:$<STREQUAL:${CMAKE_HOST_SYSTEM_NAME},Linux>,$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU>>,Vulkan::Headers ${Vulkan_Libraries},Vulkan::Vulkan>)
   target_sources(imgui_backend_vulkan PUBLIC FILE_SET imgui_backend_vulkan_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_vulkan.h)
 
   list(APPEND imgui_backends_list imgui_backend_vulkan)
