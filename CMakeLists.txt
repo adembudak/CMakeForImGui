@@ -243,7 +243,7 @@ if(opengl3)
 endif()
 
 if(vulkan)
-  if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES .dll)
 
     if(NOT VULKAN_RUNTIME_COMPONENTS_DIR)
@@ -266,7 +266,7 @@ if(vulkan)
   add_library(imgui_backend_vulkan)
   target_sources(imgui_backend_vulkan PRIVATE ${_imgui_backends_dir}/imgui_impl_vulkan.cpp)
   target_link_libraries(imgui_backend_vulkan PUBLIC imgui_core)
-  target_link_libraries(imgui_backend_vulkan PUBLIC $<IF:$<AND:$<STREQUAL:${CMAKE_HOST_SYSTEM_NAME},Linux>,$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU>>,Vulkan::Headers ${Vulkan_Libraries},Vulkan::Vulkan>)
+  target_link_libraries(imgui_backend_vulkan PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU>>,Vulkan::Headers ${Vulkan_Libraries},Vulkan::Vulkan>)
   target_sources(imgui_backend_vulkan PUBLIC FILE_SET imgui_backend_vulkan_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_vulkan.h)
 
   list(APPEND imgui_backends_list imgui_backend_vulkan)
