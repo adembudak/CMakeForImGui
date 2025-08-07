@@ -80,7 +80,9 @@ jobs:
 
       - name: Install required packages on Ubuntu
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt install --assume-yes --fix-missing libxinerama-dev libxcursor-dev mesa-common-dev xorg-dev libglu1-mesa-dev pkg-config libltdl-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install --assume-yes --fix-missing libxinerama-dev libxcursor-dev mesa-common-dev xorg-dev libglu1-mesa-dev pkg-config libltdl-dev
 
       - name: Install required packages on macOS
         if: matrix.os == 'macos-15'
