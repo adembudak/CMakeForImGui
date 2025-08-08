@@ -7,7 +7,7 @@ set(CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)
 
 set(CMAKE_CXX_FLAGS_INIT "-static-libgcc -static-libstdc++")
 
-set(CMAKE_FIND_ROOT_PATH /usr/x86_64-w64-mingw32)
+set(CMAKE_FIND_ROOT_PATH /usr/x86_64-w64-mingw32 C:/w64devkit C:/msys64/mingw64)
 
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
