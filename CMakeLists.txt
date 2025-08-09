@@ -139,8 +139,8 @@ cmake_dependent_option(example_win32_directx10 "" OFF "examples AND win32 AND dx
 cmake_dependent_option(example_win32_directx11 "" OFF "examples AND win32 AND dx11" OFF)
 cmake_dependent_option(example_win32_directx12 "" OFF "examples AND win32 AND dx12" OFF)
 
-cmake_dependent_option(example_apple_metal "" OFF metal OFF)
 cmake_dependent_option(example_apple_opengl2 "" OFF "examples AND osx AND opengl2" OFF)
+cmake_dependent_option(example_apple_metal "" OFF "examples AND osx AND metal" OFF)
 
 cmake_dependent_option(example_null "" OFF examples OFF)
 
@@ -763,6 +763,16 @@ if(osx)
 
     list(APPEND imgui_examples_list example_apple_opengl2)
   endif()
+
+  if(example_apple_metal)
+    add_executable(example_apple_metal MACOSX_BUNDLE)
+    target_sources(example_apple_metal PRIVATE ${_imgui_examples_dir}/example_apple_metal/main.mm)
+    target_link_libraries(example_apple_metal PRIVATE imgui_backend_osx imgui_backend_metal imgui_demo)
+    target_link_libraries(example_apple_metal PRIVATE "-framework AppKit" "-framework MetalKit")
+
+    list(APPEND imgui_examples_list example_apple_metal)
+  endif()
+
   list(APPEND imgui_backends_list imgui_backend_osx)
 endif()
 
