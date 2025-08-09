@@ -139,8 +139,8 @@ cmake_dependent_option(example_win32_directx10 "" OFF "examples AND win32 AND dx
 cmake_dependent_option(example_win32_directx11 "" OFF "examples AND win32 AND dx11" OFF)
 cmake_dependent_option(example_win32_directx12 "" OFF "examples AND win32 AND dx12" OFF)
 
-cmake_dependent_option(example_apple_opengl2 "" OFF osx OFF)
 cmake_dependent_option(example_apple_metal "" OFF metal OFF)
+cmake_dependent_option(example_apple_opengl2 "" OFF "examples AND osx AND opengl2" OFF)
 
 cmake_dependent_option(example_null "" OFF examples OFF)
 
@@ -754,7 +754,18 @@ if(osx)
   target_sources(imgui_backend_osx PUBLIC FILE_SET imgui_backend_osx_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_osx.h)
   target_link_libraries(imgui_backend_osx PUBLIC imgui_core)
   target_link_libraries(imgui_backend_osx PUBLIC "-framework AppKit" "-framework Carbon" "-framework GameController")
+
+  if(example_apple_opengl2)
+    add_executable(example_apple_opengl2 MACOSX_BUNDLE)
+    target_sources(example_apple_opengl2 PRIVATE ${_imgui_examples_dir}/example_apple_opengl2/main.mm)
+    target_link_libraries(example_apple_opengl2 PRIVATE imgui_backend_osx imgui_backend_opengl2 imgui_demo)
+    target_link_libraries(example_apple_opengl2 PRIVATE "-framework AppKit")
+
+    list(APPEND imgui_examples_list example_apple_opengl2)
+  endif()
+  list(APPEND imgui_backends_list imgui_backend_osx)
 endif()
+
 if(imgui_test_engine)
   if(NOT IMGUI_TEST_ENGINE_SOURCE_DIR)
     message(FATAL_ERROR "set IMGUI_TEST_ENGINE_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_TEST_ENGINE_SOURCE_DIR=path.to.imgui_test_engine...")
@@ -1016,7 +1027,7 @@ if(install)
   endforeach()
 
   if(install_examples)
-    install(TARGETS ${imgui_examples_list} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX}/Applications RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
   endif()
 
   if(imgui_test_engine)
