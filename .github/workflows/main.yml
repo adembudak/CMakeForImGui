@@ -161,6 +161,8 @@ jobs:
           -B ${{ github.workspace }}/build
           -D metal=ON
           -D osx=ON
+          -D example_apple_opengl2=ON
+          -D example_apple_metal=ON
 
       - name: Extra configurations for Windows
         if: matrix.os == 'windows-latest'
