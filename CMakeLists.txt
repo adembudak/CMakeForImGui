@@ -744,6 +744,7 @@ if(metal)
   target_sources(imgui_backend_metal PUBLIC FILE_SET imgui_backend_metal_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_metal.h)
   target_link_libraries(imgui_backend_metal PUBLIC imgui_core)
   target_link_libraries(imgui_backend_metal PUBLIC "-framework Metal")
+  target_compile_options(imgui_backend_metal PRIVATE $<$<VERSION_LESS:${IMGUI_VERSION},1.89.4>:-fobjc-arc>)
 
   list(APPEND imgui_backends_list imgui_backend_metal)
 endif()
