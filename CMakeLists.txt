@@ -73,8 +73,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  option(osx "" OFF)
   option(metal "" OFF)
+  option(osx "" OFF)
 endif()
 
 option(imgui_test_engine "" OFF)
@@ -740,10 +740,16 @@ endif()
 
 if(osx)
   message(FATAL_ERROR "Build support for this backend is not added yet")
+if(metal)
+  add_library(imgui_backend_metal)
+  target_sources(imgui_backend_metal PRIVATE ${_imgui_backends_dir}/imgui_impl_metal.mm)
+  target_sources(imgui_backend_metal PUBLIC FILE_SET imgui_backend_metal_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_metal.h)
+  target_link_libraries(imgui_backend_metal PUBLIC imgui_core)
+  target_link_libraries(imgui_backend_metal PUBLIC "-framework Metal")
+
+  list(APPEND imgui_backends_list imgui_backend_metal)
 endif()
 
-if(metal)
-  message(FATAL_ERROR "Build support for this backend is not added yet")
 endif()
 
 if(imgui_test_engine)
