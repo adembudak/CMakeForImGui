@@ -153,6 +153,14 @@ jobs:
           -D example_allegro5=OFF
           --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
+      - name: Extra configurations for macOS
+        if: matrix.os == 'macos-15'
+        run: >
+          cmake
+          -S ${{ github.workspace }}/CMakeForImGui
+          -B ${{ github.workspace }}/build
+          -D metal=ON
+
       - name: Extra configurations for Windows
         if: matrix.os == 'windows-latest'
         run: >

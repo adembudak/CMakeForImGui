@@ -738,8 +738,6 @@ if(dx12)
   list(APPEND imgui_backends_list imgui_backend_dx12)
 endif()
 
-if(osx)
-  message(FATAL_ERROR "Build support for this backend is not added yet")
 if(metal)
   add_library(imgui_backend_metal)
   target_sources(imgui_backend_metal PRIVATE ${_imgui_backends_dir}/imgui_impl_metal.mm)
@@ -748,8 +746,6 @@ if(metal)
   target_link_libraries(imgui_backend_metal PUBLIC "-framework Metal")
 
   list(APPEND imgui_backends_list imgui_backend_metal)
-endif()
-
 endif()
 
 if(imgui_test_engine)
