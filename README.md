@@ -37,6 +37,8 @@ Following backend options are available:
 | dx10           | Unofficial::DearImGui::imgui_backend_dx10             |
 | dx11           | Unofficial::DearImGui::imgui_backend_dx11             |
 | dx12           | Unofficial::DearImGui::imgui_backend_dx12             |
+| osx            | Unofficial::DearImGui::imgui_backend_osx              |
+| metal          | Unofficial::DearImGui::imgui_backend_metal            |
 
 All backend options are `OFF` by default.
 
@@ -92,8 +94,6 @@ Limited amount of checking has done for moved, removed or renamed files of the p
 The following backends and their example programs are missing:
 
 - **WGPU backend**
-- **Metal backend (macOS)**
-- **macOS platform backend**
 
 See [help-wanted tags](https://github.com/adembudak/CMakeForImGui/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22) in Issues.
 
