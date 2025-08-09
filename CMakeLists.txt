@@ -1038,7 +1038,7 @@ if(install)
   endforeach()
 
   if(install_examples)
-    install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX}/Applications RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
   endif()
 
   if(imgui_test_engine)
