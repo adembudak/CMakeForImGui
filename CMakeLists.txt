@@ -537,6 +537,14 @@ if(sdl3)
 
     list(APPEND imgui_examples_list example_sdl3_vulkan)
   endif()
+
+  if(example_sdl3_metal)
+    add_executable(example_sdl3_metal)
+    target_sources(example_sdl3_metal PRIVATE ${_imgui_examples_dir}/example_sdl3_metal/main.mm)
+    target_link_libraries(example_sdl3_metal PRIVATE imgui_backend_sdl3 imgui_backend_metal imgui_demo)
+
+    list(APPEND imgui_examples_list example_sdl3_metal)
+  endif()
 endif()
 
 if(sdlgpu3)
