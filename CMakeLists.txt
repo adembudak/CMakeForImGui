@@ -476,6 +476,15 @@ if(sdl2)
 
     list(APPEND imgui_examples_list example_sdl2_directx11)
   endif()
+
+  if(example_sdl2_metal)
+    add_executable(example_sdl2_metal)
+    target_sources(example_sdl2_metal PRIVATE ${_imgui_examples_dir}/example_sdl2_metal/main.mm)
+    target_link_libraries(example_sdl2_metal PRIVATE imgui_core)
+    target_link_libraries(example_sdl2_metal PRIVATE imgui_backend_sdl2 imgui_backend_metal imgui_demo)
+
+    list(APPEND imgui_examples_list example_sdl2_metal)
+  endif()
 endif()
 
 if(sdlrenderer2)
