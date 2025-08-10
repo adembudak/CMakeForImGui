@@ -143,7 +143,7 @@ jobs:
           -D sdlgpu3=ON
           -D examples=ON
           -D example_null=ON
-          -D example_glfw_opengl2=ON -D example_glfw_opengl3=ON -D example_glfw_vulkan=ON
+          -D example_glfw_opengl2=ON -D example_glfw_opengl3=ON -D example_glfw_vulkan=ON -D example_glfw_metal=ON
           -D example_sdl2_opengl2=ON -D example_sdl2_opengl3=ON -D example_sdl2_vulkan=ON
           -D example_sdl3_opengl3=ON -D example_sdl3_vulkan=ON
           -D example_sdl3_sdlgpu3=ON
