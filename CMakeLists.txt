@@ -1038,6 +1038,10 @@ if(install)
   endforeach()
 
   if(install_examples)
+    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+      set_target_properties(${imgui_examples_list} PROPERTIES MACOSX_BUNDLE TRUE)
+    endif()
+
     install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
   endif()
 
