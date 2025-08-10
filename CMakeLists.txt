@@ -398,6 +398,15 @@ if(glfw)
 
     list(APPEND imgui_examples_list example_glfw_vulkan)
   endif()
+
+  if(example_glfw_metal)
+    add_executable(example_glfw_metal)
+    target_sources(example_glfw_metal PRIVATE ${_imgui_examples_dir}/example_glfw_metal/main.mm)
+    target_link_libraries(example_glfw_metal PRIVATE imgui_backend_glfw imgui_backend_metal imgui_demo)
+    target_link_libraries(example_glfw_metal PRIVATE "$<$<PLATFORM_ID:Darwin>:-framework QuartzCore>")
+
+    list(APPEND imgui_examples_list example_glfw_metal)
+  endif()
 endif()
 
 if(glut)
