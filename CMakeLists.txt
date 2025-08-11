@@ -792,6 +792,8 @@ if(osx)
   target_link_libraries(imgui_backend_osx PUBLIC imgui_core)
   target_link_libraries(imgui_backend_osx PUBLIC "-framework AppKit" "-framework Carbon" "-framework GameController")
 
+  list(APPEND imgui_backends_list imgui_backend_osx)
+
   if(example_apple_opengl2)
     add_executable(example_apple_opengl2 MACOSX_BUNDLE)
     target_sources(example_apple_opengl2 PRIVATE ${_imgui_examples_dir}/example_apple_opengl2/main.mm)
@@ -809,8 +811,6 @@ if(osx)
 
     list(APPEND imgui_examples_list example_apple_metal)
   endif()
-
-  list(APPEND imgui_backends_list imgui_backend_osx)
 endif()
 
 if(imgui_test_engine)
@@ -1197,15 +1197,18 @@ feature_summary(WHAT ALL)
 
 set(options android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
 misc misc_cpp misc_freetype misc_debugger misc_fonts
-imgui_test_engine imgui_club imgui_markdown implot implot3d imguifiledialog BUILD_SHARED_LIBS pkg-config install install_examples uninstall visualize_targets
+thirdparty
+imgui_test_engine imgui_club imgui_markdown implot implot3d imguifiledialog
+BUILD_SHARED_LIBS pkg-config install install_examples uninstall visualize_targets
 examples
 example_null
 example_allegro5 example_android_opengl3
-example_glfw_opengl2 example_glfw_opengl3 example_glfw_vulkan
+example_glfw_opengl2 example_glfw_opengl3 example_glfw_vulkan example_glfw_metal
 example_glut_opengl2
-example_sdl2_directx11 example_sdl2_opengl2 example_sdl2_opengl3 example_sdl2_sdlrenderer2 example_sdl2_vulkan
-example_sdl3_opengl3 example_sdl3_sdlgpu3 example_sdl3_sdlrenderer3 example_sdl3_vulkan
-example_win32_directx10 example_win32_directx11 example_win32_directx12 example_win32_directx9 example_win32_opengl3 example_win32_vulkan)
+example_sdl2_directx11 example_sdl2_opengl2 example_sdl2_opengl3 example_sdl2_vulkan example_sdl2_metal example_sdl2_sdlrenderer2
+example_sdl3_opengl3 example_sdl3_sdlgpu3 example_sdl3_sdlrenderer3 example_sdl3_vulkan example_sdl3_metal
+example_win32_directx10 example_win32_directx11 example_win32_directx12 example_win32_directx9 example_win32_opengl3 example_win32_vulkan
+example_apple_metal example_apple_opengl2)
 list(SORT options CASE INSENSITIVE)
 
 message(STATUS "Configuration summary:\n")
