@@ -141,6 +141,7 @@ jobs:
           -D sdl3=ON
           -D sdlrenderer3=ON
           -D sdlgpu3=ON
+          -D wgpu=OFF
           -D examples=ON
           -D example_null=ON
           -D example_glfw_opengl2=ON -D example_glfw_opengl3=ON -D example_glfw_vulkan=ON -D example_glfw_metal=ON
