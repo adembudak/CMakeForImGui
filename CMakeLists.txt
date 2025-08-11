@@ -77,6 +77,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   option(osx "" OFF)
 endif()
 
+option(thirdparty "" OFF)
 option(imgui_test_engine "" OFF)
 option(imgui_club "" OFF)
 option(imgui_markdown "" OFF)
@@ -143,6 +144,13 @@ cmake_dependent_option(example_apple_opengl2 "" OFF "examples AND osx AND opengl
 cmake_dependent_option(example_apple_metal "" OFF "examples AND osx AND metal" OFF)
 
 cmake_dependent_option(example_null "" OFF examples OFF)
+
+cmake_dependent_option(imgui_test_engine "" OFF thirdparty OFF)
+cmake_dependent_option(imgui_club "" OFF thirdparty OFF)
+cmake_dependent_option(imgui_markdown "" OFF thirdparty OFF)
+cmake_dependent_option(implot "" OFF thirdparty OFF)
+cmake_dependent_option(implot3d "" OFF thirdparty OFF)
+cmake_dependent_option(imguifiledialog "" OFF thirdparty OFF)
 
 cmake_dependent_option(imgui_memory_editor "" OFF imgui_club OFF)
 cmake_dependent_option(imgui_multicontext_compositor "" OFF "imgui_club AND (${IMGUI_VERSION} VERSION_GREATER 1.90.8)" OFF)
