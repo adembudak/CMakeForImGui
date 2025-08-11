@@ -479,7 +479,7 @@ if(sdl2)
 
   if(example_sdl2_metal)
     add_executable(example_sdl2_metal)
-    target_sources(example_sdl2_metal PRIVATE ${_imgui_examples_dir}/example_sdl2_metal/main.mm)
+    target_sources(example_sdl2_metal PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imgui_dir}/examples/example_sdl2_metal/main.mm,${_imgui_dir}/examples/example_sdl_metal/main.mm>)
     target_link_libraries(example_sdl2_metal PRIVATE imgui_core)
     target_link_libraries(example_sdl2_metal PRIVATE imgui_backend_sdl2 imgui_backend_metal imgui_demo)
 
@@ -772,7 +772,7 @@ if(metal)
   target_sources(imgui_backend_metal PUBLIC FILE_SET imgui_backend_metal_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_metal.h)
   target_link_libraries(imgui_backend_metal PUBLIC imgui_core)
   target_link_libraries(imgui_backend_metal PUBLIC "-framework Metal")
-  target_compile_options(imgui_backend_metal PRIVATE $<$<VERSION_LESS:${IMGUI_VERSION},1.89.4>:-fobjc-arc>)
+  target_compile_options(imgui_backend_metal PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},1.89.4>:-fobjc-arc>)
 
   list(APPEND imgui_backends_list imgui_backend_metal)
 endif()
