@@ -284,7 +284,17 @@ if(vulkan)
 endif()
 
 if(wgpu)
-  message(FATAL_ERROR "Build support for this backend is not added yet")
+  find_package(Threads REQUIRED)
+  find_package(Dawn REQUIRED)
+
+  add_library(imgui_backend_wgpu)
+  target_sources(imgui_backend_wgpu PRIVATE ${_imgui_backends_dir}/imgui_impl_wgpu.cpp)
+  target_sources(imgui_backend_wgpu PUBLIC FILE_SET imgui_backend_wgpu_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_wgpu.h)
+  target_link_libraries(imgui_backend_wgpu PUBLIC imgui_core)
+  target_link_libraries(imgui_backend_wgpu PUBLIC dawn::webgpu_dawn dawn::dawn_public_config Threads::Threads)
+  target_compile_definitions(imgui_backend_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+
+  list(APPEND imgui_backends_list imgui_backend_wgpu)
 endif()
 
 if(android)
