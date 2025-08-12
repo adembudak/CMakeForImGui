@@ -265,8 +265,6 @@ if(vulkan)
       set(suffix x64)
     endif()
 
-    message(STATUS "CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} ${suffix} ${VULKAN_RUNTIME_COMPONENTS_DIR}/${suffix}")
-
     find_library(Vulkan_Libraries vulkan-1 PATHS ${VULKAN_RUNTIME_COMPONENTS_DIR} PATH_SUFFIXES ${suffix} NO_CACHE REQUIRED NO_DEFAULT_PATH NO_CMAKE_SYSTEM_PATH NO_CMAKE_FIND_ROOT_PATH)
     find_package(VulkanHeaders REQUIRED)
   else()
