@@ -267,6 +267,38 @@ jobs:
           -D thirdparty=ON
           -D implot3d=ON -D IMPLOT3D_SOURCE_DIR=$PWD/implot3d
 
+      - name: Check ImGui version whether ImGuiFileDialog supported
+        shell: bash
+        id: is_imguifiledialog_supported_by_this_version
+        run: |
+          version=${{ matrix.tag }}
+
+          if [[ "$version" =~ ^v[0-9]+\.[0-9]+$ ]]; then
+            version="${version}.0"
+          fi
+
+          result=$(semver compare $version v1.92.0)
+          echo $result
+
+          echo "result=$result" >> $GITHUB_OUTPUT
+
+      - name: Checkout ImGuiFileDialog
+        if: steps.is_imguifiledialog_supported_by_this_version.outputs.result == '1'
+        uses: actions/checkout@v4
+        with:
+          repository: aiekick/ImGuiFileDialog
+          show-progress: false
+          path: ImGuiFileDialog
+
+      - name: Configure CMakeForImGui enabled ImGuiFileDialog
+        if: steps.is_imguifiledialog_supported_by_this_version.outputs.result == '1'
+        run: >
+          cmake
+          -S ${{ github.workspace }}/CMakeForImGui
+          -B ${{ github.workspace }}/build
+          -D thirdparty=ON
+          -D imguifiledialog=ON -D IMGUIFILEDIALOG_SOURCE_DIR=ImGuiFileDialog
+
       - name: Build
         run: >
           cmake
