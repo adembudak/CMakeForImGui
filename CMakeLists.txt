@@ -993,19 +993,13 @@ if(imguifiledialog)
   endif()
   set(_imfiledialog_dir ${IMGUIFILEDIALOG_SOURCE_DIR})
 
-  if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    find_path(Dirent_PATH dirent.h PATHS ${_imfiledialog_dir} PATH_SUFFIXES dirent DOC "https://github.com/tronkko/dirent" NO_CACHE REQUIRED NO_DEFAULT_PATH NO_CMAKE_SYSTEM_PATH NO_CMAKE_FIND_ROOT_PATH)
-  endif()
-
-  find_path(stb_PATH std_image.h stb_image_resize2.h PATHS ${_imfiledialog_dir} PATH_SUFFIXES stb DOC "https://github.com/nothings/stb" NO_CACHE REQUIRED NO_DEFAULT_PATH NO_CMAKE_SYSTEM_PATH NO_CMAKE_FIND_ROOT_PATH)
-
   add_library(imguifiledialog)
   target_sources(imguifiledialog PRIVATE ${_imfiledialog_dir}/ImGuiFileDialog.cpp)
   target_compile_features(imguifiledialog PRIVATE cxx_std_17)
   target_compile_definitions(imguifiledialog PRIVATE USE_STD_FILESYSTEM)
   target_sources(imguifiledialog PUBLIC FILE_SET imguifiledialog_set BASE_DIRS ${_imfiledialog_dir} TYPE HEADERS FILES ${_imfiledialog_dir}/ImGuiFileDialog.h ${_imfiledialog_dir}/ImGuiFileDialogConfig.h)
-  target_sources(imguifiledialog PRIVATE FILE_SET HEADERS BASE_DIRS ${stb_PATH} FILES ${stb_PATH}/stb_image.h ${stb_PATH}/stb_image_resize2.h)
-  target_sources(imguifiledialog PRIVATE FILE_SET HEADERS BASE_DIRS $<$<PLATFORM_ID:Windows>:${Dirent_PATH}> FILES $<$<PLATFORM_ID:Windows>:${Dirent_PATH}/dirent.h>)
+  target_sources(imguifiledialog PRIVATE FILE_SET HEADERS BASE_DIRS ${_imfiledialog_dir}/stb FILES ${_imfiledialog_dir}/stb/stb_image.h ${_imfiledialog_dir}/stb/stb_image_resize2.h)
+  target_sources(imguifiledialog PRIVATE FILE_SET HEADERS BASE_DIRS $<$<PLATFORM_ID:Windows>:${_imfiledialog_dir}/dirent> FILES $<$<PLATFORM_ID:Windows>:${_imfiledialog_dir}/dirent/dirent.h>)
   target_link_libraries(imguifiledialog PUBLIC imgui_core)
 endif()
 
