@@ -94,6 +94,23 @@ jobs:
         with:
           cmake-version: '4.0.0'
 
+      - name: Install semver-tool for semantic version comparision
+        uses: actions/checkout@v4
+        with:
+          repository: fsaintjacques/semver-tool
+          show-progress: false
+          path: semver-tool
+
+      - name: Add it to the path
+        shell: bash
+        run: |
+          chmod +x "$PWD/semver-tool/src/semver"
+          echo "$PWD/semver-tool/src" >> $GITHUB_PATH
+
+      - name: Make sure it's added to the path
+        shell: bash
+        run: semver --version
+
       - name: Check out ImGui repository
         uses: actions/checkout@v4
         with:
@@ -155,7 +172,7 @@ jobs:
           -D example_allegro5=ON
           --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
-      - name: Extra configurations for macOS
+      - name: Configurations for macOS related backends
         if: matrix.os == 'macos-15'
         run: >
           cmake
@@ -166,7 +183,7 @@ jobs:
           -D example_apple_opengl2=ON
           -D example_apple_metal=ON
 
-      - name: Extra configurations for Windows
+      - name: Configurations for Windows related backends
         if: matrix.os == 'windows-latest'
         run: >
           cmake
@@ -184,6 +201,42 @@ jobs:
           -D example_win32_directx11=ON
           -D example_win32_directx12=ON
           -D example_sdl2_directx11=ON
+
+      - name: Check ImGui version whether imgui_test_engine supported
+        id: is_imgui_test_engine_supported_by_this_version
+        run: |
+          version=${{ matrix.tag }}
+
+          if [[ "$version" =~ ^v[0-9]+\.[0-9]+$ ]]; then
+            version="${version}.0"
+          fi
+
+          result=$(semver compare $version v1.89.0)
+          echo $result
+
+          if [[ $version == v1.89.0 || $version == v1.90.0 ]]; then
+            result=0
+          fi
+
+          echo "result=$result" >> $GITHUB_OUTPUT
+
+      - name: Checkout imgui_test_engine
+        if: steps.is_imgui_test_engine_supported_by_this_version.outputs.result == '1'
+        uses: actions/checkout@v4
+        with:
+          repository: ocornut/imgui_test_engine
+          show-progress: false
+          ref: ${{ matrix.tag }}
+          path: imgui_test_engine
+
+      - name: Configure imgui_test_engine
+        if: steps.is_imgui_test_engine_supported_by_this_version.outputs.result == '1'
+        run: >
+          cmake
+          -S ${{ github.workspace }}/CMakeForImGui
+          -B ${{ github.workspace }}/build
+          -D thirdparty=ON
+          -D imgui_test_engine=ON -D IMGUI_TEST_ENGINE_SOURCE_DIR=$PWD/imgui_test_engine
 
       - name: Build
         run: >
