@@ -202,8 +202,10 @@ jobs:
           -D example_win32_directx12=ON
           -D example_sdl2_directx11=ON
 
-      - name: Check ImGui version whether imgui_test_engine supported
-        id: is_imgui_test_engine_supported_by_this_version
+
+      - name: Check ImGui version whether ImPlot supported
+        shell: bash
+        id: is_implot_supported_by_this_version
         run: |
           version=${{ matrix.tag }}
 
@@ -214,29 +216,24 @@ jobs:
           result=$(semver compare $version v1.89.0)
           echo $result
 
-          if [[ $version == v1.89.0 || $version == v1.90.0 ]]; then
-            result=0
-          fi
-
           echo "result=$result" >> $GITHUB_OUTPUT
 
-      - name: Checkout imgui_test_engine
-        if: steps.is_imgui_test_engine_supported_by_this_version.outputs.result == '1'
+      - name: Checkout ImPlot
+        if: steps.is_implot_supported_by_this_version.outputs.result == '1'
         uses: actions/checkout@v4
         with:
-          repository: ocornut/imgui_test_engine
+          repository: epezent/implot
           show-progress: false
-          ref: ${{ matrix.tag }}
-          path: imgui_test_engine
+          path: implot
 
-      - name: Configure imgui_test_engine
-        if: steps.is_imgui_test_engine_supported_by_this_version.outputs.result == '1'
+      - name: Configure configure CMakeForImGui enabled ImPlot
+        if: steps.is_implot_supported_by_this_version.outputs.result == '1'
         run: >
           cmake
           -S ${{ github.workspace }}/CMakeForImGui
           -B ${{ github.workspace }}/build
           -D thirdparty=ON
-          -D imgui_test_engine=ON -D IMGUI_TEST_ENGINE_SOURCE_DIR=$PWD/imgui_test_engine
+          -D implot=ON -D IMPLOT_SOURCE_DIR=$PWD/implot
 
       - name: Build
         run: >
