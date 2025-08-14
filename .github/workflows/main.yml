@@ -297,7 +297,8 @@ jobs:
           -S ${{ github.workspace }}/CMakeForImGui
           -B ${{ github.workspace }}/build
           -D thirdparty=ON
-          -D imguifiledialog=ON -D IMGUIFILEDIALOG_SOURCE_DIR=ImGuiFileDialog
+          -D imguifiledialog=ON -D IMGUIFILEDIALOG_SOURCE_DIR=$PWD/ImGuiFileDialog
+          --debug-find
 
       - name: Build
         run: >
