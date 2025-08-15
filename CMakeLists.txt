@@ -214,7 +214,7 @@ if(opengl3)
   endif()
 
   target_sources(imgui PRIVATE ${_imgui_backends_dir}/imgui_impl_opengl3.cpp)
-  target_link_libraries(imgui PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU,Clang>>,opengl32,$<IF:$<TARGET_EXISTS:imgui_backend_android>,EGL,OpenGL::GL>>)
+  target_link_libraries(imgui PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU,Clang>>,opengl32,$<IF:$<BOOL:${android}>,EGL,OpenGL::GL>>)
   target_sources(imgui PUBLIC FILE_SET imgui_backend_opengl3_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_opengl3.h)
 
   target_link_libraries(imgui PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},1.84>:GLEW::GLEW>)
@@ -301,20 +301,16 @@ Android NDK toolchain is not used
   set(Android_NDK_INCLUDE_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/${host_tag}/sysroot/usr/include)
   set(Android_NDK_LIB_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/${host_tag}/sysroot/usr/lib/${triplet}/${api_level})
 
-  add_library(imgui_backend_android)
-  target_sources(imgui_backend_android PRIVATE ${_imgui_backends_dir}/imgui_impl_android.cpp)
-  target_link_libraries(imgui_backend_android PUBLIC imgui)
-  target_sources(imgui_backend_android PUBLIC FILE_SET imgui_backend_android_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_android.h)
-  target_link_directories(imgui_backend_android PUBLIC ${Android_NDK_LIB_DIR})
-  target_link_libraries(imgui_backend_android PUBLIC log android)
-  target_sources(imgui_backend_android PRIVATE FILE_SET HEADERS BASE_DIRS ${Android_NDK_INCLUDE_DIR} FILES ${Android_NDK_INCLUDE_DIR}/android/native_window.h ${Android_NDK_INCLUDE_DIR}/android/input.h ${Android_NDK_INCLUDE_DIR}/android/keycodes.h ${Android_NDK_INCLUDE_DIR}/android/log.h)
-
-  list(APPEND imgui_backends_list imgui_backend_android)
+  target_sources(imgui PRIVATE ${_imgui_backends_dir}/imgui_impl_android.cpp)
+  target_sources(imgui PUBLIC FILE_SET imgui_backend_android_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_android.h)
+  target_link_directories(imgui PUBLIC ${Android_NDK_LIB_DIR})
+  target_link_libraries(imgui PUBLIC log android)
+  target_sources(imgui PRIVATE FILE_SET HEADERS BASE_DIRS ${Android_NDK_INCLUDE_DIR} FILES ${Android_NDK_INCLUDE_DIR}/android/native_window.h ${Android_NDK_INCLUDE_DIR}/android/input.h ${Android_NDK_INCLUDE_DIR}/android/keycodes.h ${Android_NDK_INCLUDE_DIR}/android/log.h)
 
   if(example_android_opengl3)
     find_program(GRADLE_COMMAND gradle REQUIRED)
 
-    add_custom_command(TARGET imgui_backend_android POST_BUILD
+    add_custom_command(TARGET imgui POST_BUILD
       COMMAND ${GRADLE_COMMAND} --project-dir ${_imgui_examples_dir}/example_android_opengl3/android assembleRelease
       WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
       COMMENT "Building .apk files\n${_imgui_examples_dir}/example_android_opengl3/android/app/build/outputs/apk/"
@@ -774,6 +770,7 @@ if(install)
   install(EXPORT imgui_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::DearImGui:: FILE CMakeForImGuiTargets.cmake)
   install(TARGETS imgui imgui_demo EXPORT imgui_export
     FILE_SET HEADERS
+    FILE_SET imgui_backend_android_set
     FILE_SET imgui_backend_opengl2_set
     FILE_SET imgui_backend_opengl3_set
     FILE_SET imgui_backend_vulkan_set
@@ -792,8 +789,7 @@ if(install)
     FILE_SET imgui_backend_dx11_set
     FILE_SET imgui_backend_dx12_set
     FILE_SET imgui_backend_metal_set
-    FILE_SET imgui_backend_osx_set
-)
+    FILE_SET imgui_backend_osx_set)
 
   if(misc)
     if(misc_cpp)
@@ -813,13 +809,6 @@ if(install)
       install(DIRECTORY ${_imgui_dir}/misc/fonts DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui FILES_MATCHING PATTERN "*.ttf")
     endif()
   endif()
-
-  foreach(backend IN LISTS imgui_backends_list)
-    get_property(name TARGET ${backend} PROPERTY NAME)
-    get_property(file_set TARGET ${backend} PROPERTY HEADER_SETS)
-
-    install(TARGETS ${name} EXPORT imgui_export FILE_SET HEADERS FILE_SET ${file_set})
-  endforeach()
 
   if(install_examples)
     if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
