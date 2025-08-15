@@ -73,6 +73,8 @@ find_package(CMakeForImGui CONFIG REQUIRED)
 # ...
 target_link_libraries(tgt PUBLIC Unofficial::DearImGui::imgui_backend_sdl2 Unofficial::DearImGui::imgui_backend_opengl3)
 ```
+There is also [this branch](https://github.com/adembudak/CMakeForImGui/tree/single-target) available, where a single target approach is investigated. The same options are available but all the backends and ImGui itself is linked with a `Unofficial::DearImGui::imgui` target.
+
 ### With `pkg-config` command
 
 The build script can be used to generate **pkg-config** file:
