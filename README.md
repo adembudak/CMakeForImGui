@@ -17,30 +17,42 @@ cmake --install build --config Release
 
 Following backend options are available:
 
-| Build option   | Generated target                                      |
-|----------------|-------------------------------------------------------|
-| (default)      | Unofficial::DearImGui::imgui_core<br> Unofficial::DearImGui::imgui_demo |
-| android        | Unofficial::DearImGui::imgui_backend_android          |
-| opengl2        | Unofficial::DearImGui::imgui_backend_opengl2          |
-| opengl3        | Unofficial::DearImGui::imgui_backend_opengl3          |
-| vulkan         | Unofficial::DearImGui::imgui_backend_vulkan           |
-| allegro5       | Unofficial::DearImGui::imgui_backend_allegro5         |
-| glfw           | Unofficial::DearImGui::imgui_backend_glfw             |
-| glut           | Unofficial::DearImGui::imgui_backend_glut             |
-| sdl2           | Unofficial::DearImGui::imgui_backend_sdl2             |
-| sdlrenderer2   | Unofficial::DearImGui::imgui_backend_sdlrenderer2     |
-| sdl3           | Unofficial::DearImGui::imgui_backend_sdl3             |
-| sdlgpu3        | Unofficial::DearImGui::imgui_backend_sdlgpu3          |
-| sdlrenderer3   | Unofficial::DearImGui::imgui_backend_sdlrenderer3     |
-| win32          | Unofficial::DearImGui::imgui_backend_win32            |
-| dx9            | Unofficial::DearImGui::imgui_backend_dx9              |
-| dx10           | Unofficial::DearImGui::imgui_backend_dx10             |
-| dx11           | Unofficial::DearImGui::imgui_backend_dx11             |
-| dx12           | Unofficial::DearImGui::imgui_backend_dx12             |
-| osx            | Unofficial::DearImGui::imgui_backend_osx              |
-| metal          | Unofficial::DearImGui::imgui_backend_metal            |
+<table>
+  <thead>
+    <tr>
+      <th>Build option</th>
+      <th>Generated target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ImGui Demo</td>
+      <td><code>Unofficial::DearImGui::imgui_demo</code></td>
+    </tr>
+    <tr><td>(default)</td><td rowspan="20"><code>Unofficial::DearImGui::imgui</code></td></tr>
+    <tr><td>android</td></tr>
+    <tr><td>opengl2</td></tr>
+    <tr><td>opengl3</td></tr>
+    <tr><td>vulkan</td></tr>
+    <tr><td>allegro5</td></tr>
+    <tr><td>glfw</td></tr>
+    <tr><td>glut</td></tr>
+    <tr><td>sdl2</td></tr>
+    <tr><td>sdlrenderer2</td></tr>
+    <tr><td>sdl3</td></tr>
+    <tr><td>sdlgpu3</td></tr>
+    <tr><td>sdlrenderer3</td></tr>
+    <tr><td>win32</td></tr>
+    <tr><td>dx9</td></tr>
+    <tr><td>dx10</td></tr>
+    <tr><td>dx11</td></tr>
+    <tr><td>dx12</td></tr>
+    <tr><td>osx</td></tr>
+    <tr><td>metal</td></tr>
+  </tbody>
+</table>
 
-All backend options are `OFF` by default.
+All backend options are `OFF` by default and every enabled and built backends merged into the `Unofficial::DearImGui::imgui` target.
 
 Example programs set as dependent options, like:
 ```cmake
@@ -49,17 +61,6 @@ cmake_dependent_option(example_sdl2_opengl3 "" OFF "examples AND sdl2 AND opengl
 The `example_sdl2_opengl3` option will be available only when the `examples` option and the corresponding backends (`sdl2` and `opengl3`) are `ON`. The same is true for all the other examples and they're `OFF` by default.
 
 Libraries and examples can be installed by setting `install` and `install_examples` options `ON`, respectively. An `uninstall` custom target is also provided to remove the artifacts where are they installed.
-
-Following projects are also supported:
-
-| Project | Variable must be set | Build option(s) | Generated target(s) |
-|--------|-----------------------|------------------|----------------------|
-| [imgui_test_engine](https://github.com/ocornut/imgui_test_engine) | IMGUI_TEST_ENGINE_SOURCE_DIR | imgui_test_engine | <br> Unofficial::imgui_test_engine::imgui_test_engine<br> Unofficial::imgui_test_engine::imgui_app |
-| [imgui_club](https://github.com/ocornut/imgui_club) | IMGUI_CLUB_SOURCE_DIR | imgui_club<br>imgui_memory_editor<br>imgui_multicontext_compositor<br>imgui_threaded_rendering | <br> Unofficial::imgui_club::imgui_memory_editor<br> Unofficial::imgui_club::imgui_multicontext_compositor<br> Unofficial::imgui_club::imgui_threaded_rendering |
-| [imgui_markdown](https://github.com/enkisoftware/imgui_markdown) | IMGUI_MARKDOWN_SOURCE_DIR | imgui_markdown | Unofficial::imgui_markdown::imgui_markdown |
-| [ImPlot](https://github.com/epezent/implot) | IMPLOT_SOURCE_DIR | implot | Unofficial::ImPlot::implot<br>Unofficial::ImPlot::implot_demo |
-| [ImPlot3D](https://github.com/brenocq/implot3d) | IMPLOT3D_SOURCE_DIR | implot3d | Unofficial::ImPlot3D::implot3d<br>Unofficial::ImPlot3D::implot3d_demo |
-| [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) | IMGUIFILEDIALOG_SOURCE_DIR | imguifiledialog | Unofficial::ImGuiFileDialog::imguifiledialog |
 
 ## Usage
 
@@ -71,7 +72,7 @@ All the include paths are kept as is. [This repo](https://github.com/adembudak/C
 
 find_package(CMakeForImGui CONFIG REQUIRED)
 # ...
-target_link_libraries(tgt PUBLIC Unofficial::DearImGui::imgui_backend_sdl2 Unofficial::DearImGui::imgui_backend_opengl3)
+target_link_libraries(tgt PUBLIC Unofficial::DearImGui::imgui)
 ```
 ### With `pkg-config` command
 
@@ -84,10 +85,6 @@ This generates a `cmakeforimgui.pc` file in build directory which can be install
 ```bash
 c++ -o out main.cpp $(pkg-config --cflags --libs cmakeforimgui)
 ```
-
-## Using with older versions of the Dear ImGui
-
-Limited amount of checking has done for moved, removed or renamed files of the previous versions of the Dear ImGui. The main branch will work best with recent the versions of the project, i.e. v1.90+. Some work has done for the versions older than 1.80 on [this branch](https://github.com/adembudak/CMakeForImGui/tree/pre.v1.80).
 
 ## Help needed
 
