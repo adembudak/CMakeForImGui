@@ -139,7 +139,6 @@ cmake_dependent_option(example_null "" OFF examples OFF)
 
 cmake_dependent_option(install_examples "" OFF install OFF)
 
-set(imgui_backends_list)
 set(imgui_examples_list)
 set(pkg_config_requires_list)
 
@@ -733,12 +732,6 @@ if(pkg-config)
     string(JOIN " " pkg_config_requires_string ${pkg_config_requires_list})
   endif()
 
-  if(imgui_backends_list)
-    set(pkg_config_imgui_backends_list ${imgui_backends_list})
-    list(TRANSFORM pkg_config_imgui_backends_list PREPEND "-l")
-    string(JOIN " " pkg_config_imgui_backends_string ${pkg_config_imgui_backends_list})
-  endif()
-
   file(CONFIGURE OUTPUT ${PROJECT_BINARY_DIR}/cmakeforimgui.pc CONTENT
 [=[
 # SPDX-License-Identifier: MIT
@@ -755,7 +748,7 @@ URL: @PROJECT_HOMEPAGE_URL@
 
 Requires: @pkg_config_requires_string@
 Conflicts:
-Libs: -L${libdir} -limgui -limgui_demo @pkg_config_imgui_backends_string@ @pkg_config_imgui_misc_cpp_string@
+Libs: -L${libdir} -limgui -limgui_demo @pkg_config_imgui_misc_cpp_string@
 Libs.private:
 Cflags: -I${includedir}
 ]=] @ONLY)
