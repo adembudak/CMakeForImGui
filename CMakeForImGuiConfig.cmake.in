@@ -74,6 +74,11 @@ if(TARGET Unofficial::DearImGui::imgui_backend_vulkan)
   find_dependency(Vulkan REQUIRED)
 endif()
 
+if(TARGET Unofficial::DearImGui::imgui_backend_wgpu)
+  find_dependency(Threads REQUIRED)
+  find_dependency(Dawn REQUIRED)
+endif()
+
 if(TARGET Unofficial::DearImGui::imgui_misc_freetype)
   find_dependency(freetype REQUIRED)
 endif()
