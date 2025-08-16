@@ -6,79 +6,60 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGuiTargets.cmake")
   include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGuiTargets.cmake")
 endif()
 
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_club-Targets.cmake")
-  include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_club-Targets.cmake")
-endif()
+foreach(component IN LISTS ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
+  message(${component})
+endforeach()
 
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_markdown-Targets.cmake")
-  include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_markdown-Targets.cmake")
-endif()
-
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-ImPlot-Targets.cmake")
-  include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-ImPlot-Targets.cmake")
-endif()
-
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-ImPlot3D-Targets.cmake")
-  include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-ImPlot3D-Targets.cmake")
-endif()
-
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-ImGuiFileDialog-Targets.cmake")
-  include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-ImGuiFileDialog-Targets.cmake")
-endif()
-
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_test_engine-Targets.cmake")
-  include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_test_engine-Targets.cmake")
-endif()
-
-if(TARGET Unofficial::DearImGui::imgui_backend_allegro5)
+if(allegro5 IN_LIST ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
   find_dependency(Allegro REQUIRED)
 endif()
 
-if(TARGET Unofficial::DearImGui::imgui_backend_glfw)
+if(allegro5 IN_LIST ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
   find_dependency(glfw3 REQUIRED)
 endif()
 
-if(TARGET Unofficial::DearImGui::imgui_backend_glut)
+if(glut IN_LIST ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
   find_dependency(FreeGLUT REQUIRED)
 endif()
 
-if(TARGET Unofficial::DearImGui::imgui_backend_sdl2)
+if(sdl2 IN_LIST ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
   find_dependency(SDL2 REQUIRED)
 endif()
 
-if(TARGET Unofficial::DearImGui::imgui_backend_sdlrenderer2)
+if(sdlrenderer2 IN_LIST ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
   find_dependency(SDL2 REQUIRED)
 endif()
 
-if(TARGET Unofficial::DearImGui::imgui_backend_sdl3)
+if(sdl3 IN_LIST ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
   find_dependency(SDL3 REQUIRED)
 endif()
 
-if(TARGET Unofficial::DearImGui::imgui_backend_sdlrenderer3)
+if(sdlgpu3 IN_LIST ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
   find_dependency(SDL3 REQUIRED)
 endif()
 
-if(TARGET Unofficial::DearImGui::imgui_backend_sdlgpu3)
+if(sdlrenderer3 IN_LIST ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
   find_dependency(SDL3 REQUIRED)
 endif()
 
-if(TARGET Unofficial::DearImGui::imgui_backend_opengl2)
+if(opengl2 IN_LIST ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
   find_dependency(OpenGL 2 REQUIRED)
 endif()
 
-if(TARGET Unofficial::DearImGui::imgui_backend_opengl3)
+if(opengl3 IN_LIST ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
   find_dependency(OpenGL 3 REQUIRED)
 endif()
 
-if(TARGET Unofficial::DearImGui::imgui_backend_vulkan)
+if(vulkan IN_LIST ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
   find_dependency(Vulkan REQUIRED)
 endif()
 
-if(TARGET Unofficial::DearImGui::imgui_backend_wgpu)
+if(wgpu IN_LIST ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
   find_dependency(Threads REQUIRED)
   find_dependency(Dawn REQUIRED)
 endif()
 
-if(TARGET Unofficial::DearImGui::imgui_misc_freetype)
+if(TARGET Unofficial::DearImGui::imgui)
   find_dependency(freetype REQUIRED)
 endif()
+
