@@ -64,16 +64,18 @@ Libraries and examples can be installed by setting `install` and `install_exampl
 
 ## Usage
 
-All the include paths are kept as is. [This repo](https://github.com/adembudak/CMakeForImGui.test) demonstrates how to build programs as a client of the library:
+All the include paths are kept as is. [This repo](https://github.com/adembudak/CMakeForImGui.test/tree/single-target) demonstrates how to build programs as a client of the library:
 
 ```cmake
 # project setup
 # ...
 
-find_package(CMakeForImGui CONFIG REQUIRED)
+find_package(CMakeForImGui CONFIG REQUIRED COMPONENTS sdl2 opengl3)
 # ...
 target_link_libraries(tgt PUBLIC Unofficial::DearImGui::imgui)
 ```
+The component names are the same with the build options shown the table above.
+
 ### With `pkg-config` command
 
 The build script can be used to generate **pkg-config** file:
