@@ -6,70 +6,116 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGuiTargets.cmake")
   include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGuiTargets.cmake")
 endif()
 
+set(${CMAKE_FIND_PACKAGE_NAME}_possible_components allegro5 dx10 dx11 dx12 dx9 glfw glut metal opengl2 opengl3 osx sdl2 sdl3 sdlgpu3 sdlrenderer2 sdlrenderer3 vulkan wgpu win32)
 
+set(${CMAKE_FIND_PACKAGE_NAME}_requested_components ${${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS})
 
+if(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY)
+  set(quiet QUIET)
+endif()
 
+foreach(component IN LISTS ${CMAKE_FIND_PACKAGE_NAME}_requested_components)
+  if(NOT component IN_LIST ${CMAKE_FIND_PACKAGE_NAME}_possible_components)
+    message(WARNING "Unrecognized component name: ${component}")
+  endif()
 
-foreach(component IN LISTS ${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS)
+  set(required)
+  if(${CMAKE_FIND_PACKAGE_NAME}_FIND_REQUIRED_${component})
+    set(required REQUIRED)
+  endif()
+
+  if((component MATCHES "dx9|dx10|dx11|dx12|win32") AND (NOT CMAKE_SYSTEM_NAME STREQUAL "Windows"))
+    message(WARNING "dx9, dx10, dx11, dx12 and win32 backends are available on Windows platforms")
+  endif()
+
+  if((component MATCHES "osx|metal") AND (NOT CMAKE_SYSTEM_NAME STREQUAL "Darwin"))
+   message(WARNING "osx and metal backends are available on Apple platforms")
+  endif()
+
   if(component STREQUAL "allegro5")
-    find_dependency(Allegro REQUIRED)
-    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND TRUE)
+    find_dependency(Allegro ${quiet} ${required})
+
+    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND ${Allegro_FOUND})
+  endif()
+
+  if(component STREQUAL "dx10")
+  endif()
+
+  if(component STREQUAL "dx11")
+  endif()
+
+  if(component STREQUAL "dx12")
+  endif()
+
+  if(component STREQUAL "dx9")
   endif()
 
   if(component STREQUAL "glfw")
-    find_dependency(glfw3 REQUIRED)
-    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND TRUE)
+    find_dependency(glfw3 ${quiet} ${required})
+
+    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND ${glfw3_FOUND})
   endif()
 
   if(component STREQUAL "glut")
-    find_dependency(FreeGLUT REQUIRED)
-    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND TRUE)
+    find_dependency(FreeGLUT ${quiet} ${required})
+
+    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND ${FreeGLUT_FOUND})
   endif()
 
-  if(component STREQUAL "sdl2")
-    find_dependency(SDL2 REQUIRED)
-    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND TRUE)
-  endif()
-
-  if(component STREQUAL "sdlrenderer2")
-    find_dependency(SDL2 REQUIRED)
-    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND TRUE)
-  endif()
-
-  if(component STREQUAL "sdl3")
-    find_dependency(SDL3 REQUIRED)
-    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND TRUE)
-  endif()
-
-  if(component STREQUAL "sdlgpu3")
-    find_dependency(SDL3 REQUIRED)
-    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND TRUE)
-  endif()
-
-  if(component STREQUAL "sdlrenderer3")
-    find_dependency(SDL3 REQUIRED)
-    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND TRUE)
+  if(component STREQUAL "metal")
   endif()
 
   if(component STREQUAL "opengl2")
-    find_dependency(OpenGL 2 REQUIRED)
-    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND TRUE)
+    find_dependency(OpenGL 2 ${quiet} ${required})
+    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND ${OpenGL_FOUND})
   endif()
 
   if(component STREQUAL "opengl3")
-    find_dependency(OpenGL 3 REQUIRED)
-    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND TRUE)
+    find_dependency(OpenGL 3 ${quiet} ${required})
+    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND ${OpenGL_FOUND})
+  endif()
+
+  if(component STREQUAL "osx")
+  endif()
+
+  if(component STREQUAL "sdl2")
+    find_dependency(SDL2 ${quiet} ${required})
+
+    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND ${SDL2_FOUND})
+  endif()
+
+  if(component STREQUAL "sdl3")
+    find_dependency(SDL3 ${quiet} ${required})
+    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND ${SDL3_FOUND})
+  endif()
+
+  if(component STREQUAL "sdlgpu3")
+    find_dependency(SDL3 ${quiet} ${required})
+    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND ${SDL3_FOUND})
+  endif()
+
+  if(component STREQUAL "sdlrenderer2")
+    find_dependency(SDL2 ${quiet} ${required})
+    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND ${SDL2_FOUND})
+  endif()
+
+  if(component STREQUAL "sdlrenderer3")
+    find_dependency(SDL3 ${quiet} ${required})
+    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND ${SDL3_FOUND})
   endif()
 
   if(component STREQUAL "vulkan")
-    find_dependency(Vulkan REQUIRED)
-    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND TRUE)
+    find_dependency(Vulkan ${quiet} ${required})
+    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND ${Vulkan_FOUND})
   endif()
 
   if(component STREQUAL "wgpu")
-    find_dependency(Threads REQUIRED)
-    find_dependency(Dawn REQUIRED)
-    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND TRUE)
+    find_dependency(Threads ${quiet} ${required})
+    find_dependency(Dawn ${quiet} ${required})
+    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND ${Dawn_FOUND})
+  endif()
+
+  if(component STREQUAL "win32")
   endif()
 endforeach()
 
