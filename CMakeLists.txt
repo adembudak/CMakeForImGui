@@ -101,10 +101,6 @@ cmake_dependent_option(sdlrenderer3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.
 cmake_dependent_option(sdlgpu3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
 cmake_dependent_option(wgpu "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.80.0)" OFF)
 
-cmake_dependent_option(implot "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.89.0)" OFF)
-cmake_dependent_option(implot3d "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.90.0)" OFF)
-cmake_dependent_option(imguifiledialog "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.92.0)" OFF)
-
 cmake_dependent_option(example_android_opengl3 "" OFF "examples AND android" OFF)
 
 cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND glfw AND opengl2" OFF)
@@ -145,12 +141,12 @@ cmake_dependent_option(example_apple_metal "" OFF "examples AND osx AND metal" O
 
 cmake_dependent_option(example_null "" OFF examples OFF)
 
-cmake_dependent_option(imgui_test_engine "" OFF thirdparty OFF)
+cmake_dependent_option(imgui_test_engine "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER_EQUAL 1.89)" OFF)
 cmake_dependent_option(imgui_club "" OFF thirdparty OFF)
 cmake_dependent_option(imgui_markdown "" OFF thirdparty OFF)
-cmake_dependent_option(implot "" OFF thirdparty OFF)
-cmake_dependent_option(implot3d "" OFF thirdparty OFF)
-cmake_dependent_option(imguifiledialog "" OFF thirdparty OFF)
+cmake_dependent_option(implot "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 1.89.0)" OFF)
+cmake_dependent_option(implot3d "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 1.90.0)" OFF)
+cmake_dependent_option(imguifiledialog "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 1.92.0)" OFF)
 
 cmake_dependent_option(imgui_memory_editor "" OFF imgui_club OFF)
 cmake_dependent_option(imgui_multicontext_compositor "" OFF "imgui_club AND (${IMGUI_VERSION} VERSION_GREATER 1.90.8)" OFF)
