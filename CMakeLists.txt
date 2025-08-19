@@ -184,20 +184,59 @@ if(misc)
   endif()
 
   if(misc_freetype)
-    find_package(freetype CONFIG REQUIRED)
+    try_compile(is_misc_freetype_enabled SOURCE_FROM_CONTENT check_imgui_freetype_enabled.cpp
+[=[
+#include <imconfig.h>
 
-    add_library(imgui_misc_freetype)
-    target_sources(imgui_misc_freetype PRIVATE ${_imgui_misc_dir}/freetype/imgui_freetype.cpp)
-    target_sources(imgui_misc_freetype PRIVATE FILE_SET HEADERS BASE_DIRS ${_imgui_dir} FILES ${_imgui_dir}/imgui.h)
-    target_link_libraries(imgui_misc_freetype PUBLIC Freetype::Freetype)
-    target_link_libraries(imgui_core PUBLIC imgui_misc_freetype)
-    target_sources(imgui_misc_freetype PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imgui_dir}/misc/freetype TYPE HEADERS FILES ${_imgui_misc_dir}/freetype/imgui_freetype.h)
-    target_compile_definitions(imgui_core PUBLIC IMGUI_ENABLE_FREETYPE)
-    target_compile_features(imgui_misc_freetype PRIVATE cxx_std_11)
+#if defined(IMGUI_ENABLE_FREETYPE)
+#else
+  #error ""
+#endif
 
-    set(pkg_config_imgui_misc_cpp_string imgui_misc_freetype)
-    string(PREPEND pkg_config_imgui_misc_cpp_string "-l")
-    list(APPEND pkg_config_requires_list freetype2)
+int main() {}
+]=] COMPILE_DEFINITIONS "-I${PROJECT_SOURCE_DIR}/${_imgui_dir}" NO_CACHE NO_LOG)
+
+    if(NOT ${is_misc_freetype_enabled})
+      message(WARNING "misc_freetype is enabled but IMGUI_ENABLE_FREETYPE is not defined on imconfig.h.\nFreeType support feature will not be enabled.")
+      set(misc_freetype OFF)
+    else()
+      find_package(freetype CONFIG REQUIRED)
+
+      add_library(imgui_misc_freetype)
+      target_sources(imgui_misc_freetype PRIVATE ${_imgui_misc_dir}/freetype/imgui_freetype.cpp)
+      target_sources(imgui_misc_freetype PRIVATE FILE_SET HEADERS BASE_DIRS ${_imgui_dir} FILES ${_imgui_dir}/imgui.h)
+      target_link_libraries(imgui_misc_freetype PUBLIC Freetype::Freetype)
+      target_link_libraries(imgui_core PUBLIC imgui_misc_freetype)
+      target_sources(imgui_misc_freetype PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imgui_dir}/misc/freetype TYPE HEADERS FILES ${_imgui_misc_dir}/freetype/imgui_freetype.h)
+      target_compile_features(imgui_misc_freetype PRIVATE cxx_std_11)
+
+      try_run(is_misc_freetype_svg_libraries_enabled compile_result SOURCE_FROM_CONTENT check_imgui_freetype_SVG_libraries_enabled.cpp
+[=[
+#include <imconfig.h>
+
+int main() {
+#if defined(IMGUI_ENABLE_FREETYPE_LUNASVG)
+  return 1;
+#elif defined(IMGUI_ENABLE_FREETYPE_PLUTOSVG)
+  return 2;
+#else
+  return 0;
+#endif
+}
+]=] COMPILE_DEFINITIONS "-I${PROJECT_SOURCE_DIR}/${_imgui_dir}" NO_CACHE NO_LOG)
+
+      if(${is_misc_freetype_svg_libraries_enabled} EQUAL 1)
+        find_package(lunasvg CONFIG REQUIRED)
+	target_link_libraries(imgui_misc_freetype PUBLIC lunasvg::lunasvg)
+      elseif(${is_misc_freetype_svg_libraries_enabled} EQUAL 2)
+        find_package(plutosvg CONFIG REQUIRED)
+	target_link_libraries(imgui_misc_freetype PUBLIC plutosvg::plutosvg)
+      endif()
+
+      set(pkg_config_imgui_misc_cpp_string imgui_misc_freetype)
+      string(PREPEND pkg_config_imgui_misc_cpp_string "-l")
+      list(APPEND pkg_config_requires_list freetype2)
+    endif()
   endif()
 
   if(misc_fonts)
@@ -861,9 +900,7 @@ SOURCE_FROM_CONTENT test.cpp
   #error ""
 #endif
 int main() {}
-]=]
-  COMPILE_DEFINITIONS "-I${PROJECT_SOURCE_DIR}/${_imgui_te_dir}/imgui_test_suite -I${PROJECT_SOURCE_DIR}/${_imgui_dir}"
-  NO_CACHE NO_LOG)
+]=] COMPILE_DEFINITIONS "-I${PROJECT_SOURCE_DIR}/${_imgui_te_dir}/imgui_test_suite -I${PROJECT_SOURCE_DIR}/${_imgui_dir}" NO_CACHE NO_LOG)
 
   target_link_libraries(imgui_test_engine PRIVATE $<$<BOOL:${ENABLE_PERFORMANCE_VIEWER}>:implot>)
   target_compile_definitions(imgui_test_engine PRIVATE $<$<BOOL:${ENABLE_PERFORMANCE_VIEWER}>:IMGUI_TEST_ENGINE_ENABLE_IMPLOT>)
