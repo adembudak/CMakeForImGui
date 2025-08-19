@@ -119,6 +119,11 @@ jobs:
           ref: ${{ matrix.tag }}
           path: imgui
 
+      - name: Enable FreeType support on imconfig.h
+        shell: bash
+        run: |
+          echo '#define IMGUI_ENABLE_FREETYPE' >> "${{ github.workspace }}/imgui/imconfig.h"
+
       - name: Check out CMakeForImGui
         uses: actions/checkout@v4
         with:
@@ -298,7 +303,6 @@ jobs:
           -B ${{ github.workspace }}/build
           -D thirdparty=ON
           -D imguifiledialog=ON -D IMGUIFILEDIALOG_SOURCE_DIR=$PWD/ImGuiFileDialog
-          --debug-find
 
       - name: Build
         run: >
