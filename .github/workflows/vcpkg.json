@@ -2,12 +2,14 @@
 	"$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
 	"dependencies": [
 		"allegro5",
-		"freetype",
 		"freeglut",
+		"freetype",
 		"glew",
 		"glfw3",
-		"vulkan",
+		"lunasvg",
+		"plutosvg",
 		"sdl2",
-		"sdl3"
+		"sdl3",
+		"vulkan"
 	]
 }
