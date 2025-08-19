@@ -122,7 +122,10 @@ jobs:
       - name: Enable FreeType support on imconfig.h
         shell: bash
         run: |
-          echo '#define IMGUI_ENABLE_FREETYPE' >> "${{ github.workspace }}/imgui/imconfig.h"
+          echo '#define IMGUI_ENABLE_FREETYPE' >> ${{ github.workspace }}/imgui/imconfig.h
+          tail ${{ github.workspace }}/imgui/imconfig.h
+          cd ${{ github.workspace }}/imgui
+          git diff
 
       - name: Check out CMakeForImGui
         uses: actions/checkout@v4
