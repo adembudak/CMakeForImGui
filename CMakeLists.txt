@@ -890,8 +890,8 @@ if(imgui_test_engine)
   target_compile_features(imgui_test_engine PUBLIC cxx_std_14)
   target_compile_definitions(imgui_test_engine PRIVATE IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL=1)
 
-  try_compile(ENABLE_PERFORMANCE_VIEWER
-SOURCE_FROM_CONTENT test.cpp
+  try_compile(is_imgui_test_engine_performance_viewer_enabled
+SOURCE_FROM_CONTENT check_imgui_test_engine_performans_viewer_feature.cpp
 [=[
 #include "imgui_test_suite_imconfig.h"
 
@@ -902,8 +902,8 @@ SOURCE_FROM_CONTENT test.cpp
 int main() {}
 ]=] COMPILE_DEFINITIONS "-I${PROJECT_SOURCE_DIR}/${_imgui_te_dir}/imgui_test_suite -I${PROJECT_SOURCE_DIR}/${_imgui_dir}" NO_CACHE NO_LOG)
 
-  target_link_libraries(imgui_test_engine PRIVATE $<$<BOOL:${ENABLE_PERFORMANCE_VIEWER}>:implot>)
-  target_compile_definitions(imgui_test_engine PRIVATE $<$<BOOL:${ENABLE_PERFORMANCE_VIEWER}>:IMGUI_TEST_ENGINE_ENABLE_IMPLOT>)
+  target_link_libraries(imgui_test_engine PRIVATE $<$<BOOL:${is_imgui_test_engine_performance_viewer_enabled}>:implot>)
+  target_compile_definitions(imgui_test_engine PRIVATE $<$<BOOL:${is_imgui_test_engine_performance_viewer_enabled}>:IMGUI_TEST_ENGINE_ENABLE_IMPLOT>)
 
   add_library(imgui_app)
   target_sources(imgui_app PRIVATE ${_imgui_te_dir}/shared/imgui_app.cpp)
