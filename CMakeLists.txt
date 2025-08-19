@@ -175,12 +175,8 @@ target_link_libraries(imgui_demo PRIVATE imgui_core)
 
 if(misc)
   if(misc_cpp)
-    add_library(imgui_misc_cpp)
-    target_sources(imgui_misc_cpp PRIVATE ${_imgui_misc_dir}/cpp/imgui_stdlib.cpp)
-    target_sources(imgui_misc_cpp PRIVATE FILE_SET HEADERS BASE_DIRS ${_imgui_dir} FILES ${_imgui_dir}/imgui.h)
-    target_link_libraries(imgui_core PUBLIC imgui_misc_cpp)
-    target_sources(imgui_misc_cpp PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imgui_dir}/misc/cpp TYPE HEADERS FILES ${_imgui_misc_dir}/cpp/imgui_stdlib.h)
-    target_compile_features(imgui_misc_cpp PRIVATE cxx_std_11)
+    target_sources(imgui_core PRIVATE ${_imgui_misc_dir}/cpp/imgui_stdlib.cpp)
+    target_sources(imgui_core PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imgui_dir}/misc/cpp TYPE HEADERS FILES ${_imgui_misc_dir}/cpp/imgui_stdlib.h)
   endif()
 
   if(misc_freetype)
@@ -202,13 +198,9 @@ int main() {}
     else()
       find_package(freetype CONFIG REQUIRED)
 
-      add_library(imgui_misc_freetype)
-      target_sources(imgui_misc_freetype PRIVATE ${_imgui_misc_dir}/freetype/imgui_freetype.cpp)
-      target_sources(imgui_misc_freetype PRIVATE FILE_SET HEADERS BASE_DIRS ${_imgui_dir} FILES ${_imgui_dir}/imgui.h)
-      target_link_libraries(imgui_misc_freetype PUBLIC Freetype::Freetype)
-      target_link_libraries(imgui_core PUBLIC imgui_misc_freetype)
-      target_sources(imgui_misc_freetype PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imgui_dir}/misc/freetype TYPE HEADERS FILES ${_imgui_misc_dir}/freetype/imgui_freetype.h)
-      target_compile_features(imgui_misc_freetype PRIVATE cxx_std_11)
+      target_sources(imgui_core PRIVATE ${_imgui_misc_dir}/freetype/imgui_freetype.cpp)
+      target_link_libraries(imgui_core PUBLIC Freetype::Freetype)
+      target_sources(imgui_core PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imgui_dir}/misc/freetype TYPE HEADERS FILES ${_imgui_misc_dir}/freetype/imgui_freetype.h)
 
       try_run(is_misc_freetype_svg_libraries_enabled compile_result SOURCE_FROM_CONTENT check_imgui_freetype_SVG_libraries_enabled.cpp
 [=[
@@ -227,14 +219,12 @@ int main() {
 
       if(${is_misc_freetype_svg_libraries_enabled} EQUAL 1)
         find_package(lunasvg CONFIG REQUIRED)
-	target_link_libraries(imgui_misc_freetype PUBLIC lunasvg::lunasvg)
+	target_link_libraries(imgui_core PUBLIC lunasvg::lunasvg)
       elseif(${is_misc_freetype_svg_libraries_enabled} EQUAL 2)
         find_package(plutosvg CONFIG REQUIRED)
-	target_link_libraries(imgui_misc_freetype PUBLIC plutosvg::plutosvg)
+	target_link_libraries(imgui_core PUBLIC plutosvg::plutosvg)
       endif()
 
-      set(pkg_config_imgui_misc_cpp_string imgui_misc_freetype)
-      string(PREPEND pkg_config_imgui_misc_cpp_string "-l")
       list(APPEND pkg_config_requires_list freetype2)
     endif()
   endif()
@@ -916,9 +906,6 @@ int main() {}
   target_sources(app_minimal PRIVATE ${_imgui_te_dir}/app_minimal/app_minimal_main.cpp ${_imgui_te_dir}/app_minimal/app_minimal_tests.cpp)
   target_link_libraries(app_minimal PRIVATE imgui_app imgui_test_engine)
   target_link_libraries(app_minimal PRIVATE imgui_demo)
-  if(misc_freetype)
-    target_link_libraries(app_minimal PRIVATE imgui_misc_freetype)
-  endif()
 
   add_executable(imgui_test_suite)
   target_sources(imgui_test_suite PRIVATE
@@ -1071,7 +1058,7 @@ URL: @PROJECT_HOMEPAGE_URL@
 
 Requires: @pkg_config_requires_string@
 Conflicts:
-Libs: -L${libdir} -limgui_core -limgui_demo @pkg_config_imgui_backends_string@ @pkg_config_imgui_misc_cpp_string@ @imgui_thirdparty_string@
+Libs: -L${libdir} -limgui_core -limgui_demo @pkg_config_imgui_backends_string@ @imgui_thirdparty_string@
 Libs.private:
 Cflags: -I${includedir}
 ]=] @ONLY)
@@ -1084,17 +1071,9 @@ if(install)
   install(DIRECTORY ${_imgui_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(FILES ${_imgui_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(EXPORT imgui_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::DearImGui:: FILE CMakeForImGuiTargets.cmake)
-  install(TARGETS imgui_core imgui_demo EXPORT imgui_export FILE_SET imgui_core_set)
+  install(TARGETS imgui_core imgui_demo EXPORT imgui_export FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
 
   if(misc)
-    if(misc_cpp)
-      install(TARGETS imgui_misc_cpp EXPORT imgui_export FILE_SET imgui_misc_cpp_set)
-    endif()
-
-    if(misc_freetype)
-      install(TARGETS imgui_misc_freetype EXPORT imgui_export FILE_SET imgui_misc_freetype_set)
-    endif()
-
     if(misc_debugger)
       install(DIRECTORY ${_imgui_misc_dir}/debuggers DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
     endif()
