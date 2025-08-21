@@ -206,7 +206,7 @@ int main() {}
       target_link_libraries(imgui_core PUBLIC Freetype::Freetype)
       target_sources(imgui_core PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imgui_dir}/misc/freetype TYPE HEADERS FILES ${_imgui_misc_dir}/freetype/imgui_freetype.h)
 
-      try_run(is_misc_freetype_svg_libraries_enabled compile_result SOURCE_FROM_CONTENT check_imgui_freetype_SVG_libraries_enabled.cpp
+      try_run(is_misc_freetype_svg_libraries_enabled compilation_result SOURCE_FROM_CONTENT check_imgui_freetype_SVG_libraries_enabled.cpp
 [=[
 #include <imconfig.h>
 
@@ -221,12 +221,14 @@ int main() {
 }
 ]=] COMPILE_DEFINITIONS "-I${imgui_include_dir}" NO_CACHE NO_LOG)
 
-      if(${is_misc_freetype_svg_libraries_enabled} EQUAL 1)
-        find_package(lunasvg CONFIG REQUIRED)
-        target_link_libraries(imgui_core PUBLIC lunasvg::lunasvg)
-      elseif(${is_misc_freetype_svg_libraries_enabled} EQUAL 2)
-        find_package(plutosvg CONFIG REQUIRED)
-        target_link_libraries(imgui_core PUBLIC plutosvg::plutosvg)
+      if(compilation_result)
+        if(${is_misc_freetype_svg_libraries_enabled} EQUAL 1)
+          find_package(lunasvg CONFIG REQUIRED)
+          target_link_libraries(imgui_core PUBLIC lunasvg::lunasvg)
+        elseif(${is_misc_freetype_svg_libraries_enabled} EQUAL 2)
+          find_package(plutosvg CONFIG REQUIRED)
+          target_link_libraries(imgui_core PUBLIC plutosvg::plutosvg)
+        endif()
       endif()
 
       list(APPEND pkg_config_requires_list freetype2)
