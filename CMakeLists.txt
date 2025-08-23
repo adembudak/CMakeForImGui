@@ -78,12 +78,16 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 
 option(thirdparty "" OFF)
-option(imgui_test_engine "" OFF)
-option(imgui_club "" OFF)
-option(imgui_markdown "" OFF)
-option(implot "" OFF)
-option(implot3d "" OFF)
-option(imguifiledialog "" OFF)
+cmake_dependent_option(imgui_test_engine "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER_EQUAL 1.89)" OFF)
+cmake_dependent_option(imgui_club "" OFF thirdparty OFF)
+cmake_dependent_option(imgui_markdown "" OFF thirdparty OFF)
+cmake_dependent_option(implot "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 1.89.0)" OFF)
+cmake_dependent_option(implot3d "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 1.90.0)" OFF)
+cmake_dependent_option(imguifiledialog "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 1.92.0)" OFF)
+
+cmake_dependent_option(imgui_memory_editor "" OFF imgui_club OFF)
+cmake_dependent_option(imgui_multicontext_compositor "" OFF "imgui_club AND (${IMGUI_VERSION} VERSION_GREATER 1.90.8)" OFF)
+cmake_dependent_option(imgui_threaded_rendering "" OFF imgui_club OFF)
 
 option(BUILD_SHARED_LIBS "" OFF)
 
@@ -91,6 +95,7 @@ option(pkg-config "Generate cmakeforimgui.pc file" OFF)
 
 option(install "" ON)
 option(uninstall "" ON)
+cmake_dependent_option(install_examples "" OFF install OFF)
 
 option(visualize_targets "Visualize linkage graph" OFF)
 mark_as_advanced(FORCE visualize_targets)
@@ -140,19 +145,6 @@ cmake_dependent_option(example_apple_opengl2 "" OFF "examples AND osx AND opengl
 cmake_dependent_option(example_apple_metal "" OFF "examples AND osx AND metal" OFF)
 
 cmake_dependent_option(example_null "" OFF examples OFF)
-
-cmake_dependent_option(imgui_test_engine "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER_EQUAL 1.89)" OFF)
-cmake_dependent_option(imgui_club "" OFF thirdparty OFF)
-cmake_dependent_option(imgui_markdown "" OFF thirdparty OFF)
-cmake_dependent_option(implot "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 1.89.0)" OFF)
-cmake_dependent_option(implot3d "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 1.90.0)" OFF)
-cmake_dependent_option(imguifiledialog "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 1.92.0)" OFF)
-
-cmake_dependent_option(imgui_memory_editor "" OFF imgui_club OFF)
-cmake_dependent_option(imgui_multicontext_compositor "" OFF "imgui_club AND (${IMGUI_VERSION} VERSION_GREATER 1.90.8)" OFF)
-cmake_dependent_option(imgui_threaded_rendering "" OFF imgui_club OFF)
-
-cmake_dependent_option(install_examples "" OFF install OFF)
 
 set(imgui_backends_list)
 set(imgui_examples_list)
@@ -227,7 +219,7 @@ int main() {
         target_link_libraries(imgui_core PUBLIC plutosvg::plutosvg)
       endif()
 
-    list(APPEND pkg_config_requires_list freetype2)
+      list(APPEND pkg_config_requires_list freetype2)
     endif()
   endif()
 
