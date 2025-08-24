@@ -14,31 +14,32 @@ cmake -Dsdl2=ON -Dopengl3=ON -S . -B build
 cmake --build build --config Release
 cmake --install build --config Release
 ```
+The commands above assume the dependencies of the backend are installed on host system. The user can refer to their websites or can use a package manager.
 
 Following backend options are available:
 
-| Build option   | Generated target                                                    |
-|----------------|---------------------------------------------------------------------|
-| (default)      | `Unofficial::DearImGui::imgui_core`<br>`Unofficial::DearImGui::imgui_demo` |
-| android        | `Unofficial::DearImGui::imgui_backend_android`                     |
-| opengl2        | `Unofficial::DearImGui::imgui_backend_opengl2`                     |
-| opengl3        | `Unofficial::DearImGui::imgui_backend_opengl3`                     |
-| vulkan         | `Unofficial::DearImGui::imgui_backend_vulkan`                      |
-| allegro5       | `Unofficial::DearImGui::imgui_backend_allegro5`                    |
-| glfw           | `Unofficial::DearImGui::imgui_backend_glfw`                        |
-| glut           | `Unofficial::DearImGui::imgui_backend_glut`                        |
-| sdl2           | `Unofficial::DearImGui::imgui_backend_sdl2`                        |
-| sdlrenderer2   | `Unofficial::DearImGui::imgui_backend_sdlrenderer2`                |
-| sdl3           | `Unofficial::DearImGui::imgui_backend_sdl3`                        |
-| sdlgpu3        | `Unofficial::DearImGui::imgui_backend_sdlgpu3`                     |
-| sdlrenderer3   | `Unofficial::DearImGui::imgui_backend_sdlrenderer3`                |
-| win32          | `Unofficial::DearImGui::imgui_backend_win32`                       |
-| dx9            | `Unofficial::DearImGui::imgui_backend_dx9`                         |
-| dx10           | `Unofficial::DearImGui::imgui_backend_dx10`                        |
-| dx11           | `Unofficial::DearImGui::imgui_backend_dx11`                        |
-| dx12           | `Unofficial::DearImGui::imgui_backend_dx12`                        |
-| osx            | `Unofficial::DearImGui::imgui_backend_osx`                         |
-| metal          | `Unofficial::DearImGui::imgui_backend_metal`                       |
+| Build option   | Generated target                                     |
+|----------------|------------------------------------------------------|
+| (default)      | `Unofficial::DearImGui::imgui_core`                  |
+| android        | `Unofficial::DearImGui::imgui_backend_android`       |
+| opengl2        | `Unofficial::DearImGui::imgui_backend_opengl2`       |
+| opengl3        | `Unofficial::DearImGui::imgui_backend_opengl3`       |
+| vulkan         | `Unofficial::DearImGui::imgui_backend_vulkan`        |
+| allegro5       | `Unofficial::DearImGui::imgui_backend_allegro5`      |
+| glfw           | `Unofficial::DearImGui::imgui_backend_glfw`          |
+| glut           | `Unofficial::DearImGui::imgui_backend_glut`          |
+| sdl2           | `Unofficial::DearImGui::imgui_backend_sdl2`          |
+| sdlrenderer2   | `Unofficial::DearImGui::imgui_backend_sdlrenderer2`  |
+| sdl3           | `Unofficial::DearImGui::imgui_backend_sdl3`          |
+| sdlgpu3        | `Unofficial::DearImGui::imgui_backend_sdlgpu3`       |
+| sdlrenderer3   | `Unofficial::DearImGui::imgui_backend_sdlrenderer3`  |
+| win32          | `Unofficial::DearImGui::imgui_backend_win32`         |
+| dx9            | `Unofficial::DearImGui::imgui_backend_dx9`           |
+| dx10           | `Unofficial::DearImGui::imgui_backend_dx10`          |
+| dx11           | `Unofficial::DearImGui::imgui_backend_dx11`          |
+| dx12           | `Unofficial::DearImGui::imgui_backend_dx12`          |
+| osx            | `Unofficial::DearImGui::imgui_backend_osx`           |
+| metal          | `Unofficial::DearImGui::imgui_backend_metal`         |
 
 All backend options are `OFF` by default.
 
@@ -57,8 +58,8 @@ Following projects are also supported:
 | [imgui_test_engine](https://github.com/ocornut/imgui_test_engine) | IMGUI_TEST_ENGINE_SOURCE_DIR | imgui_test_engine | <br>`Unofficial::imgui_test_engine::imgui_test_engine`<br>`Unofficial::imgui_test_engine::imgui_app` |
 | [imgui_club](https://github.com/ocornut/imgui_club) | IMGUI_CLUB_SOURCE_DIR | imgui_club<br>imgui_memory_editor<br>imgui_multicontext_compositor<br>imgui_threaded_rendering | <br>`Unofficial::imgui_club::imgui_memory_editor`<br>`Unofficial::imgui_club::imgui_multicontext_compositor`<br>`Unofficial::imgui_club::imgui_threaded_rendering` |
 | [imgui_markdown](https://github.com/enkisoftware/imgui_markdown) | IMGUI_MARKDOWN_SOURCE_DIR | imgui_markdown | `Unofficial::imgui_markdown::imgui_markdown` |
-| [ImPlot](https://github.com/epezent/implot) | IMPLOT_SOURCE_DIR | implot | `Unofficial::ImPlot::implot<br>Unofficial::ImPlot::implot_demo` |
-| [ImPlot3D](https://github.com/brenocq/implot3d) | IMPLOT3D_SOURCE_DIR | implot3d | `Unofficial::ImPlot3D::implot3d<br>Unofficial::ImPlot3D::implot3d_demo` |
+| [ImPlot](https://github.com/epezent/implot) | IMPLOT_SOURCE_DIR | implot | `Unofficial::ImPlot::implot`<br>`Unofficial::ImPlot::implot_demo` |
+| [ImPlot3D](https://github.com/brenocq/implot3d) | IMPLOT3D_SOURCE_DIR | implot3d | `Unofficial::ImPlot3D::implot3d`<br>`Unofficial::ImPlot3D::implot3d_demo` |
 | [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) | IMGUIFILEDIALOG_SOURCE_DIR | imguifiledialog | `Unofficial::ImGuiFileDialog::imguifiledialog` |
 
 ## Usage
