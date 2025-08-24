@@ -161,25 +161,31 @@ try_run(configuration_information_return_value compilation_result SOURCE_FROM_CO
 int main() {
 // pack some configuration information on integer result
   unsigned result = 0;
-#if defined(IMGUI_ENABLE_FREETYPE)
+
+#if defined(IMGUI_ENABLE_TEST_ENGINE)
   result |= ( 0b1 << 0);
 #endif
 
-#if defined(IMGUI_ENABLE_FREETYPE_LUNASVG)
+#if defined(IMGUI_ENABLE_FREETYPE)
   result |= ( 0b1 << 1);
 #endif
 
-#if defined(IMGUI_ENABLE_FREETYPE_PLUTOSVG)
+#if defined(IMGUI_ENABLE_FREETYPE_LUNASVG)
   result |= ( 0b1 << 2);
+#endif
+
+#if defined(IMGUI_ENABLE_FREETYPE_PLUTOSVG)
+  result |= ( 0b1 << 3);
 #endif
   return result;
 }
 ]=] COMPILE_DEFINITIONS "-I${imgui_include_dir}" NO_CACHE NO_LOG)
 
 # unpack them in here
-math(EXPR is_imgui_freetype_enabled_in_imconfig "((${configuration_information_return_value} >> 0) & 1)")
-math(EXPR is_imgui_freetype_lunasvg_enabled_in_imconfig "((${configuration_information_return_value} >> 1) & 1)")
-math(EXPR is_imgui_freetype_plutosvg_enabled_in_imconfig "((${configuration_information_return_value} >> 2) & 1)")
+math(EXPR is_imgui_imgui_test_engine_enabled_in_imconfig "((${configuration_information_return_value} >> 0) & 1)")
+math(EXPR is_imgui_freetype_enabled_in_imconfig "((${configuration_information_return_value} >> 1) & 1)")
+math(EXPR is_imgui_freetype_lunasvg_enabled_in_imconfig "((${configuration_information_return_value} >> 2) & 1)")
+math(EXPR is_imgui_freetype_plutosvg_enabled_in_imconfig "((${configuration_information_return_value} >> 3) & 1)")
 
 add_library(imgui_core)
 target_sources(imgui_core PRIVATE ${_imgui_dir}/imgui.cpp ${_imgui_dir}/imgui_draw.cpp ${_imgui_dir}/imgui_tables.cpp ${_imgui_dir}/imgui_widgets.cpp ${_imgui_dir}/imgui_demo.cpp)
