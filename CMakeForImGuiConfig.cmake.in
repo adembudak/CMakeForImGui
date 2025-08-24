@@ -79,9 +79,9 @@ if(TARGET Unofficial::DearImGui::imgui_backend_wgpu)
   find_dependency(Dawn REQUIRED)
 endif()
 
-set(is_imgui_freetype_enabled @is_imgui_freetype_enabled@)
-set(is_imgui_freetype_lunasvg_enabled @is_imgui_freetype_lunasvg_enabled@)
-set(is_imgui_freetype_plutosvg_enabled @is_imgui_freetype_plutosvg_enabled@)
+set(is_imgui_freetype_enabled @is_imgui_freetype_enabled_in_imconfig@)
+set(is_imgui_freetype_lunasvg_enabled @is_imgui_freetype_lunasvg_enabled_in_imconfig@)
+set(is_imgui_freetype_plutosvg_enabled @is_imgui_freetype_plutosvg_enabled_in_imconfig@)
 
 if(is_imgui_freetype_enabled)
   find_dependency(freetype REQUIRED)

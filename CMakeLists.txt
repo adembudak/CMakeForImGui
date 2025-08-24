@@ -154,12 +154,12 @@ set(pkg_config_requires_list)
 cmake_path(SET imgui_include_dir ${_imgui_dir})
 cmake_path(ABSOLUTE_PATH imgui_include_dir NORMALIZE)
 
-try_run(configuration_information_return_value compilation_result SOURCE_FROM_CONTENT check_imgui_freetype_SVG_libraries_enabled.cpp
+try_run(configuration_information_return_value compilation_result SOURCE_FROM_CONTENT check_configuration_information_in_imconfig_h.cpp
 [=[
 #include <imconfig.h>
 
 int main() {
-// pack some configuration information on a number
+// pack some configuration information on integer result
   unsigned result = 0;
 #if defined(IMGUI_ENABLE_FREETYPE)
   result |= ( 0b1 << 0);
@@ -177,9 +177,9 @@ int main() {
 ]=] COMPILE_DEFINITIONS "-I${imgui_include_dir}" NO_CACHE NO_LOG)
 
 # unpack them in here
-math(EXPR is_imgui_freetype_enabled "((${configuration_information_return_value} >> 0) & 1)")
-math(EXPR is_imgui_freetype_lunasvg_enabled "((${configuration_information_return_value} >> 1) & 1)")
-math(EXPR is_imgui_freetype_plutosvg_enabled "((${configuration_information_return_value} >> 2) & 1)")
+math(EXPR is_imgui_freetype_enabled_in_imconfig "((${configuration_information_return_value} >> 0) & 1)")
+math(EXPR is_imgui_freetype_lunasvg_enabled_in_imconfig "((${configuration_information_return_value} >> 1) & 1)")
+math(EXPR is_imgui_freetype_plutosvg_enabled_in_imconfig "((${configuration_information_return_value} >> 2) & 1)")
 
 add_library(imgui_core)
 target_sources(imgui_core PRIVATE ${_imgui_dir}/imgui.cpp ${_imgui_dir}/imgui_draw.cpp ${_imgui_dir}/imgui_tables.cpp ${_imgui_dir}/imgui_widgets.cpp ${_imgui_dir}/imgui_demo.cpp)
@@ -198,7 +198,7 @@ if(misc)
   endif()
 
   if(misc_freetype)
-    if(NOT is_imgui_freetype_enabled)
+    if(NOT is_imgui_freetype_enabled_in_imconfig)
       message(WARNING "misc_freetype option is enabled but IMGUI_ENABLE_FREETYPE is not defined on imconfig.h.\nFreeType support feature will not be available.")
     else()
       find_package(freetype CONFIG REQUIRED)
@@ -207,14 +207,14 @@ if(misc)
       target_link_libraries(imgui_core PUBLIC Freetype::Freetype)
       target_sources(imgui_core PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imgui_dir}/misc/freetype TYPE HEADERS FILES ${_imgui_misc_dir}/freetype/imgui_freetype.h)
 
-      if(is_imgui_freetype_lunasvg_enabled)
+      if(is_imgui_freetype_lunasvg_enabled_in_imconfig)
         if(${IMGUI_VERSION} VERSION_LESS 1.92.0)
           find_package(lunasvg 2.4.3 EXACT CONFIG REQUIRED)
         else()
           find_package(lunasvg CONFIG REQUIRED)
         endif()
         target_link_libraries(imgui_core PUBLIC lunasvg::lunasvg)
-      elseif(is_imgui_freetype_plutosvg_enabled)
+      elseif(is_imgui_freetype_plutosvg_enabled_in_imconfig)
         find_package(plutosvg CONFIG REQUIRED)
         target_link_libraries(imgui_core PUBLIC plutosvg::plutosvg)
       endif()
