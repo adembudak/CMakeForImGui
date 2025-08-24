@@ -151,27 +151,10 @@ set(imgui_examples_list)
 set(imgui_thirdparty_list)
 set(pkg_config_requires_list)
 
-add_library(imgui_core)
-target_sources(imgui_core PRIVATE ${_imgui_dir}/imgui.cpp ${_imgui_dir}/imgui_draw.cpp ${_imgui_dir}/imgui_tables.cpp ${_imgui_dir}/imgui_widgets.cpp ${_imgui_dir}/imgui_demo.cpp)
-target_sources(imgui_core PUBLIC
-  FILE_SET imgui_core_set
-  BASE_DIRS ${_imgui_dir}
-  TYPE HEADERS
-  FILES ${_imgui_dir}/imgui.h ${_imgui_dir}/imconfig.h ${_imgui_dir}/imgui_internal.h ${_imgui_dir}/imstb_rectpack.h ${_imgui_dir}/imstb_textedit.h ${_imgui_dir}/imstb_truetype.h)
-target_compile_features(imgui_core PUBLIC cxx_std_11)
-target_compile_definitions(imgui_core INTERFACE $<$<BOOL:${imgui_test_engine}>:IMGUI_ENABLE_TEST_ENGINE>)
+cmake_path(SET imgui_include_dir ${_imgui_dir})
+cmake_path(ABSOLUTE_PATH imgui_include_dir NORMALIZE)
 
-if(misc)
-  if(misc_cpp)
-    target_sources(imgui_core PRIVATE ${_imgui_misc_dir}/cpp/imgui_stdlib.cpp)
-    target_sources(imgui_core PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imgui_dir}/misc/cpp TYPE HEADERS FILES ${_imgui_misc_dir}/cpp/imgui_stdlib.h)
-  endif()
-
-  if(misc_freetype)
-    cmake_path(SET imgui_include_dir ${_imgui_dir})
-    cmake_path(ABSOLUTE_PATH imgui_include_dir NORMALIZE)
-
-    try_run(configuration_information_return_value compilation_result SOURCE_FROM_CONTENT check_imgui_freetype_SVG_libraries_enabled.cpp
+try_run(configuration_information_return_value compilation_result SOURCE_FROM_CONTENT check_imgui_freetype_SVG_libraries_enabled.cpp
 [=[
 #include <imconfig.h>
 
@@ -193,11 +176,28 @@ int main() {
 }
 ]=] COMPILE_DEFINITIONS "-I${imgui_include_dir}" NO_CACHE NO_LOG)
 
-    # unpack them in here
-    math(EXPR is_imgui_freetype_enabled "((${configuration_information_return_value} >> 0) & 1)")
-    math(EXPR is_imgui_freetype_lunasvg_enabled "((${configuration_information_return_value} >> 1) & 1)")
-    math(EXPR is_imgui_freetype_plutosvg_enabled "((${configuration_information_return_value} >> 2) & 1)")
+# unpack them in here
+math(EXPR is_imgui_freetype_enabled "((${configuration_information_return_value} >> 0) & 1)")
+math(EXPR is_imgui_freetype_lunasvg_enabled "((${configuration_information_return_value} >> 1) & 1)")
+math(EXPR is_imgui_freetype_plutosvg_enabled "((${configuration_information_return_value} >> 2) & 1)")
 
+add_library(imgui_core)
+target_sources(imgui_core PRIVATE ${_imgui_dir}/imgui.cpp ${_imgui_dir}/imgui_draw.cpp ${_imgui_dir}/imgui_tables.cpp ${_imgui_dir}/imgui_widgets.cpp ${_imgui_dir}/imgui_demo.cpp)
+target_sources(imgui_core PUBLIC
+  FILE_SET imgui_core_set
+  BASE_DIRS ${_imgui_dir}
+  TYPE HEADERS
+  FILES ${_imgui_dir}/imgui.h ${_imgui_dir}/imconfig.h ${_imgui_dir}/imgui_internal.h ${_imgui_dir}/imstb_rectpack.h ${_imgui_dir}/imstb_textedit.h ${_imgui_dir}/imstb_truetype.h)
+target_compile_features(imgui_core PUBLIC cxx_std_11)
+target_compile_definitions(imgui_core INTERFACE $<$<BOOL:${imgui_test_engine}>:IMGUI_ENABLE_TEST_ENGINE>)
+
+if(misc)
+  if(misc_cpp)
+    target_sources(imgui_core PRIVATE ${_imgui_misc_dir}/cpp/imgui_stdlib.cpp)
+    target_sources(imgui_core PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imgui_dir}/misc/cpp TYPE HEADERS FILES ${_imgui_misc_dir}/cpp/imgui_stdlib.h)
+  endif()
+
+  if(misc_freetype)
     if(NOT is_imgui_freetype_enabled)
       message(WARNING "misc_freetype option is enabled but IMGUI_ENABLE_FREETYPE is not defined on imconfig.h.\nFreeType support feature will not be available.")
     else()
