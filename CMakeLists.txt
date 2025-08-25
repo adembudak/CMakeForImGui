@@ -889,17 +889,16 @@ if(imgui_test_engine)
     cmake_path(SET imgui_te_include_dir ${_imgui_te_dir})
     cmake_path(ABSOLUTE_PATH imgui_te_include_dir NORMALIZE)
 
-    try_compile(is_imgui_test_engine_performance_viewer_enabled
-  SOURCE_FROM_CONTENT check_imgui_test_engine_performans_viewer_feature.cpp
+    try_compile(is_imgui_test_engine_performance_viewer_enabled SOURCE_FROM_CONTENT check_imgui_test_engine_performans_viewer_feature.cpp
 [=[
-#include "imgui_test_suite_imconfig.h"
+#include <imgui_test_suite_imconfig.h>
 
 #if IMGUI_TEST_ENGINE_ENABLE_IMPLOT == 1
 #else
   #error ""
 #endif
 int main() {}
-]=] COMPILE_DEFINITIONS "-I${_imgui_te_include_dir}/imgui_test_suite -I${_imgui_source_dir}" NO_CACHE NO_LOG)
+]=] COMPILE_DEFINITIONS "-I${imgui_te_include_dir}/imgui_test_suite -I${imgui_source_dir}" NO_CACHE NO_LOG)
 
     target_link_libraries(imgui_test_engine PRIVATE $<$<BOOL:${is_imgui_test_engine_performance_viewer_enabled}>:implot>)
     target_compile_definitions(imgui_test_engine PRIVATE $<$<BOOL:${is_imgui_test_engine_performance_viewer_enabled}>:IMGUI_TEST_ENGINE_ENABLE_IMPLOT>)
