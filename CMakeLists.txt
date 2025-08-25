@@ -854,6 +854,7 @@ if(imgui_test_engine)
     set(imgui_test_engine OFF)
   else()
 
+# imgui test engine
     add_library(imgui_test_engine)
     target_sources(imgui_test_engine PRIVATE
       ${_imgui_te_dir}/imgui_test_engine/imgui_te_context.cpp
@@ -900,7 +901,6 @@ int main() {
   return result;
 }
 ]=] COMPILE_DEFINITIONS "-I${imgui_te_dir}/imgui_test_engine" NO_CACHE NO_LOG)
-    message(STATUS "compilation_result: ${compilation_result}\nreturn value: ${return_value}")
 
     math(EXPR is_imgui_test_engine_implot_enabled "((${return_value} >> 0) & 1)")
 
@@ -908,6 +908,49 @@ int main() {
       message(WARNING "In imgui_te_imconfig.h IMGUI_TEST_ENGINE_ENABLE_IMPLOT is set but ImPlot is not configurated. Performance viewer feature will not be available.")
     endif()
     target_link_libraries(imgui_test_engine PRIVATE $<$<BOOL:${is_imgui_test_engine_implot_enabled}>:implot>)
+
+    try_run(return_value compilation_result SOURCE_FROM_CONTENT check_imgui_app_backends.cpp
+[=[
+#include <imgui_app.h>
+
+int main() {
+  unsigned result = 0;
+
+#if defined(IMGUI_APP_WIN32_DX11)
+  result |= (0b1 << 0);
+#elif defined(IMGUI_APP_SDL2_GL2)
+  result |= (0b1 << 1);
+#elif defined(IMGUI_APP_SDL2_GL3)
+  result |= (0b1 << 2);
+#elif defined(IMGUI_APP_GLFW_GL2)
+  result |= (0b1 << 3);
+#elif defined(IMGUI_APP_GLFW_GL3)
+  result |= (0b1 << 4);
+#else
+  // Null backend
+#endif
+
+  return result;
+}
+]=] COMPILE_DEFINITIONS "-I${imgui_te_dir}/shared -I${imgui_include_dir}" NO_CACHE NO_LOG)
+
+    message(STATUS "compilation_result: ${compilation_result}\nreturn value: ${return_value}")
+
+    add_library(imgui_app)
+    target_sources(imgui_app PRIVATE ${_imgui_te_dir}/shared/imgui_app.cpp)
+    target_sources(imgui_app PUBLIC FILE_SET imgui_app_set BASE_DIRS ${_imgui_te_dir} TYPE HEADERS FILES ${_imgui_te_dir}/shared/imgui_app.h)
+
+    if(${return_value} EQUAL 1)
+      target_link_libraries(imgui_app PRIVATE imgui_backend_win32 imgui_backend_dx11)
+    elseif(${return_value} EQUAL 2)
+      target_link_libraries(imgui_app PRIVATE imgui_backend_sdl2 imgui_backend_opengl2)
+    elseif(${return_value} EQUAL 4)
+      target_link_libraries(imgui_app PRIVATE imgui_backend_sdl2 imgui_backend_opengl3)
+    elseif(${return_value} EQUAL 8)
+      target_link_libraries(imgui_app PRIVATE imgui_backend_glfw imgui_backend_opengl2)
+    elseif(${return_value} EQUAL 16)
+      target_link_libraries(imgui_app PRIVATE imgui_backend_glfw imgui_backend_opengl3)
+    endif()
   endif()
 endif()
 
@@ -1082,6 +1125,7 @@ if(install)
     install(EXPORT imgui_test_engine_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::imgui_test_engine:: FILE CMakeForImGui-imgui_test_engine-Targets.cmake)
 
     install(TARGETS imgui_test_engine EXPORT imgui_test_engine_export FILE_SET imgui_test_engine_set)
+    install(TARGETS imgui_app EXPORT imgui_test_engine_export FILE_SET imgui_app_set)
 
     install(DIRECTORY ${_imgui_te_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_test_engine)
     install(DIRECTORY ${_imgui_te_dir}/build_scripts DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_test_engine)
