@@ -204,7 +204,8 @@ if(misc)
 
   if(misc_freetype)
     if(NOT is_imgui_freetype_enabled_in_imconfig)
-      message(WARNING "misc_freetype option is enabled but IMGUI_ENABLE_FREETYPE is not defined on imconfig.h.\nFreeType support feature will not be available.")
+      message(WARNING "misc_freetype option is enabled but IMGUI_ENABLE_FREETYPE is not defined on imconfig.h. FreeType support feature will not be available.")
+      set(misc_freetype OFF)
     else()
       find_package(freetype CONFIG REQUIRED)
 
@@ -850,6 +851,7 @@ if(imgui_test_engine)
 
   if(NOT is_imgui_test_engine_enabled_in_imconfig)
     message(WARNING "imgui_test_engine option is enabled but IMGUI_ENABLE_TEST_ENGINE is not defined on imconfig.h. ImGui Test Engine is not configurated.")
+    set(imgui_test_engine OFF)
   else()
 
     add_library(imgui_test_engine)
