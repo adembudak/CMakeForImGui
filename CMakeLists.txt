@@ -159,30 +159,30 @@ try_run(configuration_information_return_value compilation_result SOURCE_FROM_CO
 #include <imconfig.h>
 
 int main() {
-// pack some configuration information on integer result
+// pack some compile-time configuration related to build on an integer
   unsigned result = 0;
 
 #if defined(IMGUI_ENABLE_TEST_ENGINE)
-  result |= ( 0b1 << 0);
+  result |= (0b1 << 0);
 #endif
 
 #if defined(IMGUI_ENABLE_FREETYPE)
-  result |= ( 0b1 << 1);
+  result |= (0b1 << 1);
 #endif
 
 #if defined(IMGUI_ENABLE_FREETYPE_LUNASVG)
-  result |= ( 0b1 << 2);
+  result |= (0b1 << 2);
 #endif
 
 #if defined(IMGUI_ENABLE_FREETYPE_PLUTOSVG)
-  result |= ( 0b1 << 3);
+  result |= (0b1 << 3);
 #endif
   return result;
 }
 ]=] COMPILE_DEFINITIONS "-I${imgui_include_dir}" NO_CACHE NO_LOG)
 
 # unpack them in here
-math(EXPR is_imgui_imgui_test_engine_enabled_in_imconfig "((${configuration_information_return_value} >> 0) & 1)")
+math(EXPR is_imgui_test_engine_enabled_in_imconfig "((${configuration_information_return_value} >> 0) & 1)")
 math(EXPR is_imgui_freetype_enabled_in_imconfig "((${configuration_information_return_value} >> 1) & 1)")
 math(EXPR is_imgui_freetype_lunasvg_enabled_in_imconfig "((${configuration_information_return_value} >> 2) & 1)")
 math(EXPR is_imgui_freetype_plutosvg_enabled_in_imconfig "((${configuration_information_return_value} >> 3) & 1)")
@@ -195,7 +195,6 @@ target_sources(imgui_core PUBLIC
   TYPE HEADERS
   FILES ${_imgui_dir}/imgui.h ${_imgui_dir}/imconfig.h ${_imgui_dir}/imgui_internal.h ${_imgui_dir}/imstb_rectpack.h ${_imgui_dir}/imstb_textedit.h ${_imgui_dir}/imstb_truetype.h)
 target_compile_features(imgui_core PUBLIC cxx_std_11)
-target_compile_definitions(imgui_core INTERFACE $<$<BOOL:${imgui_test_engine}>:IMGUI_ENABLE_TEST_ENGINE>)
 
 if(misc)
   if(misc_cpp)
@@ -849,91 +848,96 @@ if(imgui_test_engine)
   endif()
   set(_imgui_te_dir ${IMGUI_TEST_ENGINE_SOURCE_DIR})
 
-  add_library(imgui_test_engine)
-  target_sources(imgui_test_engine PRIVATE
-    ${_imgui_te_dir}/imgui_test_engine/imgui_te_context.cpp
-    ${_imgui_te_dir}/imgui_test_engine/imgui_te_coroutine.cpp
-    ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.cpp
-    ${_imgui_te_dir}/imgui_test_engine/imgui_te_exporters.cpp
-    ${_imgui_te_dir}/imgui_test_engine/imgui_te_perftool.cpp
-    ${_imgui_te_dir}/imgui_test_engine/imgui_te_ui.cpp
-    ${_imgui_te_dir}/imgui_test_engine/imgui_te_utils.cpp
-    ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.cpp)
+  if(NOT is_imgui_test_engine_enabled_in_imconfig)
+    message(WARNING "imgui_test_engine option is enabled but IMGUI_ENABLE_TEST_ENGINE is not defined on imconfig.h. ImGui Test Engine is not configurated.")
+  else()
 
-  target_sources(imgui_test_engine PUBLIC FILE_SET imgui_test_engine_set BASE_DIRS ${_imgui_te_dir}/imgui_test_engine
-    TYPE HEADERS
-    FILES
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_context.h
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_coroutine.h
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.h
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_exporters.h
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_imconfig.h
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_internal.h
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_perftool.h
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_ui.h
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_utils.h
-      ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.h
-      ${_imgui_te_dir}/imgui_test_engine/thirdparty/stb/imstb_image_write.h
-      ${_imgui_te_dir}/imgui_test_engine/thirdparty/Str/Str.h)
+    add_library(imgui_test_engine)
+    target_sources(imgui_test_engine PRIVATE
+      ${_imgui_te_dir}/imgui_test_engine/imgui_te_context.cpp
+      ${_imgui_te_dir}/imgui_test_engine/imgui_te_coroutine.cpp
+      ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.cpp
+      ${_imgui_te_dir}/imgui_test_engine/imgui_te_exporters.cpp
+      ${_imgui_te_dir}/imgui_test_engine/imgui_te_perftool.cpp
+      ${_imgui_te_dir}/imgui_test_engine/imgui_te_ui.cpp
+      ${_imgui_te_dir}/imgui_test_engine/imgui_te_utils.cpp
+      ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.cpp)
 
-  target_link_libraries(imgui_test_engine PUBLIC imgui_core)
-  target_compile_features(imgui_test_engine PUBLIC cxx_std_14)
-  target_compile_definitions(imgui_test_engine PRIVATE IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL=1)
+    target_sources(imgui_test_engine PUBLIC FILE_SET imgui_test_engine_set BASE_DIRS ${_imgui_te_dir}/imgui_test_engine
+      TYPE HEADERS
+      FILES
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_context.h
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_coroutine.h
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.h
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_exporters.h
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_imconfig.h
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_internal.h
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_perftool.h
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_ui.h
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_utils.h
+        ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.h
+        ${_imgui_te_dir}/imgui_test_engine/thirdparty/stb/imstb_image_write.h
+        ${_imgui_te_dir}/imgui_test_engine/thirdparty/Str/Str.h)
 
-  cmake_path(SET imgui_include_dir ${_imgui_dir})
-  cmake_path(ABSOLUTE_PATH imgui_include_dir NORMALIZE)
+    target_link_libraries(imgui_test_engine PUBLIC imgui_core)
+    target_compile_features(imgui_test_engine PUBLIC cxx_std_14)
+    target_compile_definitions(imgui_test_engine PRIVATE IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL=1)
 
-  cmake_path(SET imgui_te_include_dir ${_imgui_te_dir})
-  cmake_path(ABSOLUTE_PATH imgui_te_include_dir NORMALIZE)
+    cmake_path(SET imgui_include_dir ${_imgui_dir})
+    cmake_path(ABSOLUTE_PATH imgui_include_dir NORMALIZE)
 
-  try_compile(is_imgui_test_engine_performance_viewer_enabled
-SOURCE_FROM_CONTENT check_imgui_test_engine_performans_viewer_feature.cpp
+    cmake_path(SET imgui_te_include_dir ${_imgui_te_dir})
+    cmake_path(ABSOLUTE_PATH imgui_te_include_dir NORMALIZE)
+
+    try_compile(is_imgui_test_engine_performance_viewer_enabled
+  SOURCE_FROM_CONTENT check_imgui_test_engine_performans_viewer_feature.cpp
 [=[
 #include "imgui_test_suite_imconfig.h"
 
-#if defined(IMGUI_TEST_ENGINE_ENABLE_IMPLOT) && IMGUI_TEST_ENGINE_ENABLE_IMPLOT == 1
+#if IMGUI_TEST_ENGINE_ENABLE_IMPLOT == 1
 #else
   #error ""
 #endif
 int main() {}
 ]=] COMPILE_DEFINITIONS "-I${_imgui_te_include_dir}/imgui_test_suite -I${_imgui_source_dir}" NO_CACHE NO_LOG)
 
-  target_link_libraries(imgui_test_engine PRIVATE $<$<BOOL:${is_imgui_test_engine_performance_viewer_enabled}>:implot>)
-  target_compile_definitions(imgui_test_engine PRIVATE $<$<BOOL:${is_imgui_test_engine_performance_viewer_enabled}>:IMGUI_TEST_ENGINE_ENABLE_IMPLOT>)
+    target_link_libraries(imgui_test_engine PRIVATE $<$<BOOL:${is_imgui_test_engine_performance_viewer_enabled}>:implot>)
+    target_compile_definitions(imgui_test_engine PRIVATE $<$<BOOL:${is_imgui_test_engine_performance_viewer_enabled}>:IMGUI_TEST_ENGINE_ENABLE_IMPLOT>)
 
-  add_library(imgui_app)
-  target_sources(imgui_app PRIVATE ${_imgui_te_dir}/shared/imgui_app.cpp)
-  target_sources(imgui_app PUBLIC FILE_SET imgui_app_set BASE_DIRS ${_imgui_te_dir} TYPE HEADERS FILES ${_imgui_te_dir}/shared/imgui_app.h)
-  target_link_libraries(imgui_app PRIVATE imgui_backend_glfw imgui_backend_opengl3)
-  target_compile_definitions(imgui_app PUBLIC IMGUI_APP_GLFW_GL3)
+    add_library(imgui_app)
+    target_sources(imgui_app PRIVATE ${_imgui_te_dir}/shared/imgui_app.cpp)
+    target_sources(imgui_app PUBLIC FILE_SET imgui_app_set BASE_DIRS ${_imgui_te_dir} TYPE HEADERS FILES ${_imgui_te_dir}/shared/imgui_app.h)
+    target_link_libraries(imgui_app PRIVATE imgui_backend_glfw imgui_backend_opengl3)
+    target_compile_definitions(imgui_app PUBLIC IMGUI_APP_GLFW_GL3)
 
-  add_executable(app_minimal)
-  target_sources(app_minimal PRIVATE ${_imgui_te_dir}/app_minimal/app_minimal_main.cpp ${_imgui_te_dir}/app_minimal/app_minimal_tests.cpp)
-  target_link_libraries(app_minimal PRIVATE imgui_app imgui_test_engine)
+    add_executable(app_minimal)
+    target_sources(app_minimal PRIVATE ${_imgui_te_dir}/app_minimal/app_minimal_main.cpp ${_imgui_te_dir}/app_minimal/app_minimal_tests.cpp)
+    target_link_libraries(app_minimal PRIVATE imgui_app imgui_test_engine)
 
-  add_executable(imgui_test_suite)
-  target_sources(imgui_test_suite PRIVATE
-    ${_imgui_te_dir}/imgui_test_suite/imgui_tests_core.cpp
-    ${_imgui_te_dir}/imgui_test_suite/imgui_tests_inputs.cpp
-    ${_imgui_te_dir}/imgui_test_suite/imgui_tests_perf.cpp
-    ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.cpp
-    ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets.cpp
-    ${_imgui_te_dir}/imgui_test_suite/imgui_tests_docking.cpp
-    ${_imgui_te_dir}/imgui_test_suite/imgui_tests_nav.cpp
-    ${_imgui_te_dir}/imgui_test_suite/imgui_tests_tables.cpp
-    ${_imgui_te_dir}/imgui_test_suite/imgui_tests_viewports.cpp
-    ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets_inputtext.cpp)
+    add_executable(imgui_test_suite)
+    target_sources(imgui_test_suite PRIVATE
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_core.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_inputs.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_perf.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_docking.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_nav.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_tables.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_viewports.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets_inputtext.cpp)
 
-  target_sources(imgui_test_suite PUBLIC FILE_SET HEADERS BASE_DIRS ${_imgui_te_dir}
-    FILES
-      ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.h
-      ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite_imconfig.h
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.h)
+    target_sources(imgui_test_suite PUBLIC FILE_SET HEADERS BASE_DIRS ${_imgui_te_dir}
+      FILES
+        ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.h
+        ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite_imconfig.h
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.h)
 
-  target_link_libraries(imgui_test_suite PUBLIC imgui_test_engine imgui_app)
-  target_compile_definitions(imgui_test_suite PUBLIC IMGUI_BROKEN_TESTS)
+    target_link_libraries(imgui_test_suite PUBLIC imgui_test_engine imgui_app)
+    target_compile_definitions(imgui_test_suite PUBLIC IMGUI_BROKEN_TESTS)
 
-  list(APPEND imgui_thirdparty_list imgui_test_engine imgui_app)
+    list(APPEND imgui_thirdparty_list imgui_test_engine imgui_app)
+  endif()
 endif()
 
 if(imgui_club)
