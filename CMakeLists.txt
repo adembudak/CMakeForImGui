@@ -854,7 +854,6 @@ if(imgui_test_engine)
     set(imgui_test_engine OFF)
   else()
 
-# imgui test engine
     add_library(imgui_test_engine)
     target_sources(imgui_test_engine PRIVATE
       ${_imgui_te_dir}/imgui_test_engine/imgui_te_context.cpp
@@ -934,8 +933,6 @@ int main() {
 }
 ]=] COMPILE_DEFINITIONS "-I${imgui_te_dir}/shared -I${imgui_include_dir}" NO_CACHE NO_LOG)
 
-    message(STATUS "compilation_result: ${compilation_result}\nreturn value: ${return_value}")
-
     add_library(imgui_app)
     target_sources(imgui_app PRIVATE ${_imgui_te_dir}/shared/imgui_app.cpp)
     target_sources(imgui_app PUBLIC FILE_SET imgui_app_set BASE_DIRS ${_imgui_te_dir} TYPE HEADERS FILES ${_imgui_te_dir}/shared/imgui_app.h)
@@ -952,10 +949,28 @@ int main() {
       target_link_libraries(imgui_app PRIVATE imgui_backend_glfw imgui_backend_opengl3)
     endif()
 
-#app minimal
     add_executable(app_minimal)
     target_sources(app_minimal PRIVATE ${_imgui_te_dir}/app_minimal/app_minimal_main.cpp ${_imgui_te_dir}/app_minimal/app_minimal_tests.cpp)
     target_link_libraries(app_minimal PRIVATE imgui_app imgui_test_engine imgui_core)
+
+    add_executable(imgui_test_suite)
+    target_sources(imgui_test_suite PRIVATE
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_core.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_inputs.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_perf.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_docking.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_nav.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_tables.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_viewports.cpp
+      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets_inputtext.cpp)
+
+    target_sources(imgui_test_suite PUBLIC FILE_SET HEADERS BASE_DIRS ${_imgui_te_dir}
+      FILES
+        ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.h
+        ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite_imconfig.h)
+    target_link_libraries(imgui_test_suite PRIVATE imgui_test_engine imgui_app imgui_core)
   endif()
 endif()
 
@@ -1131,7 +1146,7 @@ if(install)
 
     install(TARGETS imgui_test_engine EXPORT imgui_test_engine_export FILE_SET imgui_test_engine_set)
     install(TARGETS imgui_app EXPORT imgui_test_engine_export FILE_SET imgui_app_set)
-    # install(TARGETS imgui_test_suite RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(TARGETS imgui_test_suite RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
     install(DIRECTORY ${_imgui_te_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_test_engine)
     install(DIRECTORY ${_imgui_te_dir}/build_scripts DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_test_engine)
