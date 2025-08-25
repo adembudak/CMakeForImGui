@@ -881,10 +881,10 @@ if(imgui_test_engine)
         ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.h
         ${_imgui_te_dir}/imgui_test_engine/thirdparty/stb/imstb_image_write.h
         ${_imgui_te_dir}/imgui_test_engine/thirdparty/Str/Str.h)
+    target_compile_features(imgui_test_engine PUBLIC cxx_std_14)
 
     target_link_libraries(imgui_test_engine PRIVATE imgui_core)
     target_link_libraries(imgui_core INTERFACE imgui_test_engine)
-    target_compile_features(imgui_test_engine PUBLIC cxx_std_14)
 
     cmake_path(SET imgui_te_dir ${_imgui_te_dir})
     cmake_path(ABSOLUTE_PATH imgui_te_dir NORMALIZE)
@@ -907,7 +907,7 @@ int main() {
     if(is_imgui_test_engine_implot_enabled AND NOT implot)
       message(WARNING "In imgui_te_imconfig.h IMGUI_TEST_ENGINE_ENABLE_IMPLOT is set but ImPlot is not configurated. Performance viewer feature will not be available.")
     endif()
-    target_link_libraries(imgui_test_engine PRIVATE $<$<BOOL:${is_imgui_test_engine_implot_enabled}>:implot>)
+    target_link_libraries(imgui_test_engine INTERFACE $<$<BOOL:${is_imgui_test_engine_implot_enabled}>:implot>)
 
     try_run(return_value compilation_result SOURCE_FROM_CONTENT check_imgui_app_backends.cpp
 [=[
