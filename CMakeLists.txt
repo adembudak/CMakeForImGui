@@ -881,60 +881,33 @@ if(imgui_test_engine)
         ${_imgui_te_dir}/imgui_test_engine/thirdparty/stb/imstb_image_write.h
         ${_imgui_te_dir}/imgui_test_engine/thirdparty/Str/Str.h)
 
-    target_link_libraries(imgui_test_engine PUBLIC imgui_core)
+    target_link_libraries(imgui_test_engine PRIVATE imgui_core)
+    target_link_libraries(imgui_core INTERFACE imgui_test_engine)
     target_compile_features(imgui_test_engine PUBLIC cxx_std_14)
-    target_compile_definitions(imgui_test_engine PRIVATE IMGUI_TEST_ENGINE_ENABLE_COROUTINE_STDTHREAD_IMPL=1)
 
-    cmake_path(SET imgui_te_include_dir ${_imgui_te_dir})
-    cmake_path(ABSOLUTE_PATH imgui_te_include_dir NORMALIZE)
+    cmake_path(SET imgui_te_dir ${_imgui_te_dir})
+    cmake_path(ABSOLUTE_PATH imgui_te_dir NORMALIZE)
 
-    try_compile(is_imgui_test_engine_performance_viewer_enabled SOURCE_FROM_CONTENT check_imgui_test_engine_performans_viewer_feature.cpp
+    try_run(return_value compilation_result SOURCE_FROM_CONTENT check_imgui_test_engine_performans_viewer_feature.cpp
 [=[
-#include <imgui_test_suite_imconfig.h>
+#include <imgui_te_imconfig.h>
 
+int main() {
+  unsigned result = 0;
 #if IMGUI_TEST_ENGINE_ENABLE_IMPLOT == 1
-#else
-  #error ""
+  result |= (0b1 << 0);
 #endif
-int main() {}
-]=] COMPILE_DEFINITIONS "-I${imgui_te_include_dir}/imgui_test_suite -I${imgui_source_dir}" NO_CACHE NO_LOG)
+  return result;
+}
+]=] COMPILE_DEFINITIONS "-I${imgui_te_dir}/imgui_test_engine" NO_CACHE NO_LOG)
+    message(STATUS "compilation_result: ${compilation_result}\nreturn value: ${return_value}")
 
-    target_link_libraries(imgui_test_engine PRIVATE $<$<BOOL:${is_imgui_test_engine_performance_viewer_enabled}>:implot>)
-    target_compile_definitions(imgui_test_engine PRIVATE $<$<BOOL:${is_imgui_test_engine_performance_viewer_enabled}>:IMGUI_TEST_ENGINE_ENABLE_IMPLOT>)
+    math(EXPR is_imgui_test_engine_implot_enabled "((${return_value} >> 0) & 1)")
 
-    add_library(imgui_app)
-    target_sources(imgui_app PRIVATE ${_imgui_te_dir}/shared/imgui_app.cpp)
-    target_sources(imgui_app PUBLIC FILE_SET imgui_app_set BASE_DIRS ${_imgui_te_dir} TYPE HEADERS FILES ${_imgui_te_dir}/shared/imgui_app.h)
-    target_link_libraries(imgui_app PRIVATE imgui_backend_glfw imgui_backend_opengl3)
-    target_compile_definitions(imgui_app PUBLIC IMGUI_APP_GLFW_GL3)
-
-    add_executable(app_minimal)
-    target_sources(app_minimal PRIVATE ${_imgui_te_dir}/app_minimal/app_minimal_main.cpp ${_imgui_te_dir}/app_minimal/app_minimal_tests.cpp)
-    target_link_libraries(app_minimal PRIVATE imgui_app imgui_test_engine)
-
-    add_executable(imgui_test_suite)
-    target_sources(imgui_test_suite PRIVATE
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_core.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_inputs.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_perf.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_docking.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_nav.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_tables.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_viewports.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets_inputtext.cpp)
-
-    target_sources(imgui_test_suite PUBLIC FILE_SET HEADERS BASE_DIRS ${_imgui_te_dir}
-      FILES
-        ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.h
-        ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite_imconfig.h
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.h)
-
-    target_link_libraries(imgui_test_suite PUBLIC imgui_test_engine imgui_app)
-    target_compile_definitions(imgui_test_suite PUBLIC IMGUI_BROKEN_TESTS)
-
-    list(APPEND imgui_thirdparty_list imgui_test_engine imgui_app)
+    if(is_imgui_test_engine_implot_enabled AND NOT implot)
+      message(WARNING "In imgui_te_imconfig.h IMGUI_TEST_ENGINE_ENABLE_IMPLOT is set but ImPlot is not configurated. Performance viewer feature will not be available.")
+    endif()
+    target_link_libraries(imgui_test_engine PRIVATE $<$<BOOL:${is_imgui_test_engine_implot_enabled}>:implot>)
   endif()
 endif()
 
@@ -1109,8 +1082,6 @@ if(install)
     install(EXPORT imgui_test_engine_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::imgui_test_engine:: FILE CMakeForImGui-imgui_test_engine-Targets.cmake)
 
     install(TARGETS imgui_test_engine EXPORT imgui_test_engine_export FILE_SET imgui_test_engine_set)
-    install(TARGETS imgui_app EXPORT imgui_test_engine_export FILE_SET imgui_app_set)
-    install(TARGETS imgui_test_suite RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
     install(DIRECTORY ${_imgui_te_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_test_engine)
     install(DIRECTORY ${_imgui_te_dir}/build_scripts DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_test_engine)
