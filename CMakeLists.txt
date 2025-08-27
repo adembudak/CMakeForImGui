@@ -954,6 +954,8 @@ int main() {
       target_link_libraries(imgui_app PRIVATE imgui_backend_glfw imgui_backend_opengl2)
     elseif(${return_value} EQUAL 16)
       target_link_libraries(imgui_app PRIVATE imgui_backend_glfw imgui_backend_opengl3)
+    else()
+      target_link_libraries(imgui_app PRIVATE imgui_core)
     endif()
 
     add_executable(app_minimal)
@@ -972,6 +974,7 @@ int main() {
       ${_imgui_te_dir}/imgui_test_suite/imgui_tests_tables.cpp
       ${_imgui_te_dir}/imgui_test_suite/imgui_tests_viewports.cpp
       ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets_inputtext.cpp)
+    target_compile_definitions(imgui_test_suite PRIVATE IMGUI_USER_CONFIG="imgui_test_suite/imgui_test_suite_imconfig.h")
 
     target_sources(imgui_test_suite PUBLIC FILE_SET HEADERS BASE_DIRS ${_imgui_te_dir}
       FILES
