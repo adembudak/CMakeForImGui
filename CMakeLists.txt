@@ -181,11 +181,15 @@ int main() {
 }
 ]=] COMPILE_DEFINITIONS "-I${imgui_include_dir}" NO_CACHE NO_LOG)
 
-# unpack them in here
-math(EXPR is_imgui_test_engine_enabled_in_imconfig "((${configuration_information_return_value} >> 0) & 1)")
-math(EXPR is_imgui_freetype_enabled_in_imconfig "((${configuration_information_return_value} >> 1) & 1)")
-math(EXPR is_imgui_freetype_lunasvg_enabled_in_imconfig "((${configuration_information_return_value} >> 2) & 1)")
-math(EXPR is_imgui_freetype_plutosvg_enabled_in_imconfig "((${configuration_information_return_value} >> 3) & 1)")
+if(configuration_information_return_value STREQUAL "PLEASE_FILL_OUT-FAILED_TO_RUN") # cross compiling
+  set(configuration_information_return_value 15) # just enable them all
+else()
+ # unpack them in here
+  math(EXPR is_imgui_test_engine_enabled_in_imconfig "((${configuration_information_return_value} >> 0) & 1)")
+  math(EXPR is_imgui_freetype_enabled_in_imconfig "((${configuration_information_return_value} >> 1) & 1)")
+  math(EXPR is_imgui_freetype_lunasvg_enabled_in_imconfig "((${configuration_information_return_value} >> 2) & 1)")
+  math(EXPR is_imgui_freetype_plutosvg_enabled_in_imconfig "((${configuration_information_return_value} >> 3) & 1)")
+endif()
 
 add_library(imgui_core)
 target_sources(imgui_core PRIVATE ${_imgui_dir}/imgui.cpp ${_imgui_dir}/imgui_draw.cpp ${_imgui_dir}/imgui_tables.cpp ${_imgui_dir}/imgui_widgets.cpp ${_imgui_dir}/imgui_demo.cpp)
@@ -373,10 +377,13 @@ Android NDK toolchain is not used
   if(example_android_opengl3)
     find_program(GRADLE_COMMAND gradle REQUIRED)
 
+    cmake_path(SET android_example_output_path ${_imgui_examples_dir}/example_android_opengl3/android/app/build/outputs/apk)
+    cmake_path(ABSOLUTE_PATH android_example_output_path NORMALIZE)
+
     add_custom_command(TARGET imgui_backend_android POST_BUILD
       COMMAND ${GRADLE_COMMAND} --project-dir ${_imgui_examples_dir}/example_android_opengl3/android assembleRelease
       WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-      COMMENT "Building .apk files\n${_imgui_examples_dir}/example_android_opengl3/android/app/build/outputs/apk/"
+      COMMENT "Building .apk files. Output will be on: ${android_example_output_path}"
       VERBATIM)
   endif()
 endif()
