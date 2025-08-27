@@ -358,7 +358,6 @@ jobs:
         with:
           repository: ocornut/imgui
           show-progress: false
-          ref: v1.92.1
           path: imgui
 
       - name: Check out CMakeForImGui
