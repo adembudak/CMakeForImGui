@@ -154,12 +154,15 @@ set(pkg_config_requires_list)
 cmake_path(SET imgui_include_dir ${_imgui_dir})
 cmake_path(ABSOLUTE_PATH imgui_include_dir NORMALIZE)
 
-try_run(configuration_information_return_value compilation_result SOURCE_FROM_CONTENT check_configuration_information_in_imconfig_h.cpp
+if(CMAKE_CROSSCOMPILING AND CMAKE_SYSTEM_NAME STREQUAL "Android")
+  set(configuration_information_return_value 15) # can't run try_run() on Android, just enable them all
+else()
+  try_run(configuration_information_return_value compilation_result SOURCE_FROM_CONTENT check_configuration_information_in_imconfig_h.cpp
 [=[
 #include <imconfig.h>
 
 int main() {
-// pack some compile-time configuration related to build on an integer
+// pack some compile-time configuration definitions related to build on an integer
   unsigned result = 0;
 
 #if defined(IMGUI_ENABLE_TEST_ENGINE)
@@ -181,9 +184,6 @@ int main() {
 }
 ]=] COMPILE_DEFINITIONS "-I${imgui_include_dir}" NO_CACHE NO_LOG)
 
-if(configuration_information_return_value STREQUAL "PLEASE_FILL_OUT-FAILED_TO_RUN") # cross compiling
-  set(configuration_information_return_value 15) # just enable them all
-else()
  # unpack them in here
   math(EXPR is_imgui_test_engine_enabled_in_imconfig "((${configuration_information_return_value} >> 0) & 1)")
   math(EXPR is_imgui_freetype_enabled_in_imconfig "((${configuration_information_return_value} >> 1) & 1)")
