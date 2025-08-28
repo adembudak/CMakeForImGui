@@ -897,7 +897,7 @@ if(imgui_test_engine)
 
     try_run(return_value compilation_result SOURCE_FROM_CONTENT check_imgui_test_engine_performans_viewer_feature.cpp
 [=[
-#include <imgui_te_imconfig.h>
+#include <imgui_test_suite_imconfig.h>
 
 int main() {
   unsigned result = 0;
@@ -906,12 +906,12 @@ int main() {
 #endif
   return result;
 }
-]=] COMPILE_DEFINITIONS "-I${imgui_te_dir}/imgui_test_engine" NO_CACHE NO_LOG)
+]=] COMPILE_DEFINITIONS "-I${imgui_te_dir}/imgui_test_suite -I ${imgui_include_dir}" NO_CACHE NO_LOG)
 
     math(EXPR is_imgui_test_engine_implot_enabled "((${return_value} >> 0) & 1)")
 
     if(is_imgui_test_engine_implot_enabled AND NOT implot)
-      message(WARNING "In imgui_te_imconfig.h IMGUI_TEST_ENGINE_ENABLE_IMPLOT is set but ImPlot is not configurated. Performance viewer feature will not be available.")
+      message(WARNING "In imgui_te_imconfig.h or imgui_test_suite_imconfig.h IMGUI_TEST_ENGINE_ENABLE_IMPLOT is set but ImPlot is not configurated. Performance viewer feature will not be available. Try with 'cmake -Dimplot=ON' ...")
     endif()
     target_link_libraries(imgui_test_engine INTERFACE $<$<BOOL:${is_imgui_test_engine_implot_enabled}>:implot>)
 
