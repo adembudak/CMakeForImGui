@@ -58,8 +58,8 @@ Following projects are also supported:
 | [imgui_test_engine](https://github.com/ocornut/imgui_test_engine) | IMGUI_TEST_ENGINE_SOURCE_DIR | imgui_test_engine | <br>`Unofficial::imgui_test_engine::imgui_test_engine`<br>`Unofficial::imgui_test_engine::imgui_app` |
 | [imgui_club](https://github.com/ocornut/imgui_club) | IMGUI_CLUB_SOURCE_DIR | imgui_club<br>imgui_memory_editor<br>imgui_multicontext_compositor<br>imgui_threaded_rendering | <br>`Unofficial::imgui_club::imgui_memory_editor`<br>`Unofficial::imgui_club::imgui_multicontext_compositor`<br>`Unofficial::imgui_club::imgui_threaded_rendering` |
 | [imgui_markdown](https://github.com/enkisoftware/imgui_markdown) | IMGUI_MARKDOWN_SOURCE_DIR | imgui_markdown | `Unofficial::imgui_markdown::imgui_markdown` |
-| [ImPlot](https://github.com/epezent/implot) | IMPLOT_SOURCE_DIR | implot | `Unofficial::ImPlot::implot`<br>`Unofficial::ImPlot::implot_demo` |
-| [ImPlot3D](https://github.com/brenocq/implot3d) | IMPLOT3D_SOURCE_DIR | implot3d | `Unofficial::ImPlot3D::implot3d`<br>`Unofficial::ImPlot3D::implot3d_demo` |
+| [ImPlot](https://github.com/epezent/implot) | IMPLOT_SOURCE_DIR | implot | `Unofficial::ImPlot::implot` |
+| [ImPlot3D](https://github.com/brenocq/implot3d) | IMPLOT3D_SOURCE_DIR | implot3d | `Unofficial::ImPlot3D::implot3d` |
 | [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) | IMGUIFILEDIALOG_SOURCE_DIR | imguifiledialog | `Unofficial::ImGuiFileDialog::imguifiledialog` |
 
 ## Usage
