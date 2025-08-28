@@ -154,7 +154,7 @@ set(pkg_config_requires_list)
 cmake_path(SET imgui_include_dir ${_imgui_dir})
 cmake_path(ABSOLUTE_PATH imgui_include_dir NORMALIZE)
 
-if(CMAKE_CROSSCOMPILING AND CMAKE_SYSTEM_NAME STREQUAL "Android")
+if(CMAKE_CROSSCOMPILING)
   set(configuration_information_return_value 15) # can't run try_run() on Android, just enable them all
 else()
   try_run(configuration_information_return_value compilation_result SOURCE_FROM_CONTENT check_configuration_information_in_imconfig_h.cpp
