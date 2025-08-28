@@ -1027,15 +1027,11 @@ if(implot)
   cmake_path(SET _implot_dir ${IMPLOT_SOURCE_DIR})
 
   add_library(implot)
-  target_sources(implot PRIVATE ${_implot_dir}/implot.cpp ${_implot_dir}/implot_items.cpp)
+  target_sources(implot PRIVATE ${_implot_dir}/implot.cpp ${_implot_dir}/implot_items.cpp ${_implot_dir}/implot_demo.cpp)
   target_sources(implot PUBLIC FILE_SET implot_set BASE_DIRS ${_implot_dir} TYPE HEADERS FILES ${_implot_dir}/implot.h ${_implot_dir}/implot_internal.h)
   target_link_libraries(implot PUBLIC imgui_core)
 
-  add_library(implot_demo)
-  target_sources(implot_demo PRIVATE ${_implot_dir}/implot_demo.cpp)
-  target_link_libraries(implot_demo PRIVATE implot)
-
-  list(APPEND imgui_thirdparty_list implot_demo implot)
+  list(APPEND imgui_thirdparty_list implot)
 endif()
 
 if(implot3d)
@@ -1188,7 +1184,7 @@ if(install)
 
   if(implot)
     install(EXPORT implot_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::ImPlot:: FILE CMakeForImGui-ImPlot-Targets.cmake)
-    install(TARGETS implot implot_demo EXPORT implot_export FILE_SET implot_set)
+    install(TARGETS implot EXPORT implot_export FILE_SET implot_set)
     install(FILES ${_implot_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/ImPlot)
   endif()
 
