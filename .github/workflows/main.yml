@@ -195,7 +195,7 @@ jobs:
           -S ${{ github.workspace }}/CMakeForImGui
           -B ${{ github.workspace }}/build
           -D DearImGui_Backend_Win32=ON
-          -D dx9=ON
+          -D DearImGui_Backend_DirectX9=ON
           -D dx10=ON
           -D dx11=ON
           -D dx12=ON
