@@ -73,7 +73,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  option(metal "" OFF)
+  option(DearImGui_Backend_Metal "" OFF)
   option(osx "" OFF)
 endif()
 
@@ -111,7 +111,7 @@ cmake_dependent_option(example_android_opengl3 "" OFF "DearImGui_Examples AND an
 cmake_dependent_option(example_glfw_opengl2 "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND DearImGui_Backend_OpenGL2" OFF)
 cmake_dependent_option(example_glfw_opengl3 "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND DearImGui_Backend_OpenGL3" OFF)
 cmake_dependent_option(example_glfw_vulkan "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND DearImGui_Backend_Vulkan" OFF)
-cmake_dependent_option(example_glfw_metal "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND metal" OFF)
+cmake_dependent_option(example_glfw_metal "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND DearImGui_Backend_Metal" OFF)
 cmake_dependent_option(example_glfw_wgpu "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND DearImGui_Backend_WebGPU" OFF)
 
 cmake_dependent_option(example_glut_opengl2 "" OFF "DearImGui_Examples AND DearImGui_Backend_FreeGLUT AND DearImGui_Backend_OpenGL2" OFF)
@@ -120,7 +120,7 @@ cmake_dependent_option(example_sdl2_opengl2 "" OFF "DearImGui_Examples AND DearI
 cmake_dependent_option(example_sdl2_opengl3 "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL2 AND DearImGui_Backend_OpenGL3" OFF)
 cmake_dependent_option(example_sdl2_vulkan "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL2 AND DearImGui_Backend_Vulkan" OFF)
 cmake_dependent_option(example_sdl2_directx11 "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL2 AND DearImGui_Backend_DirectX11" OFF)
-cmake_dependent_option(example_sdl2_metal "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL2 AND metal" OFF)
+cmake_dependent_option(example_sdl2_metal "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL2 AND DearImGui_Backend_Metal" OFF)
 
 cmake_dependent_option(example_sdl2_sdlrenderer2 "" OFF "DearImGui_Examples AND DearImGui_Backend_SDLRenderer2 AND DearImGui_Backend_SDL2" OFF)
 
@@ -128,7 +128,7 @@ cmake_dependent_option(example_allegro5 "" OFF "DearImGui_Examples AND DearImGui
 
 cmake_dependent_option(example_sdl3_opengl3 "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL3 AND DearImGui_Backend_OpenGL3" OFF)
 cmake_dependent_option(example_sdl3_vulkan "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL3 AND DearImGui_Backend_Vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.4)" OFF)
-cmake_dependent_option(example_sdl3_metal "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL3 AND metal AND (${IMGUI_VERSION} VERSION_GREATER 1.92.1)" OFF)
+cmake_dependent_option(example_sdl3_metal "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL3 AND DearImGui_Backend_Metal AND (${IMGUI_VERSION} VERSION_GREATER 1.92.1)" OFF)
 
 cmake_dependent_option(example_sdl3_sdlgpu3 "" OFF "DearImGui_Examples AND DearImGui_Backend_SDLGPU3" OFF)
 
@@ -142,7 +142,7 @@ cmake_dependent_option(example_win32_directx11 "" OFF "DearImGui_Examples AND De
 cmake_dependent_option(example_win32_directx12 "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND DearImGui_Backend_DirectX12" OFF)
 
 cmake_dependent_option(example_apple_opengl2 "" OFF "DearImGui_Examples AND osx AND DearImGui_Backend_OpenGL2" OFF)
-cmake_dependent_option(example_apple_metal "" OFF "DearImGui_Examples AND osx AND metal" OFF)
+cmake_dependent_option(example_apple_metal "" OFF "DearImGui_Examples AND osx AND DearImGui_Backend_Metal" OFF)
 
 cmake_dependent_option(example_null "" OFF DearImGui_Examples OFF)
 
@@ -813,7 +813,7 @@ if(DearImGui_Backend_DirectX12)
   list(APPEND imgui_backends_list imgui_backend_dx12)
 endif()
 
-if(metal)
+if(DearImGui_Backend_Metal)
   add_library(imgui_backend_metal)
   target_sources(imgui_backend_metal PRIVATE ${_imgui_backends_dir}/imgui_impl_metal.mm)
   target_sources(imgui_backend_metal PUBLIC FILE_SET imgui_backend_metal_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_metal.h)
@@ -1257,7 +1257,7 @@ include(CPack)
 
 feature_summary(WHAT ALL)
 
-set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 DearImGui_Backend_DirectX10 DearImGui_Backend_DirectX11 DearImGui_Backend_DirectX12 osx metal
+set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 DearImGui_Backend_DirectX10 DearImGui_Backend_DirectX11 DearImGui_Backend_DirectX12 osx DearImGui_Backend_Metal
 misc
 misc_cpp misc_freetype misc_debugger misc_fonts
 thirdparty
