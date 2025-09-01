@@ -106,7 +106,7 @@ cmake_dependent_option(DearImGui_Backend_SDLRenderer3 "" OFF "(${IMGUI_VERSION} 
 cmake_dependent_option(DearImGui_Backend_SDLGPU3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
 cmake_dependent_option(DearImGui_Backend_WebGPU "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.80.0)" OFF)
 
-cmake_dependent_option(example_android_opengl3 "" OFF "DearImGui_Examples AND android" OFF)
+cmake_dependent_option(example_android_opengl3 "" OFF "DearImGui_Examples AND DearImGui_Backend_Android" OFF)
 
 cmake_dependent_option(example_glfw_opengl2 "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND DearImGui_Backend_OpenGL2" OFF)
 cmake_dependent_option(example_glfw_opengl3 "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND DearImGui_Backend_OpenGL3" OFF)
