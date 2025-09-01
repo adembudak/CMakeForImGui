@@ -196,7 +196,7 @@ jobs:
           -B ${{ github.workspace }}/build
           -D DearImGui_Backend_Win32=ON
           -D DearImGui_Backend_DirectX9=ON
-          -D dx10=ON
+          -D DearImGui_Backend_DirectX10=ON
           -D dx11=ON
           -D dx12=ON
           -D example_win32_opengl3=ON

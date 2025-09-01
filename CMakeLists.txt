@@ -67,7 +67,7 @@ option(DearImGui_Examples "" OFF)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   option(DearImGui_Backend_Win32 "" OFF)
   option(DearImGui_Backend_DirectX9 "" OFF)
-  option(dx10 "" OFF)
+  option(DearImGui_Backend_DirectX10 "" OFF)
   option(dx11 "" OFF)
   option(dx12 "" OFF)
 endif()
@@ -137,7 +137,7 @@ cmake_dependent_option(example_sdl3_sdlrenderer3 "" OFF "DearImGui_Examples AND 
 cmake_dependent_option(example_win32_opengl3 "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND DearImGui_Backend_OpenGL3 AND (${IMGUI_VERSION} VERSION_GREATER 1.89.5)" OFF)
 cmake_dependent_option(example_win32_vulkan "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND DearImGui_Backend_Vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
 cmake_dependent_option(example_win32_directx9 "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND DearImGui_Backend_DirectX9" OFF)
-cmake_dependent_option(example_win32_directx10 "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND dx10" OFF)
+cmake_dependent_option(example_win32_directx10 "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND DearImGui_Backend_DirectX10" OFF)
 cmake_dependent_option(example_win32_directx11 "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND dx11" OFF)
 cmake_dependent_option(example_win32_directx12 "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND dx12" OFF)
 
@@ -705,7 +705,7 @@ if(example_null)
   list(APPEND imgui_examples_list example_null)
 endif()
 
-if((DearImGui_Backend_DirectX9 OR dx10 OR dx11 OR dx12) AND (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC"))
+if((DearImGui_Backend_DirectX9 OR DearImGui_Backend_DirectX10 OR dx11 OR dx12) AND (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC"))
   set(sdk_version ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION})
 
   find_path(
@@ -761,7 +761,7 @@ if(DearImGui_Backend_DirectX9)
   list(APPEND imgui_backends_list imgui_backend_dx9)
 endif()
 
-if(dx10)
+if(DearImGui_Backend_DirectX10)
   add_library(imgui_backend_dx10)
   target_sources(imgui_backend_dx10 PRIVATE ${_imgui_backends_dir}/imgui_impl_dx10.cpp)
   target_sources(imgui_backend_dx10 PUBLIC FILE_SET imgui_backend_dx10_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_dx10.h)
@@ -1257,7 +1257,7 @@ include(CPack)
 
 feature_summary(WHAT ALL)
 
-set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 dx10 dx11 dx12 osx metal
+set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 DearImGui_Backend_DirectX10 dx11 dx12 osx metal
 misc
 misc_cpp misc_freetype misc_debugger misc_fonts
 thirdparty
