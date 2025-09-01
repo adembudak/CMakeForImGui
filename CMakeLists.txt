@@ -55,7 +55,7 @@ option(DearImGui_Backend_GLFW "" OFF)
 option(DearImGui_Backend_FreeGLUT "" OFF)
 option(DearImGui_Backend_SDL2 "" OFF)
 option(DearImGui_Backend_SDLRenderer2 "" OFF)
-option(sdl3 "" OFF)
+option(DearImGui_Backend_SDL3 "" OFF)
 option(sdlgpu3 "" OFF)
 option(sdlrenderer3 "" OFF)
 option(opengl2 "" OFF)
@@ -101,7 +101,7 @@ option(visualize_targets "Visualize linkage graph" OFF)
 mark_as_advanced(FORCE visualize_targets)
 
 cmake_dependent_option(DearImGui_Backend_SDLRenderer2 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.84.2)" OFF)
-cmake_dependent_option(sdl3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.0)" OFF)
+cmake_dependent_option(DearImGui_Backend_SDL3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.0)" OFF)
 cmake_dependent_option(sdlrenderer3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.0)" OFF)
 cmake_dependent_option(sdlgpu3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
 cmake_dependent_option(wgpu "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.80.0)" OFF)
@@ -126,13 +126,13 @@ cmake_dependent_option(example_sdl2_sdlrenderer2 "" OFF "DearImGui_Examples AND 
 
 cmake_dependent_option(example_allegro5 "" OFF "DearImGui_Examples AND DearImGui_Backend_Allegro5" OFF)
 
-cmake_dependent_option(example_sdl3_opengl3 "" OFF "DearImGui_Examples AND sdl3 AND opengl3" OFF)
-cmake_dependent_option(example_sdl3_vulkan "" OFF "DearImGui_Examples AND sdl3 AND vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.4)" OFF)
-cmake_dependent_option(example_sdl3_metal "" OFF "DearImGui_Examples AND sdl3 AND metal AND (${IMGUI_VERSION} VERSION_GREATER 1.92.1)" OFF)
+cmake_dependent_option(example_sdl3_opengl3 "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL3 AND opengl3" OFF)
+cmake_dependent_option(example_sdl3_vulkan "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL3 AND vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.4)" OFF)
+cmake_dependent_option(example_sdl3_metal "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL3 AND metal AND (${IMGUI_VERSION} VERSION_GREATER 1.92.1)" OFF)
 
 cmake_dependent_option(example_sdl3_sdlgpu3 "" OFF "DearImGui_Examples AND sdlgpu3" OFF)
 
-cmake_dependent_option(example_sdl3_sdlrenderer3 "" OFF "DearImGui_Examples AND sdlrenderer3 AND sdl3" OFF)
+cmake_dependent_option(example_sdl3_sdlrenderer3 "" OFF "DearImGui_Examples AND sdlrenderer3 AND DearImGui_Backend_SDL3" OFF)
 
 cmake_dependent_option(example_win32_opengl3 "" OFF "DearImGui_Examples AND win32 AND opengl3 AND (${IMGUI_VERSION} VERSION_GREATER 1.89.5)" OFF)
 cmake_dependent_option(example_win32_vulkan "" OFF "DearImGui_Examples AND win32 AND vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
@@ -555,7 +555,7 @@ if(DearImGui_Backend_SDLRenderer2)
   endif()
 endif()
 
-if(sdl3)
+if(DearImGui_Backend_SDL3)
   find_package(SDL3 CONFIG REQUIRED)
 
   add_library(imgui_backend_sdl3)
@@ -1257,7 +1257,7 @@ include(CPack)
 
 feature_summary(WHAT ALL)
 
-set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
+set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
 misc
 misc_cpp misc_freetype misc_debugger misc_fonts
 thirdparty

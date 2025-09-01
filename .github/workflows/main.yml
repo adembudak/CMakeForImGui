@@ -161,7 +161,7 @@ jobs:
           -D vulkan=ON
           -D DearImGui_Backend_SDL2=ON
           -D DearImGui_Backend_SDLRenderer2=ON
-          -D sdl3=ON
+          -D DearImGui_Backend_SDL3=ON
           -D sdlrenderer3=ON
           -D sdlgpu3=ON
           -D wgpu=OFF
