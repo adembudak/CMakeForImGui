@@ -47,7 +47,7 @@ cmake_dependent_option(misc_debugger "" OFF "misc AND (${IMGUI_VERSION} VERSION_
 cmake_dependent_option(misc_fonts "" OFF misc OFF)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
-  option(android "" OFF)
+  option(DearImGui_Backend_Android "" OFF)
 endif()
 
 option(allegro5 "" OFF)
@@ -324,7 +324,7 @@ if(wgpu)
   list(APPEND imgui_backends_list imgui_backend_wgpu)
 endif()
 
-if(android)
+if(DearImGui_Backend_Android)
   if(NOT DEFINED CMAKE_ANDROID_NDK)
     message(FATAL_ERROR
 [=[
@@ -1257,7 +1257,7 @@ include(CPack)
 
 feature_summary(WHAT ALL)
 
-set(options android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
+set(options DearImGui_Backend_Android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
 misc
 misc_cpp misc_freetype misc_debugger misc_fonts
 thirdparty
