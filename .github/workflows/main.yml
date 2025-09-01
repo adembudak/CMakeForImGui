@@ -374,7 +374,7 @@ jobs:
           -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
           -D DearImGui_Backend_Android=ON
           -D DearImGui_Backend_OpenGL3=ON
-          -D DearImGui_Examples =ON
+          -D DearImGui_Examples=ON
           -D example_android_opengl3=ON
           --toolchain ${ANDROID_NDK_ROOT}/build/cmake/android.toolchain.cmake
 
