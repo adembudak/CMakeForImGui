@@ -159,7 +159,7 @@ jobs:
           -D opengl2=ON
           -D opengl3=ON
           -D vulkan=ON
-          -D sdl2=ON
+          -D DearImGui_Backend_SDL2=ON
           -D sdlrenderer2=ON
           -D sdl3=ON
           -D sdlrenderer3=ON
