@@ -198,7 +198,7 @@ jobs:
           -D DearImGui_Backend_DirectX9=ON
           -D DearImGui_Backend_DirectX10=ON
           -D DearImGui_Backend_DirectX11=ON
-          -D dx12=ON
+          -D DearImGui_Backend_DirectX12=ON
           -D example_win32_opengl3=ON
           -D example_win32_vulkan=ON
           -D example_win32_directx9=ON
