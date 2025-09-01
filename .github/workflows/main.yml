@@ -153,7 +153,7 @@ jobs:
           -D uninstall=ON
           -D misc=ON -D misc_freetype=ON -D misc_cpp=ON -D misc_debugger=ON -D misc_fonts=ON
           -D pkg-config=ON
-          -D allegro5=ON
+          -D DearImGui_Backend_Allegro5=ON
           -D glut=ON
           -D glfw=ON
           -D opengl2=ON

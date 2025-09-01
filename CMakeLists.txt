@@ -50,7 +50,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
   option(DearImGui_Backend_Android "" OFF)
 endif()
 
-option(allegro5 "" OFF)
+option(DearImGui_Backend_Allegro5 "" OFF)
 option(glfw "" OFF)
 option(glut "" OFF)
 option(sdl2 "" OFF)
@@ -124,7 +124,7 @@ cmake_dependent_option(example_sdl2_metal "" OFF "examples AND sdl2 AND metal" O
 
 cmake_dependent_option(example_sdl2_sdlrenderer2 "" OFF "examples AND sdlrenderer2 AND sdl2" OFF)
 
-cmake_dependent_option(example_allegro5 "" OFF "examples AND allegro5" OFF)
+cmake_dependent_option(example_allegro5 "" OFF "examples AND DearImGui_Backend_Allegro5" OFF)
 
 cmake_dependent_option(example_sdl3_opengl3 "" OFF "examples AND sdl3 AND opengl3" OFF)
 cmake_dependent_option(example_sdl3_vulkan "" OFF "examples AND sdl3 AND vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.4)" OFF)
@@ -388,7 +388,7 @@ Android NDK toolchain is not used
   endif()
 endif()
 
-if(allegro5)
+if(DearImGui_Backend_Allegro5)
   find_package(Allegro CONFIG REQUIRED)
 
   add_library(imgui_backend_allegro5)
@@ -1257,7 +1257,7 @@ include(CPack)
 
 feature_summary(WHAT ALL)
 
-set(options DearImGui_Backend_Android allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
+set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
 misc
 misc_cpp misc_freetype misc_debugger misc_fonts
 thirdparty
