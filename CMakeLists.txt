@@ -62,7 +62,7 @@ option(opengl2 "" OFF)
 option(opengl3 "" OFF)
 option(vulkan "" OFF)
 option(wgpu "" OFF)
-option(examples "" OFF)
+option(DearImGui_Examples "" OFF)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   option(win32 "" OFF)
@@ -106,45 +106,45 @@ cmake_dependent_option(sdlrenderer3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.
 cmake_dependent_option(sdlgpu3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
 cmake_dependent_option(wgpu "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.80.0)" OFF)
 
-cmake_dependent_option(example_android_opengl3 "" OFF "examples AND android" OFF)
+cmake_dependent_option(example_android_opengl3 "" OFF "DearImGui_Examples AND android" OFF)
 
-cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND DearImGui_Backend_GLFW AND opengl2" OFF)
-cmake_dependent_option(example_glfw_opengl3 "" OFF "examples AND DearImGui_Backend_GLFW AND opengl3" OFF)
-cmake_dependent_option(example_glfw_vulkan "" OFF "examples AND DearImGui_Backend_GLFW AND vulkan" OFF)
-cmake_dependent_option(example_glfw_metal "" OFF "examples AND DearImGui_Backend_GLFW AND metal" OFF)
-cmake_dependent_option(example_glfw_wgpu "" OFF "examples AND DearImGui_Backend_GLFW AND wgpu" OFF)
+cmake_dependent_option(example_glfw_opengl2 "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND opengl2" OFF)
+cmake_dependent_option(example_glfw_opengl3 "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND opengl3" OFF)
+cmake_dependent_option(example_glfw_vulkan "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND vulkan" OFF)
+cmake_dependent_option(example_glfw_metal "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND metal" OFF)
+cmake_dependent_option(example_glfw_wgpu "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND wgpu" OFF)
 
-cmake_dependent_option(example_glut_opengl2 "" OFF "examples AND glut AND opengl2" OFF)
+cmake_dependent_option(example_glut_opengl2 "" OFF "DearImGui_Examples AND glut AND opengl2" OFF)
 
-cmake_dependent_option(example_sdl2_opengl2 "" OFF "examples AND sdl2 AND opengl2" OFF)
-cmake_dependent_option(example_sdl2_opengl3 "" OFF "examples AND sdl2 AND opengl3" OFF)
-cmake_dependent_option(example_sdl2_vulkan "" OFF "examples AND sdl2 AND vulkan" OFF)
-cmake_dependent_option(example_sdl2_directx11 "" OFF "examples AND sdl2 AND dx11" OFF)
-cmake_dependent_option(example_sdl2_metal "" OFF "examples AND sdl2 AND metal" OFF)
+cmake_dependent_option(example_sdl2_opengl2 "" OFF "DearImGui_Examples AND sdl2 AND opengl2" OFF)
+cmake_dependent_option(example_sdl2_opengl3 "" OFF "DearImGui_Examples AND sdl2 AND opengl3" OFF)
+cmake_dependent_option(example_sdl2_vulkan "" OFF "DearImGui_Examples AND sdl2 AND vulkan" OFF)
+cmake_dependent_option(example_sdl2_directx11 "" OFF "DearImGui_Examples AND sdl2 AND dx11" OFF)
+cmake_dependent_option(example_sdl2_metal "" OFF "DearImGui_Examples AND sdl2 AND metal" OFF)
 
-cmake_dependent_option(example_sdl2_sdlrenderer2 "" OFF "examples AND sdlrenderer2 AND sdl2" OFF)
+cmake_dependent_option(example_sdl2_sdlrenderer2 "" OFF "DearImGui_Examples AND sdlrenderer2 AND sdl2" OFF)
 
-cmake_dependent_option(example_allegro5 "" OFF "examples AND DearImGui_Backend_Allegro5" OFF)
+cmake_dependent_option(example_allegro5 "" OFF "DearImGui_Examples AND DearImGui_Backend_Allegro5" OFF)
 
-cmake_dependent_option(example_sdl3_opengl3 "" OFF "examples AND sdl3 AND opengl3" OFF)
-cmake_dependent_option(example_sdl3_vulkan "" OFF "examples AND sdl3 AND vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.4)" OFF)
-cmake_dependent_option(example_sdl3_metal "" OFF "examples AND sdl3 AND metal AND (${IMGUI_VERSION} VERSION_GREATER 1.92.1)" OFF)
+cmake_dependent_option(example_sdl3_opengl3 "" OFF "DearImGui_Examples AND sdl3 AND opengl3" OFF)
+cmake_dependent_option(example_sdl3_vulkan "" OFF "DearImGui_Examples AND sdl3 AND vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.4)" OFF)
+cmake_dependent_option(example_sdl3_metal "" OFF "DearImGui_Examples AND sdl3 AND metal AND (${IMGUI_VERSION} VERSION_GREATER 1.92.1)" OFF)
 
-cmake_dependent_option(example_sdl3_sdlgpu3 "" OFF "examples AND sdlgpu3" OFF)
+cmake_dependent_option(example_sdl3_sdlgpu3 "" OFF "DearImGui_Examples AND sdlgpu3" OFF)
 
-cmake_dependent_option(example_sdl3_sdlrenderer3 "" OFF "examples AND sdlrenderer3 AND sdl3" OFF)
+cmake_dependent_option(example_sdl3_sdlrenderer3 "" OFF "DearImGui_Examples AND sdlrenderer3 AND sdl3" OFF)
 
-cmake_dependent_option(example_win32_opengl3 "" OFF "examples AND win32 AND opengl3 AND (${IMGUI_VERSION} VERSION_GREATER 1.89.5)" OFF)
-cmake_dependent_option(example_win32_vulkan "" OFF "examples AND win32 AND vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
-cmake_dependent_option(example_win32_directx9 "" OFF "examples AND win32 AND dx9" OFF)
-cmake_dependent_option(example_win32_directx10 "" OFF "examples AND win32 AND dx10" OFF)
-cmake_dependent_option(example_win32_directx11 "" OFF "examples AND win32 AND dx11" OFF)
-cmake_dependent_option(example_win32_directx12 "" OFF "examples AND win32 AND dx12" OFF)
+cmake_dependent_option(example_win32_opengl3 "" OFF "DearImGui_Examples AND win32 AND opengl3 AND (${IMGUI_VERSION} VERSION_GREATER 1.89.5)" OFF)
+cmake_dependent_option(example_win32_vulkan "" OFF "DearImGui_Examples AND win32 AND vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
+cmake_dependent_option(example_win32_directx9 "" OFF "DearImGui_Examples AND win32 AND dx9" OFF)
+cmake_dependent_option(example_win32_directx10 "" OFF "DearImGui_Examples AND win32 AND dx10" OFF)
+cmake_dependent_option(example_win32_directx11 "" OFF "DearImGui_Examples AND win32 AND dx11" OFF)
+cmake_dependent_option(example_win32_directx12 "" OFF "DearImGui_Examples AND win32 AND dx12" OFF)
 
-cmake_dependent_option(example_apple_opengl2 "" OFF "examples AND osx AND opengl2" OFF)
-cmake_dependent_option(example_apple_metal "" OFF "examples AND osx AND metal" OFF)
+cmake_dependent_option(example_apple_opengl2 "" OFF "DearImGui_Examples AND osx AND opengl2" OFF)
+cmake_dependent_option(example_apple_metal "" OFF "DearImGui_Examples AND osx AND metal" OFF)
 
-cmake_dependent_option(example_null "" OFF examples OFF)
+cmake_dependent_option(example_null "" OFF DearImGui_Examples OFF)
 
 set(imgui_backends_list)
 set(imgui_examples_list)
@@ -1262,7 +1262,7 @@ misc
 misc_cpp misc_freetype misc_debugger misc_fonts
 thirdparty
 imgui_test_engine imgui_club imgui_markdown implot implot3d imguifiledialog
-examples
+DearImGui_Examples
 example_null
 example_allegro5 example_android_opengl3
 example_glfw_opengl2 example_glfw_opengl3 example_glfw_vulkan example_glfw_metal example_glfw_wgpu
