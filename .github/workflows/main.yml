@@ -164,10 +164,10 @@ jobs:
           -D DearImGui_Backend_SDL3=ON
           -D DearImGui_Backend_SDLGPU3=ON
           -D DearImGui_Backend_SDLRenderer3=ON
-          -D wgpu=OFF
+          -D DearImGui_Backend_WebGPU=OFF
           -D DearImGui_Examples=ON
           -D example_null=ON
-          -D example_glfw_opengl2=ON -D example_glfw_opengl3=ON -D example_glfw_vulkan=ON -D example_glfw_metal=ON
+          -D example_glfw_opengl2=ON -D example_glfw_opengl3=ON -D example_glfw_vulkan=ON -D example_glfw_metal=ON -D example_glfw_wgpu=OFF
           -D example_sdl2_opengl2=ON -D example_sdl2_opengl3=ON -D example_sdl2_vulkan=ON -D example_sdl2_metal=ON
           -D example_sdl3_opengl3=ON -D example_sdl3_vulkan=ON -D example_sdl3_metal=ON
           -D example_sdl3_sdlgpu3=ON
