@@ -65,7 +65,7 @@ option(DearImGui_Backend_WebGPU "" OFF)
 option(DearImGui_Examples "" OFF)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  option(win32 "" OFF)
+  option(DearImGui_Backend_Win32 "" OFF)
   option(dx9 "" OFF)
   option(dx10 "" OFF)
   option(dx11 "" OFF)
@@ -134,12 +134,12 @@ cmake_dependent_option(example_sdl3_sdlgpu3 "" OFF "DearImGui_Examples AND DearI
 
 cmake_dependent_option(example_sdl3_sdlrenderer3 "" OFF "DearImGui_Examples AND DearImGui_Backend_SDLRenderer3 AND DearImGui_Backend_SDL3" OFF)
 
-cmake_dependent_option(example_win32_opengl3 "" OFF "DearImGui_Examples AND win32 AND DearImGui_Backend_OpenGL3 AND (${IMGUI_VERSION} VERSION_GREATER 1.89.5)" OFF)
-cmake_dependent_option(example_win32_vulkan "" OFF "DearImGui_Examples AND win32 AND DearImGui_Backend_Vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
-cmake_dependent_option(example_win32_directx9 "" OFF "DearImGui_Examples AND win32 AND dx9" OFF)
-cmake_dependent_option(example_win32_directx10 "" OFF "DearImGui_Examples AND win32 AND dx10" OFF)
-cmake_dependent_option(example_win32_directx11 "" OFF "DearImGui_Examples AND win32 AND dx11" OFF)
-cmake_dependent_option(example_win32_directx12 "" OFF "DearImGui_Examples AND win32 AND dx12" OFF)
+cmake_dependent_option(example_win32_opengl3 "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND DearImGui_Backend_OpenGL3 AND (${IMGUI_VERSION} VERSION_GREATER 1.89.5)" OFF)
+cmake_dependent_option(example_win32_vulkan "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND DearImGui_Backend_Vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
+cmake_dependent_option(example_win32_directx9 "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND dx9" OFF)
+cmake_dependent_option(example_win32_directx10 "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND dx10" OFF)
+cmake_dependent_option(example_win32_directx11 "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND dx11" OFF)
+cmake_dependent_option(example_win32_directx12 "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND dx12" OFF)
 
 cmake_dependent_option(example_apple_opengl2 "" OFF "DearImGui_Examples AND osx AND DearImGui_Backend_OpenGL2" OFF)
 cmake_dependent_option(example_apple_metal "" OFF "DearImGui_Examples AND osx AND metal" OFF)
@@ -639,7 +639,7 @@ if(DearImGui_Backend_SDLRenderer3)
   endif()
 endif()
 
-if(win32)
+if(DearImGui_Backend_Win32)
   add_library(imgui_backend_win32)
   target_sources(imgui_backend_win32 PRIVATE ${_imgui_backends_dir}/imgui_impl_win32.cpp)
   target_sources(imgui_backend_win32 PUBLIC FILE_SET imgui_backend_win32_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_win32.h)
@@ -1257,7 +1257,7 @@ include(CPack)
 
 feature_summary(WHAT ALL)
 
-set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU win32 dx9 dx10 dx11 dx12 osx metal
+set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 dx9 dx10 dx11 dx12 osx metal
 misc
 misc_cpp misc_freetype misc_debugger misc_fonts
 thirdparty
