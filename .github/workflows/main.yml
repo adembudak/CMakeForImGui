@@ -154,7 +154,7 @@ jobs:
           -D misc=ON -D misc_freetype=ON -D misc_cpp=ON -D misc_debugger=ON -D misc_fonts=ON
           -D pkg-config=ON
           -D DearImGui_Backend_Allegro5=ON
-          -D glut=ON
+          -D DearImGui_Backend_FreeGLUT=ON
           -D DearImGui_Backend_GLFW=ON
           -D opengl2=ON
           -D opengl3=ON

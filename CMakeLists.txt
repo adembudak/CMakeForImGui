@@ -52,7 +52,7 @@ endif()
 
 option(DearImGui_Backend_Allegro5 "" OFF)
 option(DearImGui_Backend_GLFW "" OFF)
-option(glut "" OFF)
+option(DearImGui_Backend_FreeGLUT "" OFF)
 option(sdl2 "" OFF)
 option(sdlrenderer2 "" OFF)
 option(sdl3 "" OFF)
@@ -114,7 +114,7 @@ cmake_dependent_option(example_glfw_vulkan "" OFF "DearImGui_Examples AND DearIm
 cmake_dependent_option(example_glfw_metal "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND metal" OFF)
 cmake_dependent_option(example_glfw_wgpu "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND wgpu" OFF)
 
-cmake_dependent_option(example_glut_opengl2 "" OFF "DearImGui_Examples AND glut AND opengl2" OFF)
+cmake_dependent_option(example_glut_opengl2 "" OFF "DearImGui_Examples AND DearImGui_Backend_FreeGLUT AND opengl2" OFF)
 
 cmake_dependent_option(example_sdl2_opengl2 "" OFF "DearImGui_Examples AND sdl2 AND opengl2" OFF)
 cmake_dependent_option(example_sdl2_opengl3 "" OFF "DearImGui_Examples AND sdl2 AND opengl3" OFF)
@@ -456,7 +456,7 @@ if(DearImGui_Backend_GLFW)
   endif()
 endif()
 
-if(glut)
+if(DearImGui_Backend_FreeGLUT)
   find_package(FreeGLUT CONFIG REQUIRED)
 
   add_library(imgui_backend_glut)
@@ -1257,7 +1257,7 @@ include(CPack)
 
 feature_summary(WHAT ALL)
 
-set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
+set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
 misc
 misc_cpp misc_freetype misc_debugger misc_fonts
 thirdparty
