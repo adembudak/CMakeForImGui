@@ -155,7 +155,7 @@ jobs:
           -D pkg-config=ON
           -D DearImGui_Backend_Allegro5=ON
           -D glut=ON
-          -D glfw=ON
+          -D DearImGui_Backend_GLFW=ON
           -D opengl2=ON
           -D opengl3=ON
           -D vulkan=ON

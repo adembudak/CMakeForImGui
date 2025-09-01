@@ -51,7 +51,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Android")
 endif()
 
 option(DearImGui_Backend_Allegro5 "" OFF)
-option(glfw "" OFF)
+option(DearImGui_Backend_GLFW "" OFF)
 option(glut "" OFF)
 option(sdl2 "" OFF)
 option(sdlrenderer2 "" OFF)
@@ -108,11 +108,11 @@ cmake_dependent_option(wgpu "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.80.0)" O
 
 cmake_dependent_option(example_android_opengl3 "" OFF "examples AND android" OFF)
 
-cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND glfw AND opengl2" OFF)
-cmake_dependent_option(example_glfw_opengl3 "" OFF "examples AND glfw AND opengl3" OFF)
-cmake_dependent_option(example_glfw_vulkan "" OFF "examples AND glfw AND vulkan" OFF)
-cmake_dependent_option(example_glfw_metal "" OFF "examples AND glfw AND metal" OFF)
-cmake_dependent_option(example_glfw_wgpu "" OFF "examples AND glfw AND wgpu" OFF)
+cmake_dependent_option(example_glfw_opengl2 "" OFF "examples AND DearImGui_Backend_GLFW AND opengl2" OFF)
+cmake_dependent_option(example_glfw_opengl3 "" OFF "examples AND DearImGui_Backend_GLFW AND opengl3" OFF)
+cmake_dependent_option(example_glfw_vulkan "" OFF "examples AND DearImGui_Backend_GLFW AND vulkan" OFF)
+cmake_dependent_option(example_glfw_metal "" OFF "examples AND DearImGui_Backend_GLFW AND metal" OFF)
+cmake_dependent_option(example_glfw_wgpu "" OFF "examples AND DearImGui_Backend_GLFW AND wgpu" OFF)
 
 cmake_dependent_option(example_glut_opengl2 "" OFF "examples AND glut AND opengl2" OFF)
 
@@ -410,7 +410,7 @@ if(DearImGui_Backend_Allegro5)
   endif()
 endif()
 
-if(glfw)
+if(DearImGui_Backend_GLFW)
   find_package(glfw3 CONFIG REQUIRED)
 
   add_library(imgui_backend_glfw)
@@ -1257,7 +1257,7 @@ include(CPack)
 
 feature_summary(WHAT ALL)
 
-set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 glfw glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
+set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW glut sdl2 sdlrenderer2 sdl3 sdlgpu3 sdlrenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
 misc
 misc_cpp misc_freetype misc_debugger misc_fonts
 thirdparty
