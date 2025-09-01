@@ -74,7 +74,7 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   option(DearImGui_Backend_Metal "" OFF)
-  option(osx "" OFF)
+  option(DearImGui_Backend_OSX "" OFF)
 endif()
 
 option(thirdparty "" OFF)
@@ -141,8 +141,8 @@ cmake_dependent_option(example_win32_directx10 "" OFF "DearImGui_Examples AND De
 cmake_dependent_option(example_win32_directx11 "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND DearImGui_Backend_DirectX11" OFF)
 cmake_dependent_option(example_win32_directx12 "" OFF "DearImGui_Examples AND DearImGui_Backend_Win32 AND DearImGui_Backend_DirectX12" OFF)
 
-cmake_dependent_option(example_apple_opengl2 "" OFF "DearImGui_Examples AND osx AND DearImGui_Backend_OpenGL2" OFF)
-cmake_dependent_option(example_apple_metal "" OFF "DearImGui_Examples AND osx AND DearImGui_Backend_Metal" OFF)
+cmake_dependent_option(example_apple_opengl2 "" OFF "DearImGui_Examples AND DearImGui_Backend_OSX AND DearImGui_Backend_OpenGL2" OFF)
+cmake_dependent_option(example_apple_metal "" OFF "DearImGui_Examples AND DearImGui_Backend_OSX AND DearImGui_Backend_Metal" OFF)
 
 cmake_dependent_option(example_null "" OFF DearImGui_Examples OFF)
 
@@ -824,7 +824,7 @@ if(DearImGui_Backend_Metal)
   list(APPEND imgui_backends_list imgui_backend_metal)
 endif()
 
-if(osx)
+if(DearImGui_Backend_OSX)
   add_library(imgui_backend_osx)
   target_sources(imgui_backend_osx PRIVATE ${_imgui_backends_dir}/imgui_impl_osx.mm)
   target_sources(imgui_backend_osx PUBLIC FILE_SET imgui_backend_osx_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_backends_dir}/imgui_impl_osx.h)
@@ -1257,7 +1257,7 @@ include(CPack)
 
 feature_summary(WHAT ALL)
 
-set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 DearImGui_Backend_DirectX10 DearImGui_Backend_DirectX11 DearImGui_Backend_DirectX12 osx DearImGui_Backend_Metal
+set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 DearImGui_Backend_DirectX10 DearImGui_Backend_DirectX11 DearImGui_Backend_DirectX12 DearImGui_Backend_OSX DearImGui_Backend_Metal
 misc
 misc_cpp misc_freetype misc_debugger misc_fonts
 thirdparty
