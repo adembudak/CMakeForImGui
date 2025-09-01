@@ -157,7 +157,7 @@ jobs:
           -D DearImGui_Backend_FreeGLUT=ON
           -D DearImGui_Backend_GLFW=ON
           -D DearImGui_Backend_OpenGL2=ON
-          -D opengl3=ON
+          -D DearImGui_Backend_OpenGL3=ON
           -D vulkan=ON
           -D DearImGui_Backend_SDL2=ON
           -D DearImGui_Backend_SDLRenderer2=ON
@@ -373,7 +373,7 @@ jobs:
           -B ${{ github.workspace }}/build
           -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
           -D DearImGui_Backend_Android=ON
-          -D opengl3=ON
+          -D DearImGui_Backend_OpenGL3=ON
           -D DearImGui_Examples =ON
           -D example_android_opengl3=ON
           --toolchain ${ANDROID_NDK_ROOT}/build/cmake/android.toolchain.cmake
