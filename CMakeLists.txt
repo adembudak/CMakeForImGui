@@ -40,11 +40,11 @@ if(NOT is_generator_multi_config)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release RelWithDebInfo MinSizeRel)
 endif()
 
-option(misc "" OFF)
-cmake_dependent_option(misc_cpp "" OFF misc OFF)
-cmake_dependent_option(misc_freetype "" OFF misc OFF)
-cmake_dependent_option(misc_debugger "" OFF "misc AND (${IMGUI_VERSION} VERSION_GREATER 1.81)" OFF)
-cmake_dependent_option(misc_fonts "" OFF misc OFF)
+option(DearImGui_Misc_Options "Miscellaneous options" OFF)
+cmake_dependent_option(DearImGui_Misc_Cpp "" OFF DearImGui_Misc_Options OFF)
+cmake_dependent_option(DearImGui_Misc_FreeType "" OFF DearImGui_Misc_Options OFF)
+cmake_dependent_option(DearImGui_Misc_Debugger "" OFF "DearImGui_Misc_Options AND (${IMGUI_VERSION} VERSION_GREATER 1.81)" OFF)
+cmake_dependent_option(DearImGui_Misc_Fonts "" OFF DearImGui_Misc_Options OFF)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
   option(DearImGui_Backend_Android "" OFF)
@@ -200,13 +200,13 @@ target_sources(imgui_core PUBLIC
   FILES ${_imgui_dir}/imgui.h ${_imgui_dir}/imconfig.h ${_imgui_dir}/imgui_internal.h ${_imgui_dir}/imstb_rectpack.h ${_imgui_dir}/imstb_textedit.h ${_imgui_dir}/imstb_truetype.h)
 target_compile_features(imgui_core PUBLIC cxx_std_11)
 
-if(misc)
-  if(misc_cpp)
+if(DearImGui_Misc_Options)
+  if(DearImGui_Misc_Cpp)
     target_sources(imgui_core PRIVATE ${_imgui_misc_dir}/cpp/imgui_stdlib.cpp)
     target_sources(imgui_core PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imgui_dir}/misc/cpp TYPE HEADERS FILES ${_imgui_misc_dir}/cpp/imgui_stdlib.h)
   endif()
 
-  if(misc_freetype)
+  if(DearImGui_Misc_FreeType)
     if(NOT is_imgui_freetype_enabled_in_imconfig)
       message(WARNING "misc_freetype option is enabled but IMGUI_ENABLE_FREETYPE is not defined on imconfig.h. FreeType support feature will not be available.")
       set(misc_freetype OFF)
@@ -233,7 +233,7 @@ if(misc)
     endif()
   endif()
 
-  if(misc_fonts)
+  if(DearImGui_Misc_Fonts)
     add_executable(binary_to_compressed_c)
     target_sources(binary_to_compressed_c PRIVATE ${_imgui_misc_dir}/fonts/binary_to_compressed_c.cpp)
     target_compile_features(binary_to_compressed_c PRIVATE cxx_std_11)
@@ -1116,12 +1116,12 @@ if(install)
   install(EXPORT imgui_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::DearImGui:: FILE CMakeForImGuiTargets.cmake)
   install(TARGETS imgui_core EXPORT imgui_export FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
 
-  if(misc)
-    if(misc_debugger)
+  if(DearImGui_Misc_Options)
+    if(DearImGui_Misc_Debugger)
       install(DIRECTORY ${_imgui_misc_dir}/debuggers DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
     endif()
 
-    if(misc_fonts)
+    if(DearImGui_Misc_Fonts)
       install(TARGETS binary_to_compressed_c DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/fonts)
       install(DIRECTORY ${_imgui_dir}/misc/fonts DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui FILES_MATCHING PATTERN "*.ttf")
     endif()
@@ -1258,8 +1258,8 @@ include(CPack)
 feature_summary(WHAT ALL)
 
 set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 DearImGui_Backend_DirectX10 DearImGui_Backend_DirectX11 DearImGui_Backend_DirectX12 DearImGui_Backend_OSX DearImGui_Backend_Metal
-misc
-misc_cpp misc_freetype misc_debugger misc_fonts
+DearImGui_Misc_Options
+DearImGui_Misc_Cpp DearImGui_Misc_FreeType DearImGui_Misc_Debugger DearImGui_Misc_Fonts
 thirdparty
 imgui_test_engine imgui_club imgui_markdown implot implot3d imguifiledialog
 DearImGui_Examples
