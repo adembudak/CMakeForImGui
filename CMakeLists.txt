@@ -58,7 +58,7 @@ option(DearImGui_Backend_SDLRenderer2 "" OFF)
 option(DearImGui_Backend_SDL3 "" OFF)
 option(DearImGui_Backend_SDLGPU3 "" OFF)
 option(DearImGui_Backend_SDLRenderer3 "" OFF)
-option(opengl2 "" OFF)
+option(DearImGui_Backend_OpenGL2 "" OFF)
 option(opengl3 "" OFF)
 option(vulkan "" OFF)
 option(wgpu "" OFF)
@@ -108,15 +108,15 @@ cmake_dependent_option(wgpu "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.80.0)" O
 
 cmake_dependent_option(example_android_opengl3 "" OFF "DearImGui_Examples AND android" OFF)
 
-cmake_dependent_option(example_glfw_opengl2 "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND opengl2" OFF)
+cmake_dependent_option(example_glfw_opengl2 "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND DearImGui_Backend_OpenGL2" OFF)
 cmake_dependent_option(example_glfw_opengl3 "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND opengl3" OFF)
 cmake_dependent_option(example_glfw_vulkan "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND vulkan" OFF)
 cmake_dependent_option(example_glfw_metal "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND metal" OFF)
 cmake_dependent_option(example_glfw_wgpu "" OFF "DearImGui_Examples AND DearImGui_Backend_GLFW AND wgpu" OFF)
 
-cmake_dependent_option(example_glut_opengl2 "" OFF "DearImGui_Examples AND DearImGui_Backend_FreeGLUT AND opengl2" OFF)
+cmake_dependent_option(example_glut_opengl2 "" OFF "DearImGui_Examples AND DearImGui_Backend_FreeGLUT AND DearImGui_Backend_OpenGL2" OFF)
 
-cmake_dependent_option(example_sdl2_opengl2 "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL2 AND opengl2" OFF)
+cmake_dependent_option(example_sdl2_opengl2 "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL2 AND DearImGui_Backend_OpenGL2" OFF)
 cmake_dependent_option(example_sdl2_opengl3 "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL2 AND opengl3" OFF)
 cmake_dependent_option(example_sdl2_vulkan "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL2 AND vulkan" OFF)
 cmake_dependent_option(example_sdl2_directx11 "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL2 AND dx11" OFF)
@@ -141,7 +141,7 @@ cmake_dependent_option(example_win32_directx10 "" OFF "DearImGui_Examples AND wi
 cmake_dependent_option(example_win32_directx11 "" OFF "DearImGui_Examples AND win32 AND dx11" OFF)
 cmake_dependent_option(example_win32_directx12 "" OFF "DearImGui_Examples AND win32 AND dx12" OFF)
 
-cmake_dependent_option(example_apple_opengl2 "" OFF "DearImGui_Examples AND osx AND opengl2" OFF)
+cmake_dependent_option(example_apple_opengl2 "" OFF "DearImGui_Examples AND osx AND DearImGui_Backend_OpenGL2" OFF)
 cmake_dependent_option(example_apple_metal "" OFF "DearImGui_Examples AND osx AND metal" OFF)
 
 cmake_dependent_option(example_null "" OFF DearImGui_Examples OFF)
@@ -240,7 +240,7 @@ if(misc)
   endif()
 endif()
 
-if(opengl2)
+if(DearImGui_Backend_OpenGL2)
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   else()
     find_package(OpenGL 2 QUIET REQUIRED)
@@ -1257,7 +1257,7 @@ include(CPack)
 
 feature_summary(WHAT ALL)
 
-set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 opengl2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
+set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 opengl3 vulkan wgpu win32 dx9 dx10 dx11 dx12 osx metal
 misc
 misc_cpp misc_freetype misc_debugger misc_fonts
 thirdparty

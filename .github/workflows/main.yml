@@ -156,7 +156,7 @@ jobs:
           -D DearImGui_Backend_Allegro5=ON
           -D DearImGui_Backend_FreeGLUT=ON
           -D DearImGui_Backend_GLFW=ON
-          -D opengl2=ON
+          -D DearImGui_Backend_OpenGL2=ON
           -D opengl3=ON
           -D vulkan=ON
           -D DearImGui_Backend_SDL2=ON
