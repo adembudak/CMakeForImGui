@@ -1,5 +1,7 @@
 [CMake](https://cmake.org) build script support for [Dear ImGui](https://github.com/ocornut/imgui). This builds and installs the library and backends, also builds example programs.
 
+This work proposed for the Dear ImGui upstream: https://github.com/ocornut/imgui/issues/8896
+
 ## Building
 
 ```cmake
@@ -10,7 +12,7 @@ Setting `IMGUI_SOURCE_DIR` variable on configuration step is mandatory. An examp
 
 ```cmake
 cmake -G"Ninja Multi-Config" -DIMGUI_SOURCE_DIR=imgui-1.91.9b -S . -B build
-cmake -Dsdl2=ON -Dopengl3=ON -S . -B build
+cmake -DDearImGui_Backend_SDL2=ON -DDearImGui_Backend_OpenGL3=ON -S . -B build
 cmake --build build --config Release
 cmake --install build --config Release
 ```
@@ -18,36 +20,37 @@ The commands above assume the dependencies of the backend are installed on host 
 
 Following backend options are available:
 
-| Build option   | Generated target                                     |
-|----------------|------------------------------------------------------|
-| (default)      | `Unofficial::DearImGui::imgui_core`                  |
-| android        | `Unofficial::DearImGui::imgui_backend_android`       |
-| opengl2        | `Unofficial::DearImGui::imgui_backend_opengl2`       |
-| opengl3        | `Unofficial::DearImGui::imgui_backend_opengl3`       |
-| vulkan         | `Unofficial::DearImGui::imgui_backend_vulkan`        |
-| allegro5       | `Unofficial::DearImGui::imgui_backend_allegro5`      |
-| glfw           | `Unofficial::DearImGui::imgui_backend_glfw`          |
-| glut           | `Unofficial::DearImGui::imgui_backend_glut`          |
-| sdl2           | `Unofficial::DearImGui::imgui_backend_sdl2`          |
-| sdlrenderer2   | `Unofficial::DearImGui::imgui_backend_sdlrenderer2`  |
-| sdl3           | `Unofficial::DearImGui::imgui_backend_sdl3`          |
-| sdlgpu3        | `Unofficial::DearImGui::imgui_backend_sdlgpu3`       |
-| sdlrenderer3   | `Unofficial::DearImGui::imgui_backend_sdlrenderer3`  |
-| win32          | `Unofficial::DearImGui::imgui_backend_win32`         |
-| dx9            | `Unofficial::DearImGui::imgui_backend_dx9`           |
-| dx10           | `Unofficial::DearImGui::imgui_backend_dx10`          |
-| dx11           | `Unofficial::DearImGui::imgui_backend_dx11`          |
-| dx12           | `Unofficial::DearImGui::imgui_backend_dx12`          |
-| osx            | `Unofficial::DearImGui::imgui_backend_osx`           |
-| metal          | `Unofficial::DearImGui::imgui_backend_metal`         |
+| Build option                     | Generated target                                    |
+|----------------------------------|-----------------------------------------------------|
+| (default)                        | `Unofficial::DearImGui::imgui_core`                 |
+| DearImGui_Backend_Android        | `Unofficial::DearImGui::imgui_backend_android`      |
+| DearImGui_Backend_OpenGL2        | `Unofficial::DearImGui::imgui_backend_opengl2`      |
+| DearImGui_Backend_OpenGL3        | `Unofficial::DearImGui::imgui_backend_opengl3`      |
+| DearImGui_Backend_Vulkan         | `Unofficial::DearImGui::imgui_backend_vulkan`       |
+| DearImGui_Backend_Allegro5       | `Unofficial::DearImGui::imgui_backend_allegro5`     |
+| DearImGui_Backend_GLFW           | `Unofficial::DearImGui::imgui_backend_glfw`         |
+| DearImGui_Backend_FreeGLUT       | `Unofficial::DearImGui::imgui_backend_glut`         |
+| DearImGui_Backend_SDL2           | `Unofficial::DearImGui::imgui_backend_sdl2`         |
+| DearImGui_Backend_SDLRenderer2   | `Unofficial::DearImGui::imgui_backend_sdlrenderer2` |
+| DearImGui_Backend_SDL3           | `Unofficial::DearImGui::imgui_backend_sdl3`         |
+| DearImGui_Backend_SDLGPU3        | `Unofficial::DearImGui::imgui_backend_sdlgpu3`      |
+| DearImGui_Backend_SDLRenderer3   | `Unofficial::DearImGui::imgui_backend_sdlrenderer3` |
+| DearImGui_Backend_WebGPU         | `Unofficial::DearImGui::imgui_backend_wgpu`         |
+| DearImGui_Backend_Win32          | `Unofficial::DearImGui::imgui_backend_win32`        |
+| DearImGui_Backend_DirectX9       | `Unofficial::DearImGui::imgui_backend_dx9`          |
+| DearImGui_Backend_DirectX10      | `Unofficial::DearImGui::imgui_backend_dx10`         |
+| DearImGui_Backend_DirectX11      | `Unofficial::DearImGui::imgui_backend_dx11`         |
+| DearImGui_Backend_DirectX12      | `Unofficial::DearImGui::imgui_backend_dx12`         |
+| DearImGui_Backend_OSX            | `Unofficial::DearImGui::imgui_backend_osx`          |
+| DearImGui_Backend_Metal          | `Unofficial::DearImGui::imgui_backend_metal`        |
 
 All backend options are `OFF` by default.
 
 Example programs set as dependent options, like:
 ```cmake
-cmake_dependent_option(example_sdl2_opengl3 "" OFF "examples AND sdl2 AND opengl3" OFF)
+cmake_dependent_option(Example_SDL2_OpenGL3 "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL2 AND DearImGui_Backend_OpenGL3" OFF)
 ```
-The `example_sdl2_opengl3` option will be available only when the `examples` option and the corresponding backends (`sdl2` and `opengl3`) are `ON`. The same is true for all the other examples and they're `OFF` by default.
+The `Example_SDL2_OpenGL3` option will be available only when the `DearImGui_Examples` option and the corresponding backends are `ON`. The same is true for all the other examples and they're `OFF` by default.
 
 Libraries and examples can be installed by setting `install` and `install_examples` options `ON`, respectively. An `uninstall` custom target is also provided to remove the artifacts where are they installed.
 
