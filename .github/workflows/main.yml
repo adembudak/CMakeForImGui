@@ -167,14 +167,14 @@ jobs:
           -D DearImGui_Backend_WebGPU=OFF
           -D DearImGui_Examples=ON
           -D example_null=ON
-          -D example_glfw_opengl2=ON -D example_glfw_opengl3=ON -D example_glfw_vulkan=ON -D example_glfw_metal=ON -D example_glfw_wgpu=OFF
-          -D example_sdl2_opengl2=ON -D example_sdl2_opengl3=ON -D example_sdl2_vulkan=ON -D example_sdl2_metal=ON
-          -D example_sdl3_opengl3=ON -D example_sdl3_vulkan=ON -D example_sdl3_metal=ON
-          -D example_sdl3_sdlgpu3=ON
-          -D example_sdl2_sdlrenderer2=ON
-          -D example_sdl3_sdlrenderer3=ON
-          -D example_glut_opengl2=ON
-          -D example_allegro5=ON
+          -D Example_GLFW_OpenGL2=ON -D Example_GLFW_OpenGL3=ON -D Example_GLFW_Vulkan=ON -D Example_GLFW_Metal=ON -D Example_GLFW_WebGPU=OFF
+          -D Example_SDL2_OpenGL2=ON -D Example_SDL2_OpenGL3=ON -D Example_SDL2_Vulkan=ON -D Example_SDL2_Metal=ON
+          -D Example_SDL3_OpenGL3=ON -D Example_SDL3_Vulkan=ON -D Example_SDL3_Metal=ON
+          -D Example_SDL3_SDLGPU3=ON
+          -D Example_SDL2_SDLRenderer2=ON
+          -D Example_SDL3_SDLRenderer3=ON
+          -D Example_FreeGLUT_OpenGL2=ON
+          -D Example_Allegro5=ON
           --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: Configurations for macOS related backends
@@ -185,8 +185,8 @@ jobs:
           -B ${{ github.workspace }}/build
           -D DearImGui_Backend_Metal=ON
           -D DearImGui_Backend_OSX=ON
-          -D example_apple_opengl2=ON
-          -D example_apple_metal=ON
+          -D Example_Apple_OpenGL2=ON
+          -D Example_Apple_Metal=ON
 
       - name: Configurations for Windows related backends
         if: matrix.os == 'windows-latest'
@@ -199,13 +199,13 @@ jobs:
           -D DearImGui_Backend_DirectX10=ON
           -D DearImGui_Backend_DirectX11=ON
           -D DearImGui_Backend_DirectX12=ON
-          -D example_win32_opengl3=ON
-          -D example_win32_vulkan=ON
-          -D example_win32_directx9=ON
-          -D example_win32_directx10=ON
-          -D example_win32_directx11=ON
-          -D example_win32_directx12=ON
-          -D example_sdl2_directx11=ON
+          -D Example_Win32_OpenGL3=ON
+          -D Example_Win32_Vulkan=ON
+          -D Example_Win32_DirectX9=ON
+          -D Example_Win32_DirectX10=ON
+          -D Example_Win32_DirectX11=ON
+          -D Example_Win32_DirectX12=ON
+          -D Example_SDL2_DirectX11=ON
 
 
       - name: Check ImGui version whether ImPlot supported
@@ -375,7 +375,7 @@ jobs:
           -D DearImGui_Backend_Android=ON
           -D DearImGui_Backend_OpenGL3=ON
           -D DearImGui_Examples=ON
-          -D example_android_opengl3=ON
+          -D Example_Android_OpenGL3=ON
           --toolchain ${ANDROID_NDK_ROOT}/build/cmake/android.toolchain.cmake
 
       - name: Build
@@ -387,6 +387,6 @@ jobs:
         uses: actions/upload-artifact@v4
 
         with:
-          name: example_android_opengl3
+          name: Example_Android_OpenGL3
           path: ${{ github.workspace }}/imgui/examples/example_android_opengl3/android/app/build/outputs/apk
 
