@@ -1113,7 +1113,7 @@ if(install)
 
   install(DIRECTORY ${_imgui_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(FILES ${_imgui_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
-  install(EXPORT imgui_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::DearImGui:: FILE CMakeForImGuiTargets.cmake)
+  install(EXPORT imgui_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::DearImGui:: FILE DearImGuiTargets.cmake)
   install(TARGETS imgui_core EXPORT imgui_export FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
 
   if(DearImGui_Misc_Options)
@@ -1201,10 +1201,10 @@ if(install)
     install(FILES ${PROJECT_BINARY_DIR}/cmakeforimgui.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
   endif()
 
-  configure_package_config_file(CMakeForImGuiConfig.cmake.in ${PROJECT_BINARY_DIR}/CMakeForImGuiConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui)
-  write_basic_package_version_file(${PROJECT_BINARY_DIR}/CMakeForImGuiConfigVersion.cmake VERSION ${IMGUI_VERSION} COMPATIBILITY ExactVersion)
+  configure_package_config_file(DearImGuiConfig.cmake.in ${PROJECT_BINARY_DIR}/DearImGuiConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui)
+  write_basic_package_version_file(${PROJECT_BINARY_DIR}/DearImGuiConfigVersion.cmake VERSION ${IMGUI_VERSION} COMPATIBILITY ExactVersion)
 
-  install(FILES ${PROJECT_BINARY_DIR}/CMakeForImGuiConfig.cmake ${PROJECT_BINARY_DIR}/CMakeForImGuiConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui)
+  install(FILES ${PROJECT_BINARY_DIR}/DearImGuiConfig.cmake ${PROJECT_BINARY_DIR}/DearImGuiConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui)
 endif()
 
 if(uninstall)

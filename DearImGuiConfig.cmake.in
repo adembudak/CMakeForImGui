@@ -2,8 +2,8 @@
 
 include(CMakeFindDependencyMacro)
 
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGuiTargets.cmake")
-  include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGuiTargets.cmake")
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/DearImGuiTargets.cmake")
+  include("${CMAKE_CURRENT_LIST_DIR}/DearImGuiTargets.cmake")
 endif()
 
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_club-Targets.cmake")
