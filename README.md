@@ -20,29 +20,29 @@ The commands above assume the dependencies of the backend are installed on host 
 
 Following backend options are available:
 
-| Build option                     | Generated target                                    |
-|----------------------------------|-----------------------------------------------------|
-| (default)                        | `Unofficial::DearImGui::imgui_core`                 |
-| DearImGui_Backend_Android        | `Unofficial::DearImGui::imgui_backend_android`      |
-| DearImGui_Backend_OpenGL2        | `Unofficial::DearImGui::imgui_backend_opengl2`      |
-| DearImGui_Backend_OpenGL3        | `Unofficial::DearImGui::imgui_backend_opengl3`      |
-| DearImGui_Backend_Vulkan         | `Unofficial::DearImGui::imgui_backend_vulkan`       |
-| DearImGui_Backend_Allegro5       | `Unofficial::DearImGui::imgui_backend_allegro5`     |
-| DearImGui_Backend_GLFW           | `Unofficial::DearImGui::imgui_backend_glfw`         |
-| DearImGui_Backend_FreeGLUT       | `Unofficial::DearImGui::imgui_backend_glut`         |
-| DearImGui_Backend_SDL2           | `Unofficial::DearImGui::imgui_backend_sdl2`         |
-| DearImGui_Backend_SDLRenderer2   | `Unofficial::DearImGui::imgui_backend_sdlrenderer2` |
-| DearImGui_Backend_SDL3           | `Unofficial::DearImGui::imgui_backend_sdl3`         |
-| DearImGui_Backend_SDLGPU3        | `Unofficial::DearImGui::imgui_backend_sdlgpu3`      |
-| DearImGui_Backend_SDLRenderer3   | `Unofficial::DearImGui::imgui_backend_sdlrenderer3` |
-| DearImGui_Backend_WebGPU         | `Unofficial::DearImGui::imgui_backend_wgpu`         |
-| DearImGui_Backend_Win32          | `Unofficial::DearImGui::imgui_backend_win32`        |
-| DearImGui_Backend_DirectX9       | `Unofficial::DearImGui::imgui_backend_dx9`          |
-| DearImGui_Backend_DirectX10      | `Unofficial::DearImGui::imgui_backend_dx10`         |
-| DearImGui_Backend_DirectX11      | `Unofficial::DearImGui::imgui_backend_dx11`         |
-| DearImGui_Backend_DirectX12      | `Unofficial::DearImGui::imgui_backend_dx12`         |
-| DearImGui_Backend_OSX            | `Unofficial::DearImGui::imgui_backend_osx`          |
-| DearImGui_Backend_Metal          | `Unofficial::DearImGui::imgui_backend_metal`        |
+| Build option                     | Generated target                    |
+|----------------------------------|-------------------------------------|
+| (default)                        | `ImGui::imgui_core`                 |
+| DearImGui_Backend_Android        | `ImGui::imgui_backend_android`      |
+| DearImGui_Backend_OpenGL2        | `ImGui::imgui_backend_opengl2`      |
+| DearImGui_Backend_OpenGL3        | `ImGui::imgui_backend_opengl3`      |
+| DearImGui_Backend_Vulkan         | `ImGui::imgui_backend_vulkan`       |
+| DearImGui_Backend_Allegro5       | `ImGui::imgui_backend_allegro5`     |
+| DearImGui_Backend_GLFW           | `ImGui::imgui_backend_glfw`         |
+| DearImGui_Backend_FreeGLUT       | `ImGui::imgui_backend_glut`         |
+| DearImGui_Backend_SDL2           | `ImGui::imgui_backend_sdl2`         |
+| DearImGui_Backend_SDLRenderer2   | `ImGui::imgui_backend_sdlrenderer2` |
+| DearImGui_Backend_SDL3           | `ImGui::imgui_backend_sdl3`         |
+| DearImGui_Backend_SDLGPU3        | `ImGui::imgui_backend_sdlgpu3`      |
+| DearImGui_Backend_SDLRenderer3   | `ImGui::imgui_backend_sdlrenderer3` |
+| DearImGui_Backend_WebGPU         | `ImGui::imgui_backend_wgpu`         |
+| DearImGui_Backend_Win32          | `ImGui::imgui_backend_win32`        |
+| DearImGui_Backend_DirectX9       | `ImGui::imgui_backend_dx9`          |
+| DearImGui_Backend_DirectX10      | `ImGui::imgui_backend_dx10`         |
+| DearImGui_Backend_DirectX11      | `ImGui::imgui_backend_dx11`         |
+| DearImGui_Backend_DirectX12      | `ImGui::imgui_backend_dx12`         |
+| DearImGui_Backend_OSX            | `ImGui::imgui_backend_osx`          |
+| DearImGui_Backend_Metal          | `ImGui::imgui_backend_metal`        |
 
 All backend options are `OFF` by default.
 
@@ -75,7 +75,7 @@ All the include paths are kept as is. [This repo](https://github.com/adembudak/C
 
 find_package(CMakeForImGui CONFIG REQUIRED)
 # ...
-target_link_libraries(tgt PUBLIC Unofficial::DearImGui::imgui_backend_sdl2 Unofficial::DearImGui::imgui_backend_opengl3)
+target_link_libraries(tgt PUBLIC ImGui::imgui_backend_sdl2 ImGui::imgui_backend_opengl3)
 ```
 There is also [this branch](https://github.com/adembudak/CMakeForImGui/tree/single-target) available, where a single target approach is investigated. The same options are available but all the backends and ImGui itself is linked with a `Unofficial::DearImGui::imgui` target.
 
