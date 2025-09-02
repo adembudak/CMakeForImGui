@@ -91,7 +91,7 @@ cmake_dependent_option(imgui_threaded_rendering "" OFF imgui_club OFF)
 
 option(BUILD_SHARED_LIBS "" OFF)
 
-option(pkg-config "Generate cmakeforimgui.pc file" OFF)
+option(pkg-config "Generate dearimgui.pc file" OFF)
 
 option(install "" ON)
 option(uninstall "" ON)
@@ -1085,7 +1085,7 @@ if(pkg-config)
     string(JOIN " " imgui_thirdparty_string ${imgui_thirdparty_list})
   endif()
 
-  file(CONFIGURE OUTPUT ${PROJECT_BINARY_DIR}/cmakeforimgui.pc CONTENT
+  file(CONFIGURE OUTPUT ${PROJECT_BINARY_DIR}/dearimgui.pc CONTENT
 [=[
 # SPDX-License-Identifier: MIT
 
@@ -1198,7 +1198,7 @@ if(install)
   endif()
 
   if(pkg-config)
-    install(FILES ${PROJECT_BINARY_DIR}/cmakeforimgui.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+    install(FILES ${PROJECT_BINARY_DIR}/dearimgui.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
   endif()
 
   configure_package_config_file(DearImGuiConfig.cmake.in ${PROJECT_BINARY_DIR}/DearImGuiConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui)
