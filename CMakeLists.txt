@@ -19,7 +19,6 @@ if(NOT IMGUI_SOURCE_DIR)
 endif()
 
 cmake_path(SET _imgui_dir ${IMGUI_SOURCE_DIR})
-cmake_path(APPEND _imgui_misc_dir ${_imgui_dir} misc)
 cmake_path(APPEND _imgui_docs_dir ${_imgui_dir} docs)
 
 file(STRINGS ${_imgui_dir}/imgui.h imgui_version_string REGEX "#define[ \t]+IMGUI_VERSION_NUM[ \t]+[0-9]+")
@@ -200,8 +199,8 @@ target_compile_features(imgui_core PUBLIC cxx_std_11)
 
 if(DearImGui_Misc_Options)
   if(DearImGui_Misc_Cpp)
-    target_sources(imgui_core PRIVATE ${_imgui_misc_dir}/cpp/imgui_stdlib.cpp)
-    target_sources(imgui_core PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imgui_dir}/misc/cpp TYPE HEADERS FILES ${_imgui_misc_dir}/cpp/imgui_stdlib.h)
+    target_sources(imgui_core PRIVATE ${_imgui_dir}/misc/cpp/imgui_stdlib.cpp)
+    target_sources(imgui_core PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imgui_dir}/misc/cpp TYPE HEADERS FILES ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
   endif()
 
   if(DearImGui_Misc_FreeType)
@@ -211,9 +210,9 @@ if(DearImGui_Misc_Options)
     else()
       find_package(freetype CONFIG REQUIRED)
 
-      target_sources(imgui_core PRIVATE ${_imgui_misc_dir}/freetype/imgui_freetype.cpp)
+      target_sources(imgui_core PRIVATE ${_imgui_dir}/misc/freetype/imgui_freetype.cpp)
       target_link_libraries(imgui_core PUBLIC Freetype::Freetype)
-      target_sources(imgui_core PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imgui_dir}/misc/freetype TYPE HEADERS FILES ${_imgui_misc_dir}/freetype/imgui_freetype.h)
+      target_sources(imgui_core PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imgui_dir}/misc/freetype TYPE HEADERS FILES ${_imgui_dir}/misc/freetype/imgui_freetype.h)
 
       if(is_imgui_freetype_lunasvg_enabled_in_imconfig)
         if(${IMGUI_VERSION} VERSION_LESS 1.92.0)
@@ -233,7 +232,7 @@ if(DearImGui_Misc_Options)
 
   if(DearImGui_Misc_Fonts)
     add_executable(binary_to_compressed_c)
-    target_sources(binary_to_compressed_c PRIVATE ${_imgui_misc_dir}/fonts/binary_to_compressed_c.cpp)
+    target_sources(binary_to_compressed_c PRIVATE ${_imgui_dir}/misc/fonts/binary_to_compressed_c.cpp)
     target_compile_features(binary_to_compressed_c PRIVATE cxx_std_11)
   endif()
 endif()
@@ -1116,7 +1115,7 @@ if(install)
 
   if(DearImGui_Misc_Options)
     if(DearImGui_Misc_Debugger)
-      install(DIRECTORY ${_imgui_misc_dir}/debuggers DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
+      install(DIRECTORY ${_imgui_dir}/misc/debuggers DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
     endif()
 
     if(DearImGui_Misc_Fonts)
