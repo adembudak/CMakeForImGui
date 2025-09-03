@@ -20,29 +20,29 @@ The commands above assume the dependencies of the backend are installed on host 
 
 Following backend options are available:
 
-| Build option                     | Generated target                    | Alias target                      |
-|----------------------------------|-------------------------------------|-----------------------------------|
-| (default)                        | `ImGui::imgui_core`                 | `ImGui::Core`                     |
-| DearImGui_Backend_Android        | `ImGui::imgui_backend_android`      | `ImGui::Backend_Android`          |
-| DearImGui_Backend_OpenGL2        | `ImGui::imgui_backend_opengl2`      | `ImGui::Backend_OpenGL2`          |
-| DearImGui_Backend_OpenGL3        | `ImGui::imgui_backend_opengl3`      | `ImGui::Backend_OpenGL3`          |
-| DearImGui_Backend_Vulkan         | `ImGui::imgui_backend_vulkan`       | `ImGui::Backend_Vulkan`           |
-| DearImGui_Backend_Allegro5       | `ImGui::imgui_backend_allegro5`     | `ImGui::Backend_Allegro5`         |
-| DearImGui_Backend_GLFW           | `ImGui::imgui_backend_glfw`         | `ImGui::Backend_GLFW`             |
-| DearImGui_Backend_FreeGLUT       | `ImGui::imgui_backend_glut`         | `ImGui::Backend_FreeGLUT`         |
-| DearImGui_Backend_SDL2           | `ImGui::imgui_backend_sdl2`         | `ImGui::Backend_SDL2`             |
-| DearImGui_Backend_SDLRenderer2   | `ImGui::imgui_backend_sdlrenderer2` | `ImGui::Backend_SDLRenderer2`     |
-| DearImGui_Backend_SDL3           | `ImGui::imgui_backend_sdl3`         | `ImGui::Backend_SDL3`             |
-| DearImGui_Backend_SDLGPU3        | `ImGui::imgui_backend_sdlgpu3`      | `ImGui::Backend_SDLGPU3`          |
-| DearImGui_Backend_SDLRenderer3   | `ImGui::imgui_backend_sdlrenderer3` | `ImGui::Backend_SDLRenderer3`     |
-| DearImGui_Backend_WebGPU         | `ImGui::imgui_backend_wgpu`         | `ImGui::Backend_WebGPU`           |
-| DearImGui_Backend_Win32          | `ImGui::imgui_backend_win32`        | `ImGui::Backend_Win32`            |
-| DearImGui_Backend_DirectX9       | `ImGui::imgui_backend_dx9`          | `ImGui::Backend_DirectX9`         |
-| DearImGui_Backend_DirectX10      | `ImGui::imgui_backend_dx10`         | `ImGui::Backend_DirectX10`        |
-| DearImGui_Backend_DirectX11      | `ImGui::imgui_backend_dx11`         | `ImGui::Backend_DirectX11`        |
-| DearImGui_Backend_DirectX12      | `ImGui::imgui_backend_dx12`         | `ImGui::Backend_DirectX12`        |
-| DearImGui_Backend_OSX            | `ImGui::imgui_backend_osx`          | `ImGui::Backend_OSX`              |
-| DearImGui_Backend_Metal          | `ImGui::imgui_backend_metal`        | `ImGui::Backend_Metal`            |
+| Build options                    | Targets                       |
+|----------------------------------|-------------------------------|
+| (default)                        | `ImGui::Core`                 |
+| DearImGui_Backend_Android        | `ImGui::Backend_Android`      |
+| DearImGui_Backend_OpenGL2        | `ImGui::Backend_OpenGL2`      |
+| DearImGui_Backend_OpenGL3        | `ImGui::Backend_OpenGL3`      |
+| DearImGui_Backend_Vulkan         | `ImGui::Backend_Vulkan`       |
+| DearImGui_Backend_Allegro5       | `ImGui::Backend_Allegro5`     |
+| DearImGui_Backend_GLFW           | `ImGui::Backend_GLFW`         |
+| DearImGui_Backend_FreeGLUT       | `ImGui::Backend_FreeGLUT`     |
+| DearImGui_Backend_SDL2           | `ImGui::Backend_SDL2`         |
+| DearImGui_Backend_SDLRenderer2   | `ImGui::Backend_SDLRenderer2` |
+| DearImGui_Backend_SDL3           | `ImGui::Backend_SDL3`         |
+| DearImGui_Backend_SDLGPU3        | `ImGui::Backend_SDLGPU3`      |
+| DearImGui_Backend_SDLRenderer3   | `ImGui::Backend_SDLRenderer3` |
+| DearImGui_Backend_WebGPU         | `ImGui::Backend_WebGPU`       |
+| DearImGui_Backend_Win32          | `ImGui::Backend_Win32`        |
+| DearImGui_Backend_DirectX9       | `ImGui::Backend_DirectX9`     |
+| DearImGui_Backend_DirectX10      | `ImGui::Backend_DirectX10`    |
+| DearImGui_Backend_DirectX11      | `ImGui::Backend_DirectX11`    |
+| DearImGui_Backend_DirectX12      | `ImGui::Backend_DirectX12`    |
+| DearImGui_Backend_OSX            | `ImGui::Backend_OSX`          |
+| DearImGui_Backend_Metal          | `ImGui::Backend_Metal`        |
 
 All backend options are `OFF` by default.
 
