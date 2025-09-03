@@ -30,53 +30,101 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_test_engine-Targets.cma
   include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_test_engine-Targets.cmake")
 endif()
 
+if(TARGET ImGui::imgui_core)
+  add_library(ImGui::Core ALIAS ImGui::imgui_core)
+endif()
+
+if(TARGET ImGui::imgui_backend_android)
+  add_library(ImGui::Backend_Android ALIAS ImGui::imgui_backend_android)
+endif()
+
 if(TARGET ImGui::imgui_backend_allegro5)
+  add_library(ImGui::Backend_Allegro5 ALIAS ImGui::imgui_backend_allegro5)
   find_dependency(Allegro REQUIRED)
 endif()
 
 if(TARGET ImGui::imgui_backend_glfw)
+  add_library(ImGui::Backend_GLFW ALIAS ImGui::imgui_backend_glfw)
   find_dependency(glfw3 REQUIRED)
 endif()
 
 if(TARGET ImGui::imgui_backend_glut)
+  add_library(ImGui::Backend_FreeGLUT ALIAS ImGui::imgui_backend_glut)
   find_dependency(FreeGLUT REQUIRED)
 endif()
 
 if(TARGET ImGui::imgui_backend_sdl2)
+  add_library(ImGui::Backend_SDL2 ALIAS ImGui::imgui_backend_sdl2)
   find_dependency(SDL2 REQUIRED)
 endif()
 
 if(TARGET ImGui::imgui_backend_sdlrenderer2)
+  add_library(ImGui::Backend_SDLRenderer2 ALIAS ImGui::imgui_backend_sdlrenderer2)
   find_dependency(SDL2 REQUIRED)
 endif()
 
 if(TARGET ImGui::imgui_backend_sdl3)
+  add_library(ImGui::Backend_SDL3 ALIAS ImGui::imgui_backend_sdl3)
   find_dependency(SDL3 REQUIRED)
 endif()
 
 if(TARGET ImGui::imgui_backend_sdlrenderer3)
+  add_library(ImGui::Backend_SDLRenderer3 ALIAS ImGui::imgui_backend_sdlrenderer3)
   find_dependency(SDL3 REQUIRED)
 endif()
 
 if(TARGET ImGui::imgui_backend_sdlgpu3)
+  add_library(ImGui::Backend_SDLGPU3 ALIAS ImGui::imgui_backend_sdlgpu3)
   find_dependency(SDL3 REQUIRED)
 endif()
 
 if(TARGET ImGui::imgui_backend_opengl2)
+  add_library(ImGui::Backend_OpenGL2 ALIAS ImGui::imgui_backend_opengl2)
   find_dependency(OpenGL 2 REQUIRED)
 endif()
 
 if(TARGET ImGui::imgui_backend_opengl3)
+  add_library(ImGui::Backend_OpenGL3 ALIAS ImGui::imgui_backend_opengl3)
   find_dependency(OpenGL 3 REQUIRED)
 endif()
 
 if(TARGET ImGui::imgui_backend_vulkan)
+  add_library(ImGui::Backend_Vulkan ALIAS ImGui::imgui_backend_vulkan)
   find_dependency(Vulkan REQUIRED)
 endif()
 
 if(TARGET ImGui::imgui_backend_wgpu)
+  add_library(ImGui::Backend_WebGPU ALIAS  ImGui::imgui_backend_wgpu)
   find_dependency(Threads REQUIRED)
   find_dependency(Dawn REQUIRED)
+endif()
+
+if(TARGET ImGui::imgui_backend_win32)
+  add_library(ImGui::Backend_Win32 ALIAS ImGui::imgui_backend_win32)
+endif()
+
+if(TARGET ImGui::imgui_backend_dx9)
+  add_library(ImGui::Backend_DirectX9 ALIAS ImGui::imgui_backend_dx9)
+endif()
+
+if(TARGET ImGui::imgui_backend_dx10)
+  add_library(ImGui::Backend_DirectX10 ALIAS ImGui::imgui_backend_dx10)
+endif()
+
+if(TARGET ImGui::imgui_backend_dx11)
+  add_library(ImGui::Backend_DirectX11 ALIAS ImGui::imgui_backend_dx11)
+endif()
+
+if(TARGET ImGui::imgui_backend_dx12)
+  add_library(ImGui::Backend_DirectX12 ALIAS ImGui::imgui_backend_dx12)
+endif()
+
+if(TARGET ImGui::imgui_backend_osx)
+  add_library(ImGui::Backend_OSX ALIAS ImGui::imgui_backend_osx)
+endif()
+
+if(TARGET ImGui::imgui_backend_metal)
+  add_library(ImGui::Backend_Metal ALIAS ImGui::imgui_backend_metal)
 endif()
 
 set(is_imgui_freetype_enabled @is_imgui_freetype_enabled_in_imconfig@)
