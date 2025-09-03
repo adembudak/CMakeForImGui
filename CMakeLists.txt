@@ -19,7 +19,6 @@ if(NOT IMGUI_SOURCE_DIR)
 endif()
 
 cmake_path(SET _imgui_dir ${IMGUI_SOURCE_DIR})
-cmake_path(APPEND _imgui_docs_dir ${_imgui_dir} docs)
 
 file(STRINGS ${_imgui_dir}/imgui.h imgui_version_string REGEX "#define[ \t]+IMGUI_VERSION_NUM[ \t]+[0-9]+")
 string(REGEX MATCH "[0-9]+" imgui_version ${imgui_version_string})
