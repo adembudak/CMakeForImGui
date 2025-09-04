@@ -1,5 +1,3 @@
-# SPDX-License-Identifier: MIT
-
 cmake_minimum_required(VERSION 4.0.0)
 
 project(CMakeForImGui
@@ -1077,8 +1075,6 @@ if(pkg-config)
 
   file(CONFIGURE OUTPUT ${PROJECT_BINARY_DIR}/dearimgui.pc CONTENT
 [=[
-# SPDX-License-Identifier: MIT
-
 prefix=@CMAKE_INSTALL_PREFIX@
 exec_prefix=${prefix}
 libdir=@CMAKE_INSTALL_FULL_LIBDIR@
