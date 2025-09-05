@@ -180,9 +180,9 @@ int main() {
 endif()
 
 add_library(imgui_core)
-target_sources(imgui_core PRIVATE ${_imgui_dir}/imgui.cpp ${_imgui_dir}/imgui_draw.cpp ${_imgui_dir}/imgui_tables.cpp ${_imgui_dir}/imgui_widgets.cpp ${_imgui_dir}/imgui_demo.cpp)
-target_sources(imgui_core PUBLIC
-  FILE_SET imgui_core_set
+target_sources(imgui_core
+  PRIVATE ${_imgui_dir}/imgui.cpp ${_imgui_dir}/imgui_draw.cpp ${_imgui_dir}/imgui_tables.cpp ${_imgui_dir}/imgui_widgets.cpp ${_imgui_dir}/imgui_demo.cpp
+  PUBLIC FILE_SET imgui_core_set
   BASE_DIRS ${_imgui_dir}
   TYPE HEADERS
   FILES ${_imgui_dir}/imgui.h ${_imgui_dir}/imconfig.h ${_imgui_dir}/imgui_internal.h ${_imgui_dir}/imstb_rectpack.h ${_imgui_dir}/imstb_textedit.h ${_imgui_dir}/imstb_truetype.h)
@@ -190,8 +190,12 @@ target_compile_features(imgui_core PUBLIC cxx_std_11)
 
 if(DearImGui_Misc_Options)
   if(DearImGui_Misc_Cpp)
-    target_sources(imgui_core PRIVATE ${_imgui_dir}/misc/cpp/imgui_stdlib.cpp)
-    target_sources(imgui_core PUBLIC FILE_SET imgui_misc_cpp_set BASE_DIRS ${_imgui_dir}/misc/cpp TYPE HEADERS FILES ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
+    target_sources(imgui_core
+      PRIVATE ${_imgui_dir}/misc/cpp/imgui_stdlib.cpp
+      PUBLIC FILE_SET imgui_misc_cpp_set
+      BASE_DIRS ${_imgui_dir}/misc/cpp
+      TYPE HEADERS
+      FILES ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
   endif()
 
   if(DearImGui_Misc_FreeType)
@@ -201,9 +205,13 @@ if(DearImGui_Misc_Options)
     else()
       find_package(freetype CONFIG REQUIRED)
 
-      target_sources(imgui_core PRIVATE ${_imgui_dir}/misc/freetype/imgui_freetype.cpp)
+      target_sources(imgui_core
+        PRIVATE ${_imgui_dir}/misc/freetype/imgui_freetype.cpp
+        PUBLIC FILE_SET imgui_misc_freetype_set
+        BASE_DIRS ${_imgui_dir}/misc/freetype
+        TYPE HEADERS
+        FILES ${_imgui_dir}/misc/freetype/imgui_freetype.h)
       target_link_libraries(imgui_core PUBLIC Freetype::Freetype)
-      target_sources(imgui_core PUBLIC FILE_SET imgui_misc_freetype_set BASE_DIRS ${_imgui_dir}/misc/freetype TYPE HEADERS FILES ${_imgui_dir}/misc/freetype/imgui_freetype.h)
 
       if(is_imgui_freetype_lunasvg_enabled_in_imconfig)
         if(${IMGUI_VERSION} VERSION_LESS 19200)
@@ -235,10 +243,14 @@ if(DearImGui_Backend_OpenGL2)
   endif()
 
   add_library(imgui_impl_opengl2)
-  target_sources(imgui_impl_opengl2 PRIVATE ${_imgui_dir}/backends/imgui_impl_opengl2.cpp)
+  target_sources(imgui_impl_opengl2
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_opengl2.cpp
+    PUBLIC FILE_SET imgui_impl_opengl2_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_opengl2.h)
   target_link_libraries(imgui_impl_opengl2 PUBLIC imgui_core)
   target_link_libraries(imgui_impl_opengl2 PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU,Clang>>,opengl32,OpenGL::GL>)
-  target_sources(imgui_impl_opengl2 PUBLIC FILE_SET imgui_impl_opengl2_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_opengl2.h)
 
   list(APPEND imgui_backends_list imgui_impl_opengl2)
   list(APPEND pkg_config_requires_list opengl)
@@ -255,10 +267,14 @@ if(DearImGui_Backend_OpenGL3)
   endif()
 
   add_library(imgui_impl_opengl3)
-  target_sources(imgui_impl_opengl3 PRIVATE ${_imgui_dir}/backends/imgui_impl_opengl3.cpp)
+  target_sources(imgui_impl_opengl3
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_opengl3.cpp
+    PUBLIC FILE_SET imgui_impl_opengl3_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_opengl3.h)
   target_link_libraries(imgui_impl_opengl3 PUBLIC imgui_core)
   target_link_libraries(imgui_impl_opengl3 PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU,Clang>>,opengl32,$<IF:$<TARGET_EXISTS:imgui_impl_android>,EGL,OpenGL::GL>>)
-  target_sources(imgui_impl_opengl3 PUBLIC FILE_SET imgui_impl_opengl3_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_opengl3.h)
 
   target_link_libraries(imgui_impl_opengl3 PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},18400>:GLEW::GLEW>)
   target_compile_definitions(imgui_impl_opengl3 PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},18400>:IMGUI_IMPL_OPENGL_LOADER_GLEW>)
@@ -289,10 +305,14 @@ if(DearImGui_Backend_Vulkan)
   endif()
 
   add_library(imgui_impl_vulkan)
-  target_sources(imgui_impl_vulkan PRIVATE ${_imgui_dir}/backends/imgui_impl_vulkan.cpp)
+  target_sources(imgui_impl_vulkan
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_vulkan.cpp
+    PUBLIC FILE_SET imgui_impl_vulkan_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_vulkan.h)
   target_link_libraries(imgui_impl_vulkan PUBLIC imgui_core)
   target_link_libraries(imgui_impl_vulkan PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU,Clang>>,Vulkan::Headers ${Vulkan_Libraries},Vulkan::Vulkan>)
-  target_sources(imgui_impl_vulkan PUBLIC FILE_SET imgui_impl_vulkan_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_vulkan.h)
 
   list(APPEND imgui_backends_list imgui_impl_vulkan)
   list(APPEND pkg_config_requires_list vulkan)
@@ -303,8 +323,12 @@ if(DearImGui_Backend_WebGPU)
   find_package(Dawn REQUIRED)
 
   add_library(imgui_impl_wgpu)
-  target_sources(imgui_impl_wgpu PRIVATE ${_imgui_dir}/backends/imgui_impl_wgpu.cpp)
-  target_sources(imgui_impl_wgpu PUBLIC FILE_SET imgui_impl_wgpu_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_wgpu.h)
+  target_sources(imgui_impl_wgpu
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_wgpu.cpp
+    PUBLIC FILE_SET imgui_impl_wgpu_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_wgpu.h)
   target_link_libraries(imgui_impl_wgpu PUBLIC imgui_core)
   target_link_libraries(imgui_impl_wgpu PUBLIC dawn::webgpu_dawn dawn::dawn_public_config Threads::Threads)
   target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
@@ -353,12 +377,17 @@ Android NDK toolchain is not used
   set(Android_NDK_LIB_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/${host_tag}/sysroot/usr/lib/${triplet}/${api_level})
 
   add_library(imgui_impl_android)
-  target_sources(imgui_impl_android PRIVATE ${_imgui_dir}/backends/imgui_impl_android.cpp)
+  target_sources(imgui_impl_android
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_android.cpp
+    PUBLIC FILE_SET imgui_impl_android_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_android.h
+    PRIVATE FILE_SET HEADERS
+    BASE_DIRS ${Android_NDK_INCLUDE_DIR}
+    FILES ${Android_NDK_INCLUDE_DIR}/android/native_window.h ${Android_NDK_INCLUDE_DIR}/android/input.h ${Android_NDK_INCLUDE_DIR}/android/keycodes.h ${Android_NDK_INCLUDE_DIR}/android/log.h)
   target_link_libraries(imgui_impl_android PUBLIC imgui_core)
-  target_sources(imgui_impl_android PUBLIC FILE_SET imgui_impl_android_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_android.h)
   target_link_directories(imgui_impl_android PUBLIC ${Android_NDK_LIB_DIR})
   target_link_libraries(imgui_impl_android PUBLIC log android)
-  target_sources(imgui_impl_android PRIVATE FILE_SET HEADERS BASE_DIRS ${Android_NDK_INCLUDE_DIR} FILES ${Android_NDK_INCLUDE_DIR}/android/native_window.h ${Android_NDK_INCLUDE_DIR}/android/input.h ${Android_NDK_INCLUDE_DIR}/android/keycodes.h ${Android_NDK_INCLUDE_DIR}/android/log.h)
 
   list(APPEND imgui_backends_list imgui_impl_android)
 
@@ -380,10 +409,14 @@ if(DearImGui_Backend_Allegro5)
   find_package(Allegro CONFIG REQUIRED)
 
   add_library(imgui_impl_allegro5)
-  target_sources(imgui_impl_allegro5 PRIVATE ${_imgui_dir}/backends/imgui_impl_allegro5.cpp)
+  target_sources(imgui_impl_allegro5
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_allegro5.cpp
+    PUBLIC FILE_SET imgui_impl_allegro5_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_allegro5.h)
   target_link_libraries(imgui_impl_allegro5 PUBLIC imgui_core)
   target_link_libraries(imgui_impl_allegro5 PUBLIC Allegro::allegro Allegro::allegro_primitives INTERFACE Allegro::allegro_main)
-  target_sources(imgui_impl_allegro5 PUBLIC FILE_SET imgui_impl_allegro5_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_allegro5.h)
 
   list(APPEND imgui_backends_list imgui_impl_allegro5)
   list(APPEND pkg_config_requires_list allegro-5 allegro_primitives-5)
@@ -402,8 +435,12 @@ if(DearImGui_Backend_GLFW)
   find_package(glfw3 CONFIG REQUIRED)
 
   add_library(imgui_impl_glfw)
-  target_sources(imgui_impl_glfw PRIVATE ${_imgui_dir}/backends/imgui_impl_glfw.cpp)
-  target_sources(imgui_impl_glfw PUBLIC FILE_SET imgui_impl_glfw_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_glfw.h)
+  target_sources(imgui_impl_glfw
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_glfw.cpp
+    PUBLIC FILE_SET imgui_impl_glfw_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_glfw.h)
   target_link_libraries(imgui_impl_glfw PUBLIC glfw)
   target_link_libraries(imgui_impl_glfw PUBLIC imgui_core)
 
@@ -448,8 +485,12 @@ if(DearImGui_Backend_FreeGLUT)
   find_package(FreeGLUT CONFIG REQUIRED)
 
   add_library(imgui_impl_glut)
-  target_sources(imgui_impl_glut PRIVATE ${_imgui_dir}/backends/imgui_impl_glut.cpp)
-  target_sources(imgui_impl_glut PUBLIC FILE_SET imgui_impl_glut_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_glut.h)
+  target_sources(imgui_impl_glut
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_glut.cpp
+    PUBLIC FILE_SET imgui_impl_glut_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_glut.h)
   target_link_libraries(imgui_impl_glut PUBLIC $<IF:$<TARGET_EXISTS:FreeGLUT::freeglut>,FreeGLUT::freeglut,FreeGLUT::freeglut_static>)
   target_link_libraries(imgui_impl_glut PUBLIC imgui_core)
 
@@ -469,8 +510,12 @@ if(DearImGui_Backend_SDL2)
   find_package(SDL2 CONFIG REQUIRED)
 
   add_library(imgui_impl_sdl2)
-  target_sources(imgui_impl_sdl2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/backends/imgui_impl_sdl2.cpp,${_imgui_dir}/backends/imgui_impl_sdl.cpp>)
-  target_sources(imgui_impl_sdl2 PUBLIC FILE_SET imgui_impl_sdl2_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/backends/imgui_impl_sdl2.h,${_imgui_dir}/backends/imgui_impl_sdl.h>)
+  target_sources(imgui_impl_sdl2
+    PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/backends/imgui_impl_sdl2.cpp,${_imgui_dir}/backends/imgui_impl_sdl.cpp>
+    PUBLIC FILE_SET imgui_impl_sdl2_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/backends/imgui_impl_sdl2.h,${_imgui_dir}/backends/imgui_impl_sdl.h>)
   target_link_libraries(imgui_impl_sdl2 PUBLIC $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>)
   target_link_libraries(imgui_impl_sdl2 PUBLIC imgui_core)
 
@@ -526,8 +571,12 @@ if(DearImGui_Backend_SDLRenderer2)
   find_package(SDL2 CONFIG REQUIRED)
 
   add_library(imgui_impl_sdlrenderer2)
-  target_sources(imgui_impl_sdlrenderer2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18950>,${_imgui_dir}/backends/imgui_impl_sdlrenderer2.cpp,${_imgui_dir}/backends/imgui_impl_sdlrenderer.cpp>)
-  target_sources(imgui_impl_sdlrenderer2 PUBLIC FILE_SET imgui_impl_sdlrenderer2_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18950>,${_imgui_dir}/backends/imgui_impl_sdlrenderer2.h,${_imgui_dir}/backends/imgui_impl_sdlrenderer.h>)
+  target_sources(imgui_impl_sdlrenderer2
+    PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18950>,${_imgui_dir}/backends/imgui_impl_sdlrenderer2.cpp,${_imgui_dir}/backends/imgui_impl_sdlrenderer.cpp>
+    PUBLIC FILE_SET imgui_impl_sdlrenderer2_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18950>,${_imgui_dir}/backends/imgui_impl_sdlrenderer2.h,${_imgui_dir}/backends/imgui_impl_sdlrenderer.h>)
   target_link_libraries(imgui_impl_sdlrenderer2 PUBLIC $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>)
   target_link_libraries(imgui_impl_sdlrenderer2 PUBLIC imgui_core)
 
@@ -547,8 +596,12 @@ if(DearImGui_Backend_SDL3)
   find_package(SDL3 CONFIG REQUIRED)
 
   add_library(imgui_impl_sdl3)
-  target_sources(imgui_impl_sdl3 PRIVATE ${_imgui_dir}/backends/imgui_impl_sdl3.cpp)
-  target_sources(imgui_impl_sdl3 PUBLIC FILE_SET imgui_impl_sdl3_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_sdl3.h)
+  target_sources(imgui_impl_sdl3
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_sdl3.cpp
+    PUBLIC FILE_SET imgui_impl_sdl3_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_sdl3.h)
   target_link_libraries(imgui_impl_sdl3 PUBLIC SDL3::SDL3)
   target_link_libraries(imgui_impl_sdl3 PUBLIC imgui_core)
   target_compile_definitions(imgui_impl_sdl3 PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},19130>:SDL_ENABLE_OLD_NAMES>)
@@ -586,9 +639,12 @@ if(DearImGui_Backend_SDLGPU3)
   find_package(SDL3 CONFIG REQUIRED)
 
   add_library(imgui_impl_sdlgpu3)
-  target_sources(imgui_impl_sdlgpu3 PRIVATE ${_imgui_dir}/backends/imgui_impl_sdlgpu3.cpp)
-  target_sources(imgui_impl_sdlgpu3 PUBLIC FILE_SET imgui_impl_sdlgpu3_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_sdlgpu3.h
-                                              ${_imgui_dir}/backends/imgui_impl_sdlgpu3_shaders.h)
+  target_sources(imgui_impl_sdlgpu3
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_sdlgpu3.cpp
+    PUBLIC FILE_SET imgui_impl_sdlgpu3_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_sdlgpu3.h ${_imgui_dir}/backends/imgui_impl_sdlgpu3_shaders.h)
   target_link_libraries(imgui_impl_sdlgpu3 PUBLIC SDL3::SDL3)
   target_link_libraries(imgui_impl_sdlgpu3 PUBLIC imgui_core)
 
@@ -608,9 +664,12 @@ if(DearImGui_Backend_SDLRenderer3)
   find_package(SDL3 CONFIG REQUIRED)
 
   add_library(imgui_impl_sdlrenderer3)
-  target_sources(imgui_impl_sdlrenderer3 PRIVATE ${_imgui_dir}/backends/imgui_impl_sdlrenderer3.cpp)
-  target_sources(imgui_impl_sdlrenderer3 PUBLIC FILE_SET imgui_impl_sdlrenderer3_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES
-                                                   ${_imgui_dir}/backends/imgui_impl_sdlrenderer3.h)
+  target_sources(imgui_impl_sdlrenderer3
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_sdlrenderer3.cpp
+    PUBLIC FILE_SET imgui_impl_sdlrenderer3_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_sdlrenderer3.h)
   target_link_libraries(imgui_impl_sdlrenderer3 PUBLIC SDL3::SDL3)
   target_link_libraries(imgui_impl_sdlrenderer3 PUBLIC imgui_core imgui_impl_sdl3)
 
@@ -629,8 +688,12 @@ endif()
 
 if(DearImGui_Backend_Win32)
   add_library(imgui_impl_win32)
-  target_sources(imgui_impl_win32 PRIVATE ${_imgui_dir}/backends/imgui_impl_win32.cpp)
-  target_sources(imgui_impl_win32 PUBLIC FILE_SET imgui_impl_win32_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_win32.h)
+  target_sources(imgui_impl_win32
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_win32.cpp
+    PUBLIC FILE_SET imgui_impl_win32_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_win32.h)
   target_link_libraries(imgui_impl_win32 PUBLIC $<$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU,Clang>>:dwmapi>)
   target_link_libraries(imgui_impl_win32 PUBLIC imgui_core)
 
@@ -734,8 +797,12 @@ endif()
 
 if(DearImGui_Backend_DirectX9)
   add_library(imgui_impl_dx9)
-  target_sources(imgui_impl_dx9 PRIVATE ${_imgui_dir}/backends/imgui_impl_dx9.cpp)
-  target_sources(imgui_impl_dx9 PUBLIC FILE_SET imgui_impl_dx9_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_dx9.h)
+  target_sources(imgui_impl_dx9
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_dx9.cpp
+    PUBLIC FILE_SET imgui_impl_dx9_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_dx9.h)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_link_directories(imgui_impl_dx9 PRIVATE ${Windows_SDK_LIB_DIR})
     target_link_libraries(imgui_impl_dx9 PUBLIC d3d9.lib)
@@ -751,13 +818,19 @@ endif()
 
 if(DearImGui_Backend_DirectX10)
   add_library(imgui_impl_dx10)
-  target_sources(imgui_impl_dx10 PRIVATE ${_imgui_dir}/backends/imgui_impl_dx10.cpp)
-  target_sources(imgui_impl_dx10 PUBLIC FILE_SET imgui_impl_dx10_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_dx10.h)
+  target_sources(imgui_impl_dx10
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_dx10.cpp
+    PUBLIC FILE_SET imgui_impl_dx10_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_dx10.h)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_link_directories(imgui_impl_dx10 PRIVATE ${Windows_SDK_LIB_DIR})
     target_link_libraries(imgui_impl_dx10 PUBLIC d3d10_1.lib d3d10.lib d3dcompiler.lib)
-    target_sources(imgui_impl_dx10 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d10_1.h
-                                            ${Windows_SDK_INCLUDE_DIR_1}/d3d10.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
+    target_sources(imgui_impl_dx10
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1}
+      FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d10_1.h ${Windows_SDK_INCLUDE_DIR_1}/d3d10.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_link_libraries(imgui_impl_dx10 PUBLIC d3d10.lib d3dcompiler.lib)
   endif()
@@ -768,13 +841,19 @@ endif()
 
 if(DearImGui_Backend_DirectX11)
   add_library(imgui_impl_dx11)
-  target_sources(imgui_impl_dx11 PRIVATE ${_imgui_dir}/backends/imgui_impl_dx11.cpp)
-  target_sources(imgui_impl_dx11 PUBLIC FILE_SET imgui_impl_dx11_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_dx11.h)
+  target_sources(imgui_impl_dx11
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_dx11.cpp
+    PUBLIC FILE_SET imgui_impl_dx11_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_dx11.h)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_link_directories(imgui_impl_dx11 PRIVATE ${Windows_SDK_LIB_DIR})
     target_link_libraries(imgui_impl_dx11 PUBLIC d3d11.lib d3dcompiler.lib)
-    target_sources(imgui_impl_dx11 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d11.h
-                                            ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
+    target_sources(imgui_impl_dx11
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1}
+      FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d11.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_link_libraries(imgui_impl_dx11 PUBLIC d3d11.lib d3dcompiler.lib)
   endif()
@@ -785,14 +864,22 @@ endif()
 
 if(DearImGui_Backend_DirectX12)
   add_library(imgui_impl_dx12)
-  target_sources(imgui_impl_dx12 PRIVATE ${_imgui_dir}/backends/imgui_impl_dx12.cpp)
-  target_sources(imgui_impl_dx12 PUBLIC FILE_SET imgui_impl_dx12_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_dx12.h)
+  target_sources(imgui_impl_dx12
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_dx12.cpp
+    PUBLIC FILE_SET imgui_impl_dx12_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_dx12.h)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_link_directories(imgui_impl_dx12 PRIVATE ${Windows_SDK_LIB_DIR})
     target_link_libraries(imgui_impl_dx12 PUBLIC d3d12.lib dxgi.lib d3dcompiler.lib)
-    target_sources(imgui_impl_dx12 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1} FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d12.h
-                                            ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
-    target_sources(imgui_impl_dx12 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/dxgi1_4.h)
+    target_sources(imgui_impl_dx12
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1}
+      FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d12.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS ${Windows_SDK_INCLUDE_DIR}
+      FILES ${Windows_SDK_INCLUDE_DIR}/dxgi1_4.h)
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_link_libraries(imgui_impl_dx12 PUBLIC d3d12.lib dxgi.lib d3dcompiler.lib)
   endif()
@@ -803,8 +890,12 @@ endif()
 
 if(DearImGui_Backend_Metal)
   add_library(imgui_impl_metal)
-  target_sources(imgui_impl_metal PRIVATE ${_imgui_dir}/backends/imgui_impl_metal.mm)
-  target_sources(imgui_impl_metal PUBLIC FILE_SET imgui_impl_metal_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_metal.h)
+  target_sources(imgui_impl_metal
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_metal.mm
+    PUBLIC FILE_SET imgui_impl_metal_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_metal.h)
   target_link_libraries(imgui_impl_metal PUBLIC imgui_core)
   target_link_libraries(imgui_impl_metal PUBLIC "-framework Metal" INTERFACE "-framework MetalKit")
   target_compile_options(imgui_impl_metal PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},18940>:-fobjc-arc>)
@@ -814,8 +905,12 @@ endif()
 
 if(DearImGui_Backend_OSX)
   add_library(imgui_impl_osx)
-  target_sources(imgui_impl_osx PRIVATE ${_imgui_dir}/backends/imgui_impl_osx.mm)
-  target_sources(imgui_impl_osx PUBLIC FILE_SET imgui_impl_osx_set BASE_DIRS ${_imgui_dir}/backends TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_osx.h)
+  target_sources(imgui_impl_osx
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_osx.mm
+    PUBLIC FILE_SET imgui_impl_osx_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_osx.h)
   target_link_libraries(imgui_impl_osx PUBLIC imgui_core)
   target_link_libraries(imgui_impl_osx PUBLIC "-framework AppKit" "-framework Carbon" "-framework GameController")
 
@@ -850,17 +945,18 @@ if(imgui_test_engine)
   else()
 
     add_library(imgui_test_engine)
-    target_sources(imgui_test_engine PRIVATE
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_context.cpp
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_coroutine.cpp
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.cpp
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_exporters.cpp
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_perftool.cpp
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_ui.cpp
-      ${_imgui_te_dir}/imgui_test_engine/imgui_te_utils.cpp
-      ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.cpp)
-
-    target_sources(imgui_test_engine PUBLIC FILE_SET imgui_test_engine_set BASE_DIRS ${_imgui_te_dir}/imgui_test_engine
+    target_sources(imgui_test_engine
+      PRIVATE
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_context.cpp
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_coroutine.cpp
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.cpp
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_exporters.cpp
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_perftool.cpp
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_ui.cpp
+        ${_imgui_te_dir}/imgui_test_engine/imgui_te_utils.cpp
+        ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.cpp
+      PUBLIC FILE_SET imgui_test_engine_set
+      BASE_DIRS ${_imgui_te_dir}/imgui_test_engine
       TYPE HEADERS
       FILES
         ${_imgui_te_dir}/imgui_test_engine/imgui_te_context.h
@@ -929,8 +1025,12 @@ int main() {
 ]=] COMPILE_DEFINITIONS "-I${imgui_te_dir}/shared -I${imgui_include_dir}" NO_CACHE NO_LOG)
 
     add_library(imgui_app)
-    target_sources(imgui_app PRIVATE ${_imgui_te_dir}/shared/imgui_app.cpp)
-    target_sources(imgui_app PUBLIC FILE_SET imgui_app_set BASE_DIRS ${_imgui_te_dir} TYPE HEADERS FILES ${_imgui_te_dir}/shared/imgui_app.h)
+    target_sources(imgui_app
+      PRIVATE ${_imgui_te_dir}/shared/imgui_app.cpp
+      PUBLIC FILE_SET imgui_app_set
+      BASE_DIRS ${_imgui_te_dir}
+      TYPE HEADERS
+      FILES ${_imgui_te_dir}/shared/imgui_app.h)
 
     if(${return_value} EQUAL 1)
       target_link_libraries(imgui_app PRIVATE imgui_impl_win32 imgui_impl_dx11)
@@ -951,23 +1051,22 @@ int main() {
     target_link_libraries(app_minimal PRIVATE imgui_app imgui_test_engine imgui_core)
 
     add_executable(imgui_test_suite)
-    target_sources(imgui_test_suite PRIVATE
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_core.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_inputs.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_perf.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_docking.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_nav.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_tables.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_viewports.cpp
-      ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets_inputtext.cpp)
+    target_sources(imgui_test_suite
+      PRIVATE
+        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_core.cpp
+        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_inputs.cpp
+        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_perf.cpp
+        ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.cpp
+        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets.cpp
+        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_docking.cpp
+        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_nav.cpp
+        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_tables.cpp
+        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_viewports.cpp
+        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets_inputtext.cpp
+      PUBLIC FILE_SET HEADERS
+      BASE_DIRS ${_imgui_te_dir}
+      FILES ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.h ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite_imconfig.h)
     target_compile_definitions(imgui_test_suite PRIVATE IMGUI_USER_CONFIG="imgui_test_suite/imgui_test_suite_imconfig.h")
-
-    target_sources(imgui_test_suite PUBLIC FILE_SET HEADERS BASE_DIRS ${_imgui_te_dir}
-      FILES
-        ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.h
-        ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite_imconfig.h)
     target_link_libraries(imgui_test_suite PRIVATE imgui_test_engine imgui_app imgui_core)
   endif()
 endif()
@@ -985,8 +1084,12 @@ if(imgui_club)
 
   if(imgui_multicontext_compositor)
     add_library(imgui_multicontext_compositor)
-    target_sources(imgui_multicontext_compositor PRIVATE ${_imgui_club_dir}/imgui_multicontext_compositor/imgui_multicontext_compositor.cpp)
-    target_sources(imgui_multicontext_compositor PUBLIC FILE_SET imgui_multicontext_compositor_set BASE_DIRS ${_imgui_club_dir}/imgui_multicontext_compositor TYPE HEADERS FILES ${_imgui_club_dir}/imgui_multicontext_compositor/imgui_multicontext_compositor.h)
+    target_sources(imgui_multicontext_compositor
+      PRIVATE ${_imgui_club_dir}/imgui_multicontext_compositor/imgui_multicontext_compositor.cpp
+      PUBLIC FILE_SET imgui_multicontext_compositor_set
+      BASE_DIRS ${_imgui_club_dir}/imgui_multicontext_compositor
+      TYPE HEADERS
+      FILES ${_imgui_club_dir}/imgui_multicontext_compositor/imgui_multicontext_compositor.h)
     target_link_libraries(imgui_multicontext_compositor PUBLIC imgui_core)
 
     list(APPEND imgui_thirdparty_list imgui_multicontext_compositor)
@@ -1015,8 +1118,12 @@ if(implot)
   cmake_path(SET _implot_dir ${IMPLOT_SOURCE_DIR})
 
   add_library(implot)
-  target_sources(implot PRIVATE ${_implot_dir}/implot.cpp ${_implot_dir}/implot_items.cpp ${_implot_dir}/implot_demo.cpp)
-  target_sources(implot PUBLIC FILE_SET implot_set BASE_DIRS ${_implot_dir} TYPE HEADERS FILES ${_implot_dir}/implot.h ${_implot_dir}/implot_internal.h)
+  target_sources(implot
+    PRIVATE ${_implot_dir}/implot.cpp ${_implot_dir}/implot_items.cpp ${_implot_dir}/implot_demo.cpp
+    PUBLIC FILE_SET implot_set
+    BASE_DIRS ${_implot_dir}
+    TYPE HEADERS
+    FILES ${_implot_dir}/implot.h ${_implot_dir}/implot_internal.h)
   target_link_libraries(implot PUBLIC imgui_core)
 
   list(APPEND imgui_thirdparty_list implot)
@@ -1029,8 +1136,12 @@ if(implot3d)
   cmake_path(SET _implot3d_dir ${IMPLOT3D_SOURCE_DIR})
 
   add_library(implot3d)
-  target_sources(implot3d PRIVATE ${_implot3d_dir}/implot3d.cpp ${_implot3d_dir}/implot3d_items.cpp ${_implot3d_dir}/implot3d_meshes.cpp ${_implot3d_dir}/implot3d_demo.cpp)
-  target_sources(implot3d PUBLIC FILE_SET implot3d_set BASE_DIRS ${_implot3d_dir} TYPE HEADERS FILES ${_implot3d_dir}/implot3d.h ${_implot3d_dir}/implot3d_internal.h)
+  target_sources(implot3d
+    PRIVATE ${_implot3d_dir}/implot3d.cpp ${_implot3d_dir}/implot3d_items.cpp ${_implot3d_dir}/implot3d_meshes.cpp ${_implot3d_dir}/implot3d_demo.cpp
+    PUBLIC FILE_SET implot3d_set
+    BASE_DIRS ${_implot3d_dir}
+    TYPE HEADERS
+    FILES ${_implot3d_dir}/implot3d.h ${_implot3d_dir}/implot3d_internal.h)
   target_link_libraries(implot3d PUBLIC imgui_core)
 
   list(APPEND imgui_thirdparty_list implot3d)
@@ -1046,12 +1157,20 @@ if(imguifiledialog)
   find_path(stb_PATH std_image.h stb_image_resize2.h PATHS ${_imfiledialog_dir} PATH_SUFFIXES stb DOC "https://github.com/nothings/stb" NO_CACHE REQUIRED NO_DEFAULT_PATH NO_CMAKE_SYSTEM_PATH NO_CMAKE_FIND_ROOT_PATH)
 
   add_library(imguifiledialog)
-  target_sources(imguifiledialog PRIVATE ${_imfiledialog_dir}/ImGuiFileDialog.cpp)
+  target_sources(imguifiledialog
+    PRIVATE ${_imfiledialog_dir}/ImGuiFileDialog.cpp
+    PUBLIC FILE_SET imguifiledialog_set
+    BASE_DIRS ${_imfiledialog_dir}
+    TYPE HEADERS
+    FILES ${_imfiledialog_dir}/ImGuiFileDialog.h ${_imfiledialog_dir}/ImGuiFileDialogConfig.h
+    PRIVATE FILE_SET HEADERS
+    BASE_DIRS ${stb_PATH}
+    FILES ${stb_PATH}/stb_image.h ${stb_PATH}/stb_image_resize2.h
+    PRIVATE FILE_SET HEADERS
+    BASE_DIRS $<$<PLATFORM_ID:Windows>:${Dirent_PATH}>
+    FILES $<$<PLATFORM_ID:Windows>:${Dirent_PATH}/dirent.h>)
   target_compile_features(imguifiledialog PRIVATE cxx_std_17)
   target_compile_definitions(imguifiledialog PRIVATE USE_STD_FILESYSTEM)
-  target_sources(imguifiledialog PUBLIC FILE_SET imguifiledialog_set BASE_DIRS ${_imfiledialog_dir} TYPE HEADERS FILES ${_imfiledialog_dir}/ImGuiFileDialog.h ${_imfiledialog_dir}/ImGuiFileDialogConfig.h)
-  target_sources(imguifiledialog PRIVATE FILE_SET HEADERS BASE_DIRS ${stb_PATH} FILES ${stb_PATH}/stb_image.h ${stb_PATH}/stb_image_resize2.h)
-  target_sources(imguifiledialog PRIVATE FILE_SET HEADERS BASE_DIRS $<$<PLATFORM_ID:Windows>:${Dirent_PATH}> FILES $<$<PLATFORM_ID:Windows>:${Dirent_PATH}/dirent.h>)
   target_link_libraries(imguifiledialog PUBLIC imgui_core)
 endif()
 
