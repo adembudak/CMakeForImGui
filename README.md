@@ -5,7 +5,7 @@ This work proposed for the Dear ImGui upstream: https://github.com/ocornut/imgui
 ## Building
 
 ```cmake
-cmake -DIMGUI_SOURCE_DIR=path.to.imgui -S . -B build
+cmake -D IMGUI_SOURCE_DIR=path.to.imgui -S . -B build
 ```
 
 Setting `IMGUI_SOURCE_DIR` variable on configuration step is mandatory. An example usage might look like this:
@@ -16,8 +16,8 @@ cmake -D DearImGui_Backend_SDL2=ON -D DearImGui_Backend_OpenGL3=ON -S . -B build
 cmake --build build --config Release
 cmake --install build --config Release
 ```
-The commands above assume the dependencies of the backend are installed on host system. One can visit the project used by backend and get the source and then follow the build instructions. Another option is using a package
-manager. There are several ways to manage dependencies of and build C++ software. This repository used [vcpkg](https://vcpkg.io/en) for running code on GitHub workflow. If your package manager of choice is also vcpkg, there is a vcpkg.json file in .github/workflows, so above commands should be:
+The commands above assume the dependencies of the backend are installed on host system. One can visit the project site of used backend and get the source and then follow the build instructions. Another option is using a package
+manager. There are several ways to manage dependencies of and build C++ software. This repository used [vcpkg](https://vcpkg.io/en) for running code on GitHub workflow. If your package manager of choice is vcpkg, a vcpkg.json file lists dependencies present in .github/workflows/, so configure command can be:
 
 ```cmake
 cmake -G "Ninja Multi-Config" -D VCPKG_MANIFEST_MODE=ON -D VCPKG_MANIFEST_DIR=.github/workflows -D IMGUI_SOURCE_DIR=imgui -S . -B build --toolchain $VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
@@ -101,6 +101,10 @@ c++ -o out main.cpp $(pkg-config --cflags --libs dearimgui)
 ## Using with older versions of the Dear ImGui
 
 Limited amount of checking has done for moved, removed or renamed files of the previous versions of the Dear ImGui. The main branch will work best with recent the versions of the project, i.e. v1.90+. Some work has done for the versions older than 1.80 on [this branch](https://github.com/adembudak/CMakeForImGui/tree/pre.v1.80).
+
+## License
+
+This code licensed under [MIT](https://opensource.org/licenses/MIT) license. The projects it depends have their own licenses and should be reviewed in accordance with their respective licenses.
 
 ## Help needed
 
