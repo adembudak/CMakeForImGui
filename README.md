@@ -84,7 +84,10 @@ find_package(CMakeForImGui CONFIG REQUIRED)
 # ...
 target_link_libraries(tgt PUBLIC ImGui::Backend_SDL2 ImGui::Backend_OpenGL3)
 ```
-There is also [this branch](https://github.com/adembudak/CMakeForImGui/tree/single-target) available, where a single target approach is investigated. The same options are available but all the backends and ImGui itself is linked with a `Unofficial::DearImGui::imgui` target.
+Some alternative designs are also considered:
+- On [single-target branch](https://github.com/adembudak/CMakeForImGui/tree/single-target) all the targets are (ImGui itself and backends) linked with a single `Unofficial::DearImGui::imgui` target rather than a target per backend.
+- On [thirdparties-as-components branch](https://github.com/adembudak/CMakeForImGui/tree/thirdparties-as-components) thirdparty projects can be specified as `COMPONENTS` option of `find_package()`.
+- On [pre.v1.80](https://github.com/adembudak/CMakeForImGui/tree/pre.v1.80) the build script tries to support Dear ImGui versions before v1.80.
 
 ### With `pkg-config` command
 
@@ -97,10 +100,6 @@ This generates a `dearimgui.pc` file in build directory which can be installed a
 ```bash
 c++ -o out main.cpp $(pkg-config --cflags --libs dearimgui)
 ```
-
-## Using with older versions of the Dear ImGui
-
-Limited amount of checking has done for moved, removed or renamed files of the previous versions of the Dear ImGui. The main branch will work best with recent the versions of the project, i.e. v1.90+. Some work has done for the versions older than 1.80 on [this branch](https://github.com/adembudak/CMakeForImGui/tree/pre.v1.80).
 
 ## License
 
