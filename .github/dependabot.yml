@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "vcpkg"
-    directory: "/"
+    directory: "/.github/workflows"
     schedule:
       interval: "weekly"
       day: "monday"
