@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "vcpkg"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "11:20"
+      timezone: "Europe/Istanbul"
+    labels:
+      - "dependencies"
+      - "vcpkg"
+    commit-message:
+      prefix: "deps"
