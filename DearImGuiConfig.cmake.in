@@ -30,14 +30,6 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_test_engine-Targets.cma
   include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_test_engine-Targets.cmake")
 endif()
 
-if(${CMAKE_FIND_PACKAGE_NAME}_FIND_REQUIRED)
-  set(required REQUIRED)
-endif()
-
-if(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY)
-  set(quiet QUIET)
-endif()
-
 if(TARGET ImGui::imgui_core)
   add_library(ImGui::Core ALIAS ImGui::imgui_core)
 endif()
@@ -48,63 +40,50 @@ endif()
 
 if(TARGET ImGui::imgui_impl_allegro5)
   add_library(ImGui::Backend_Allegro5 ALIAS ImGui::imgui_impl_allegro5)
-  find_dependency(Allegro ${quiet} ${required})
 endif()
 
 if(TARGET ImGui::imgui_impl_glfw)
   add_library(ImGui::Backend_GLFW ALIAS ImGui::imgui_impl_glfw)
-  find_dependency(glfw3 ${quiet} ${required})
 endif()
 
 if(TARGET ImGui::imgui_impl_glut)
   add_library(ImGui::Backend_FreeGLUT ALIAS ImGui::imgui_impl_glut)
-  find_dependency(FreeGLUT ${quiet} ${required})
 endif()
 
 if(TARGET ImGui::imgui_impl_sdl2)
   add_library(ImGui::Backend_SDL2 ALIAS ImGui::imgui_impl_sdl2)
-  find_dependency(SDL2 ${quiet} ${required})
 endif()
 
 if(TARGET ImGui::imgui_impl_sdlrenderer2)
   add_library(ImGui::Backend_SDLRenderer2 ALIAS ImGui::imgui_impl_sdlrenderer2)
-  find_dependency(SDL2 ${quiet} ${required})
 endif()
 
 if(TARGET ImGui::imgui_impl_sdl3)
   add_library(ImGui::Backend_SDL3 ALIAS ImGui::imgui_impl_sdl3)
-  find_dependency(SDL3 ${quiet} ${required})
 endif()
 
 if(TARGET ImGui::imgui_impl_sdlrenderer3)
   add_library(ImGui::Backend_SDLRenderer3 ALIAS ImGui::imgui_impl_sdlrenderer3)
-  find_dependency(SDL3 ${quiet} ${required})
 endif()
 
 if(TARGET ImGui::imgui_impl_sdlgpu3)
   add_library(ImGui::Backend_SDLGPU3 ALIAS ImGui::imgui_impl_sdlgpu3)
-  find_dependency(SDL3 ${quiet} ${required})
 endif()
 
 if(TARGET ImGui::imgui_impl_opengl2)
   add_library(ImGui::Backend_OpenGL2 ALIAS ImGui::imgui_impl_opengl2)
-  find_dependency(OpenGL 2 ${quiet} ${required})
 endif()
 
 if(TARGET ImGui::imgui_impl_opengl3)
   add_library(ImGui::Backend_OpenGL3 ALIAS ImGui::imgui_impl_opengl3)
-  find_dependency(OpenGL 3 ${quiet} ${required})
 endif()
 
 if(TARGET ImGui::imgui_impl_vulkan)
   add_library(ImGui::Backend_Vulkan ALIAS ImGui::imgui_impl_vulkan)
-  find_dependency(Vulkan ${quiet} ${required})
 endif()
 
 if(TARGET ImGui::imgui_impl_wgpu)
   add_library(ImGui::Backend_WebGPU ALIAS  ImGui::imgui_impl_wgpu)
-  find_dependency(Threads ${quiet} ${required})
-  find_dependency(Dawn ${quiet} ${required})
 endif()
 
 if(TARGET ImGui::imgui_impl_win32)
@@ -133,6 +112,63 @@ endif()
 
 if(TARGET ImGui::imgui_impl_metal)
   add_library(ImGui::Backend_Metal ALIAS ImGui::imgui_impl_metal)
+endif()
+
+if(${CMAKE_FIND_PACKAGE_NAME}_FIND_REQUIRED)
+  set(required REQUIRED)
+endif()
+
+if(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY)
+  set(quiet QUIET)
+endif()
+
+if(TARGET ImGui::Backend_Allegro5)
+  find_dependency(Allegro ${quiet} ${required})
+endif()
+
+if(TARGET ImGui::Backend_GLFW)
+  find_dependency(glfw3 ${quiet} ${required})
+endif()
+
+if(TARGET ImGui::Backend_FreeGLUT)
+  find_dependency(FreeGLUT ${quiet} ${required})
+endif()
+
+if(TARGET ImGui::Backend_SDL2 )
+  find_dependency(SDL2 ${quiet} ${required})
+endif()
+
+if(TARGET ImGui::Backend_SDLRenderer2)
+  find_dependency(SDL2 ${quiet} ${required})
+endif()
+
+if(TARGET ImGui::Backend_SDL3)
+  find_dependency(SDL3 ${quiet} ${required})
+endif()
+
+if(TARGET ImGui::Backend_SDLRenderer3)
+  find_dependency(SDL3 ${quiet} ${required})
+endif()
+
+if(TARGET ImGui::Backend_SDLGPU3)
+  find_dependency(SDL3 ${quiet} ${required})
+endif()
+
+if(TARGET ImGui::Backend_OpenGL2)
+  find_dependency(OpenGL 2 ${quiet} ${required})
+endif()
+
+if(TARGET ImGui::Backend_OpenGL3)
+  find_dependency(OpenGL 3 ${quiet} ${required})
+endif()
+
+if(TARGET ImGui::Backend_Vulkan)
+  find_dependency(Vulkan ${quiet} ${required})
+endif()
+
+if(TARGET ImGui::Backend_WebGPU)
+  find_dependency(Threads ${quiet} ${required})
+  find_dependency(Dawn ${quiet} ${required})
 endif()
 
 set(is_imgui_freetype_enabled @is_imgui_freetype_enabled_in_imconfig@)
