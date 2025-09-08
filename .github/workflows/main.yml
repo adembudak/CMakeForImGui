@@ -8,6 +8,7 @@ on:
     paths-ignore:
       - 'README.md'
       - 'LICENSE.md'
+      - '.github/depandabot.yml'
 
 jobs:
   Configure-Build-Install-Uninstall-Package-Upload:
