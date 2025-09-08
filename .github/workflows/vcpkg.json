@@ -1,15 +1,16 @@
 {
-	"$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
-	"dependencies": [
-		"allegro5",
-		"freeglut",
-		"freetype",
-		"glew",
-		"glfw3",
-		"lunasvg",
-		"plutosvg",
-		"sdl2",
-		"sdl3",
-		"vulkan"
-	]
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "dependencies": [
+    "allegro5",
+    "freeglut",
+    "freetype",
+    "glew",
+    "glfw3",
+    "lunasvg",
+    "plutosvg",
+    "sdl2",
+    "sdl3",
+    "vulkan"
+  ],
+  "builtin-baseline": "dd3097e305afa53f7b4312371f62058d2e665320"
 }
