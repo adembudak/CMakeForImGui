@@ -384,7 +384,8 @@ Android NDK toolchain is not used
     PRIVATE ${_imgui_dir}/backends/imgui_impl_android.cpp
     PUBLIC FILE_SET imgui_impl_android_set
     BASE_DIRS ${_imgui_dir}/backends
-    TYPE HEADERS FILES ${_imgui_dir}/backends/imgui_impl_android.h
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_android.h
     PRIVATE FILE_SET HEADERS
     BASE_DIRS ${Android_NDK_INCLUDE_DIR}
     FILES ${Android_NDK_INCLUDE_DIR}/android/native_window.h ${Android_NDK_INCLUDE_DIR}/android/input.h ${Android_NDK_INCLUDE_DIR}/android/keycodes.h ${Android_NDK_INCLUDE_DIR}/android/log.h)
@@ -1279,7 +1280,7 @@ if(install)
   endif()
 
   if(imgui_test_engine)
-    install(EXPORT imgui_test_engine_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::imgui_test_engine:: FILE CMakeForImGui-imgui_test_engine-Targets.cmake)
+	  install(EXPORT imgui_test_engine_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::imgui_test_engine:: FILE CMakeForImGui-imgui_test_engine-Targets.cmake)
 
     install(TARGETS imgui_test_engine EXPORT imgui_test_engine_export FILE_SET imgui_test_engine_set)
     install(TARGETS imgui_app EXPORT imgui_test_engine_export FILE_SET imgui_app_set)
@@ -1290,7 +1291,7 @@ if(install)
   endif()
 
   if(imgui_club)
-    install(EXPORT imgui_club_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::imgui_club:: FILE CMakeForImGui-imgui_club-Targets.cmake)
+    install(EXPORT imgui_club_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::imgui_club:: FILE CMakeForImGui-imgui_club-Targets.cmake)
 
     if(imgui_threaded_rendering)
       install(TARGETS imgui_threaded_rendering EXPORT imgui_club_export FILE_SET imgui_threaded_rendering_set)
@@ -1308,25 +1309,25 @@ if(install)
   endif()
 
   if(imgui_markdown)
-    install(EXPORT imgui_markdown_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::imgui_markdown:: FILE CMakeForImGui-imgui_markdown-Targets.cmake)
+    install(EXPORT imgui_markdown_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::imgui_markdown:: FILE CMakeForImGui-imgui_markdown-Targets.cmake)
     install(TARGETS imgui_markdown EXPORT imgui_markdown_export FILE_SET imgui_markdown_set)
     install(FILES ${_immarkdown_dir}/License.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_markdown)
   endif()
 
   if(implot)
-    install(EXPORT implot_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::ImPlot:: FILE CMakeForImGui-ImPlot-Targets.cmake)
+    install(EXPORT implot_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::ImPlot:: FILE CMakeForImGui-ImPlot-Targets.cmake)
     install(TARGETS implot EXPORT implot_export FILE_SET implot_set)
     install(FILES ${_implot_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/ImPlot)
   endif()
 
   if(implot3d)
-    install(EXPORT implot3d_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::ImPlot3D:: FILE CMakeForImGui-ImPlot3D-Targets.cmake)
+	  install(EXPORT implot3d_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::ImPlot3D:: FILE CMakeForImGui-ImPlot3D-Targets.cmake)
     install(TARGETS implot3d EXPORT implot3d_export FILE_SET implot3d_set)
     install(FILES ${_implot3d_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/ImPlot3D)
   endif()
 
   if(imguifiledialog)
-    install(EXPORT imguifiledialog_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CMakeForImGui NAMESPACE Unofficial::ImGuiFileDialog:: FILE CMakeForImGui-ImGuiFileDialog-Targets.cmake)
+    install(EXPORT imguifiledialog_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::ImGuiFileDialog:: FILE CMakeForImGui-ImGuiFileDialog-Targets.cmake)
     install(TARGETS imguifiledialog EXPORT imguifiledialog_export FILE_SET imguifiledialog_set)
     install(FILES ${_imfiledialog_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/ImGuiFileDialog)
     install(FILES ${_imfiledialog_dir}/Documentation.md DESTINATION ${CMAKE_INSTALL_DATADIR}/ImGuiFileDialog/docs)
