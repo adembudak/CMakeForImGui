@@ -65,7 +65,6 @@ Following projects are also supported:
 
 | Project | Variable must be set | Build option(s) | Generated target(s) |
 |--------|---------------------|-----------------|---------------------|
-| [ImPlot3D](https://github.com/brenocq/implot3d) | IMPLOT3D_SOURCE_DIR | implot3d | `Unofficial::ImPlot3D::implot3d` |
 | [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) | IMGUIFILEDIALOG_SOURCE_DIR | imguifiledialog | `Unofficial::ImGuiFileDialog::imguifiledialog` |
 
 ## Usage

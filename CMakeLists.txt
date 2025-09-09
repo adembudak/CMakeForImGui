@@ -66,7 +66,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 
 option(thirdparty "" OFF)
-cmake_dependent_option(implot3d "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 19000)" OFF)
 cmake_dependent_option(imguifiledialog "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 19200)" OFF)
 
 option(BUILD_SHARED_LIBS "" OFF)
@@ -951,24 +950,6 @@ if(DearImGui_Backend_OSX)
   endif()
 endif()
 
-if(implot3d)
-  if(NOT IMPLOT3D_SOURCE_DIR)
-    message(FATAL_ERROR "set IMPLOT3D_SOURCE_DIR to proceed:\ne.g. cmake -DIMPLOT3D_SOURCE_DIR=path.to.implot3D ...")
-  endif()
-  cmake_path(SET _implot3d_dir ${IMPLOT3D_SOURCE_DIR})
-
-  add_library(implot3d)
-  target_sources(implot3d
-    PRIVATE ${_implot3d_dir}/implot3d.cpp ${_implot3d_dir}/implot3d_items.cpp ${_implot3d_dir}/implot3d_meshes.cpp ${_implot3d_dir}/implot3d_demo.cpp
-    PUBLIC FILE_SET implot3d_set
-    BASE_DIRS ${_implot3d_dir}
-    TYPE HEADERS
-    FILES ${_implot3d_dir}/implot3d.h ${_implot3d_dir}/implot3d_internal.h)
-  target_link_libraries(implot3d PUBLIC imgui_core)
-
-  list(APPEND imgui_thirdparty_list implot3d)
-endif()
-
 if(imguifiledialog)
   if(NOT IMGUIFILEDIALOG_SOURCE_DIR)
     message(FATAL_ERROR "set IMGUIFILEDIALOG_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUIFILEDIALOG_SOURCE_DIR=path.to.imguifiledialog...")
@@ -1070,12 +1051,6 @@ if(install)
     install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
   endif()
 
-  if(implot3d)
-    install(EXPORT implot3d_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::ImPlot3D:: FILE CMakeForImGui-ImPlot3D-Targets.cmake)
-    install(TARGETS implot3d EXPORT implot3d_export FILE_SET implot3d_set)
-    install(FILES ${_implot3d_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/ImPlot3D)
-  endif()
-
   if(imguifiledialog)
     install(EXPORT imguifiledialog_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::ImGuiFileDialog:: FILE CMakeForImGui-ImGuiFileDialog-Targets.cmake)
     install(TARGETS imguifiledialog EXPORT imguifiledialog_export FILE_SET imguifiledialog_set)
@@ -1147,7 +1122,7 @@ set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backe
 DearImGui_Misc_Options
 DearImGui_Misc_Cpp DearImGui_Misc_FreeType DearImGui_Misc_Debugger DearImGui_Misc_Fonts
 thirdparty
-implot3d imguifiledialog
+imguifiledialog
 DearImGui_Examples
 Example_NULL
 Example_Allegro5 Example_Android_OpenGL3
