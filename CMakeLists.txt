@@ -66,7 +66,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 
 option(thirdparty "" OFF)
-cmake_dependent_option(imgui_test_engine "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER_EQUAL 18900)" OFF)
 cmake_dependent_option(imgui_club "" OFF thirdparty OFF)
 cmake_dependent_option(imgui_markdown "" OFF thirdparty OFF)
 cmake_dependent_option(implot "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 18900)" OFF)
@@ -153,30 +152,25 @@ int main() {
 // pack some compile-time configuration definitions related to build on an integer
   unsigned result = 0;
 
-#if defined(IMGUI_ENABLE_TEST_ENGINE)
+#if defined(IMGUI_ENABLE_FREETYPE)
   result |= (0b1 << 0);
 #endif
 
-#if defined(IMGUI_ENABLE_FREETYPE)
+#if defined(IMGUI_ENABLE_FREETYPE_LUNASVG)
   result |= (0b1 << 1);
 #endif
 
-#if defined(IMGUI_ENABLE_FREETYPE_LUNASVG)
-  result |= (0b1 << 2);
-#endif
-
 #if defined(IMGUI_ENABLE_FREETYPE_PLUTOSVG)
-  result |= (0b1 << 3);
+  result |= (0b1 << 2);
 #endif
   return result;
 }
 ]=] COMPILE_DEFINITIONS "-I${imgui_include_dir}" NO_CACHE NO_LOG)
 
  # unpack them in here
-  math(EXPR is_imgui_test_engine_enabled_in_imconfig "((${configuration_information_return_value} >> 0) & 1)")
-  math(EXPR is_imgui_freetype_enabled_in_imconfig "((${configuration_information_return_value} >> 1) & 1)")
-  math(EXPR is_imgui_freetype_lunasvg_enabled_in_imconfig "((${configuration_information_return_value} >> 2) & 1)")
-  math(EXPR is_imgui_freetype_plutosvg_enabled_in_imconfig "((${configuration_information_return_value} >> 3) & 1)")
+  math(EXPR is_imgui_freetype_enabled_in_imconfig "((${configuration_information_return_value} >> 0) & 1)")
+  math(EXPR is_imgui_freetype_lunasvg_enabled_in_imconfig "((${configuration_information_return_value} >> 1) & 1)")
+  math(EXPR is_imgui_freetype_plutosvg_enabled_in_imconfig "((${configuration_information_return_value} >> 2) & 1)")
 endif()
 
 add_library(imgui_core)
@@ -964,144 +958,6 @@ if(DearImGui_Backend_OSX)
   endif()
 endif()
 
-if(imgui_test_engine)
-  if(NOT IMGUI_TEST_ENGINE_SOURCE_DIR)
-    message(FATAL_ERROR "set IMGUI_TEST_ENGINE_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_TEST_ENGINE_SOURCE_DIR=path.to.imgui_test_engine...")
-  endif()
-  set(_imgui_te_dir ${IMGUI_TEST_ENGINE_SOURCE_DIR})
-
-  if(NOT is_imgui_test_engine_enabled_in_imconfig)
-    message(WARNING "imgui_test_engine option is enabled but IMGUI_ENABLE_TEST_ENGINE is not defined on imconfig.h. ImGui Test Engine is not configurated.")
-    set(imgui_test_engine OFF)
-  else()
-
-    add_library(imgui_test_engine)
-    target_sources(imgui_test_engine
-      PRIVATE
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_context.cpp
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_coroutine.cpp
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.cpp
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_exporters.cpp
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_perftool.cpp
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_ui.cpp
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_utils.cpp
-        ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.cpp
-      PUBLIC FILE_SET imgui_test_engine_set
-      BASE_DIRS ${_imgui_te_dir}/imgui_test_engine
-      TYPE HEADERS
-      FILES
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_context.h
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_coroutine.h
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_engine.h
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_exporters.h
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_imconfig.h
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_internal.h
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_perftool.h
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_ui.h
-        ${_imgui_te_dir}/imgui_test_engine/imgui_te_utils.h
-        ${_imgui_te_dir}/imgui_test_engine/imgui_capture_tool.h
-        ${_imgui_te_dir}/imgui_test_engine/thirdparty/stb/imstb_image_write.h
-        ${_imgui_te_dir}/imgui_test_engine/thirdparty/Str/Str.h)
-    target_compile_features(imgui_test_engine PUBLIC cxx_std_14)
-
-    target_link_libraries(imgui_test_engine PRIVATE imgui_core) # Circular dependency in here! How to resolve this?
-    target_link_libraries(imgui_core INTERFACE imgui_test_engine)
-
-    cmake_path(SET imgui_te_dir ${_imgui_te_dir})
-    cmake_path(ABSOLUTE_PATH imgui_te_dir NORMALIZE)
-
-    try_run(return_value compilation_result SOURCE_FROM_CONTENT check_imgui_test_engine_performans_viewer_feature.cpp
-[=[
-#include <imgui_test_suite_imconfig.h>
-
-int main() {
-  unsigned result = 0;
-#if IMGUI_TEST_ENGINE_ENABLE_IMPLOT == 1
-  result |= (0b1 << 0);
-#endif
-  return result;
-}
-]=] COMPILE_DEFINITIONS "-I${imgui_te_dir}/imgui_test_suite -I ${imgui_include_dir}" NO_CACHE NO_LOG)
-
-    math(EXPR is_imgui_test_engine_implot_enabled "((${return_value} >> 0) & 1)")
-
-    if(is_imgui_test_engine_implot_enabled AND NOT implot)
-      message(WARNING "In imgui_te_imconfig.h or imgui_test_suite_imconfig.h IMGUI_TEST_ENGINE_ENABLE_IMPLOT is set but ImPlot is not configurated. Performance viewer feature will not be available. Try with 'cmake -Dimplot=ON' ...")
-    endif()
-    target_link_libraries(imgui_test_engine INTERFACE $<$<BOOL:${is_imgui_test_engine_implot_enabled}>:implot>)
-
-    try_run(return_value compilation_result SOURCE_FROM_CONTENT check_imgui_app_backends.cpp
-[=[
-#include <imgui_app.h>
-
-int main() {
-  unsigned result = 0;
-
-#if defined(IMGUI_APP_WIN32_DX11)
-  result |= (0b1 << 0);
-#elif defined(IMGUI_APP_SDL2_GL2)
-  result |= (0b1 << 1);
-#elif defined(IMGUI_APP_SDL2_GL3)
-  result |= (0b1 << 2);
-#elif defined(IMGUI_APP_GLFW_GL2)
-  result |= (0b1 << 3);
-#elif defined(IMGUI_APP_GLFW_GL3)
-  result |= (0b1 << 4);
-#else
-  // Null backend
-#endif
-
-  return result;
-}
-]=] COMPILE_DEFINITIONS "-I${imgui_te_dir}/shared -I${imgui_include_dir}" NO_CACHE NO_LOG)
-
-    add_library(imgui_app)
-    target_sources(imgui_app
-      PRIVATE ${_imgui_te_dir}/shared/imgui_app.cpp
-      PUBLIC FILE_SET imgui_app_set
-      BASE_DIRS ${_imgui_te_dir}
-      TYPE HEADERS
-      FILES ${_imgui_te_dir}/shared/imgui_app.h)
-
-    if(${return_value} EQUAL 1)
-      target_link_libraries(imgui_app PRIVATE imgui_impl_win32 imgui_impl_dx11)
-    elseif(${return_value} EQUAL 2)
-      target_link_libraries(imgui_app PRIVATE imgui_impl_sdl2 imgui_impl_opengl2)
-    elseif(${return_value} EQUAL 4)
-      target_link_libraries(imgui_app PRIVATE imgui_impl_sdl2 imgui_impl_opengl3)
-    elseif(${return_value} EQUAL 8)
-      target_link_libraries(imgui_app PRIVATE imgui_impl_glfw imgui_impl_opengl2)
-    elseif(${return_value} EQUAL 16)
-      target_link_libraries(imgui_app PRIVATE imgui_impl_glfw imgui_impl_opengl3)
-    else()
-      target_link_libraries(imgui_app PRIVATE imgui_core)
-    endif()
-
-    add_executable(app_minimal)
-    target_sources(app_minimal PRIVATE ${_imgui_te_dir}/app_minimal/app_minimal_main.cpp ${_imgui_te_dir}/app_minimal/app_minimal_tests.cpp)
-    target_link_libraries(app_minimal PRIVATE imgui_app imgui_test_engine imgui_core)
-
-    add_executable(imgui_test_suite)
-    target_sources(imgui_test_suite
-      PRIVATE
-        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_core.cpp
-        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_inputs.cpp
-        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_perf.cpp
-        ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.cpp
-        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets.cpp
-        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_docking.cpp
-        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_nav.cpp
-        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_tables.cpp
-        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_viewports.cpp
-        ${_imgui_te_dir}/imgui_test_suite/imgui_tests_widgets_inputtext.cpp
-      PUBLIC FILE_SET HEADERS
-      BASE_DIRS ${_imgui_te_dir}
-      FILES ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite.h ${_imgui_te_dir}/imgui_test_suite/imgui_test_suite_imconfig.h)
-    target_compile_definitions(imgui_test_suite PRIVATE IMGUI_USER_CONFIG="imgui_test_suite/imgui_test_suite_imconfig.h")
-    target_link_libraries(imgui_test_suite PRIVATE imgui_test_engine imgui_app imgui_core)
-  endif()
-endif()
-
 if(imgui_club)
   if(NOT IMGUI_CLUB_SOURCE_DIR)
     message(FATAL_ERROR "set IMGUI_CLUB_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_CLUB_SOURCE_DIR=path.to.imgui_club ...")
@@ -1279,17 +1135,6 @@ if(install)
     install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
   endif()
 
-  if(imgui_test_engine)
-	  install(EXPORT imgui_test_engine_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::imgui_test_engine:: FILE CMakeForImGui-imgui_test_engine-Targets.cmake)
-
-    install(TARGETS imgui_test_engine EXPORT imgui_test_engine_export FILE_SET imgui_test_engine_set)
-    install(TARGETS imgui_app EXPORT imgui_test_engine_export FILE_SET imgui_app_set)
-    install(TARGETS imgui_test_suite RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-
-    install(DIRECTORY ${_imgui_te_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_test_engine)
-    install(DIRECTORY ${_imgui_te_dir}/build_scripts DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_test_engine)
-  endif()
-
   if(imgui_club)
     install(EXPORT imgui_club_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::imgui_club:: FILE CMakeForImGui-imgui_club-Targets.cmake)
 
@@ -1397,7 +1242,7 @@ set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backe
 DearImGui_Misc_Options
 DearImGui_Misc_Cpp DearImGui_Misc_FreeType DearImGui_Misc_Debugger DearImGui_Misc_Fonts
 thirdparty
-imgui_test_engine imgui_club imgui_markdown implot implot3d imguifiledialog
+imgui_club imgui_markdown implot implot3d imguifiledialog
 DearImGui_Examples
 Example_NULL
 Example_Allegro5 Example_Android_OpenGL3

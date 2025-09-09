@@ -26,10 +26,6 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-ImGuiFileDialog-Targets.cmake
   include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-ImGuiFileDialog-Targets.cmake")
 endif()
 
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_test_engine-Targets.cmake")
-  include("${CMAKE_CURRENT_LIST_DIR}/CMakeForImGui-imgui_test_engine-Targets.cmake")
-endif()
-
 if(TARGET ImGui::imgui_core)
   add_library(ImGui::Core ALIAS ImGui::imgui_core)
 endif()
