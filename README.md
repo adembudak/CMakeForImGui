@@ -11,7 +11,7 @@ cmake -D IMGUI_SOURCE_DIR=path.to.imgui -S . -B build
 Setting `IMGUI_SOURCE_DIR` variable on configuration step is mandatory. An example usage might look like this:
 
 ```cmake
-cmake -G "Ninja Multi-Config" -DIMGUI_SOURCE_DIR=imgui -S . -B build
+cmake -G 'Ninja Multi-Config' -DIMGUI_SOURCE_DIR=imgui -S . -B build
 cmake -D DearImGui_Backend_SDL2=ON -D DearImGui_Backend_OpenGL3=ON -S . -B build
 cmake --build build --config Release
 cmake --install build --config Release
@@ -20,7 +20,7 @@ The commands above assume the dependencies of the backend are installed on host 
 manager. There are several ways to manage dependencies of and build C++ software. This repository used [vcpkg](https://vcpkg.io/en) for running code on GitHub workflow. If your package manager of choice is vcpkg, a vcpkg.json file lists dependencies present in .github/workflows/, so configure command can be:
 
 ```cmake
-cmake -G "Ninja Multi-Config" -D VCPKG_MANIFEST_MODE=ON -D VCPKG_MANIFEST_DIR=.github/workflows -D IMGUI_SOURCE_DIR=imgui -S . -B build --toolchain $VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
+cmake -G 'Ninja Multi-Config' -D VCPKG_MANIFEST_MODE=ON -D VCPKG_MANIFEST_DIR=.github/workflows -D IMGUI_SOURCE_DIR=imgui -S . -B build --toolchain $VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
 # same as above
 ```
 Note that this will not install some platform dependencies like DirectX libraries on Windows, one need to install Microsoft SDK for it or Metal framework on macOS, Xcode needs to be installed.
