@@ -61,12 +61,6 @@ The `Example_SDL2_OpenGL3` option will be available only when the `DearImGui_Exa
 
 Libraries and examples can be installed by setting `install` and `install_examples` options `ON`, respectively. An `uninstall` custom target is also provided to remove the artifacts where are they installed.
 
-Following projects are also supported:
-
-| Project | Variable must be set | Build option(s) | Generated target(s) |
-|--------|---------------------|-----------------|---------------------|
-| [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) | IMGUIFILEDIALOG_SOURCE_DIR | imguifiledialog | `Unofficial::ImGuiFileDialog::imguifiledialog` |
-
 ## Usage
 
 All the include paths are kept as is. [This repo](https://github.com/adembudak/CMakeForImGui.test) demonstrates how to build programs as a client of the library:
@@ -80,8 +74,8 @@ find_package(CMakeForImGui CONFIG REQUIRED)
 target_link_libraries(tgt PUBLIC ImGui::Backend_SDL2 ImGui::Backend_OpenGL3)
 ```
 Some alternative designs are also considered:
-- On [single-target branch](https://github.com/adembudak/CMakeForImGui/tree/single-target) all the targets are (ImGui itself and backends) linked with a single `Unofficial::DearImGui::imgui` target rather than a target per backend.
-- On [thirdparties-as-components branch](https://github.com/adembudak/CMakeForImGui/tree/thirdparties-as-components) thirdparty projects can be specified as `COMPONENTS` option of `find_package()`.
+- On [single-target](https://github.com/adembudak/CMakeForImGui/tree/single-target) branch all the targets are (ImGui itself and backends) linked with a single `Unofficial::DearImGui::imgui` target rather than a target per backend.
+- On [thirdparties-as-components](https://github.com/adembudak/CMakeForImGui/tree/thirdparties-as-components) branch some thirdparty projects can be specified as `COMPONENTS` option of `find_package()`.
 - On [pre.v1.80](https://github.com/adembudak/CMakeForImGui/tree/pre.v1.80) the build script tries to support Dear ImGui versions before v1.80.
 
 ### With `pkg-config` command
@@ -90,7 +84,6 @@ The build script can be used to generate **pkg-config** file:
 ```cmake
 cmake -Dpkg-config=ON -S . -B build
 ```
-
 This generates a `dearimgui.pc` file in build directory which can be installed and used, like:
 ```bash
 c++ -o out main.cpp $(pkg-config --cflags --libs dearimgui)

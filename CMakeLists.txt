@@ -66,7 +66,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 
 option(thirdparty "" OFF)
-cmake_dependent_option(imguifiledialog "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 19200)" OFF)
 
 option(BUILD_SHARED_LIBS "" OFF)
 
@@ -950,33 +949,6 @@ if(DearImGui_Backend_OSX)
   endif()
 endif()
 
-if(imguifiledialog)
-  if(NOT IMGUIFILEDIALOG_SOURCE_DIR)
-    message(FATAL_ERROR "set IMGUIFILEDIALOG_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUIFILEDIALOG_SOURCE_DIR=path.to.imguifiledialog...")
-  endif()
-  cmake_path(SET _imfiledialog_dir ${IMGUIFILEDIALOG_SOURCE_DIR})
-
-  find_path(Dirent_PATH dirent.h PATHS ${_imfiledialog_dir} PATH_SUFFIXES dirent DOC "https://github.com/tronkko/dirent" NO_CACHE REQUIRED NO_DEFAULT_PATH NO_CMAKE_SYSTEM_PATH NO_CMAKE_FIND_ROOT_PATH)
-  find_path(stb_PATH std_image.h stb_image_resize2.h PATHS ${_imfiledialog_dir} PATH_SUFFIXES stb DOC "https://github.com/nothings/stb" NO_CACHE REQUIRED NO_DEFAULT_PATH NO_CMAKE_SYSTEM_PATH NO_CMAKE_FIND_ROOT_PATH)
-
-  add_library(imguifiledialog)
-  target_sources(imguifiledialog
-    PRIVATE ${_imfiledialog_dir}/ImGuiFileDialog.cpp
-    PUBLIC FILE_SET imguifiledialog_set
-    BASE_DIRS ${_imfiledialog_dir}
-    TYPE HEADERS
-    FILES ${_imfiledialog_dir}/ImGuiFileDialog.h ${_imfiledialog_dir}/ImGuiFileDialogConfig.h
-    PRIVATE FILE_SET HEADERS
-    BASE_DIRS ${stb_PATH}
-    FILES ${stb_PATH}/stb_image.h ${stb_PATH}/stb_image_resize2.h
-    PRIVATE FILE_SET HEADERS
-    BASE_DIRS $<$<PLATFORM_ID:Windows>:${Dirent_PATH}>
-    FILES $<$<PLATFORM_ID:Windows>:${Dirent_PATH}/dirent.h>)
-  target_compile_features(imguifiledialog PRIVATE cxx_std_17)
-  target_compile_definitions(imguifiledialog PRIVATE USE_STD_FILESYSTEM)
-  target_link_libraries(imguifiledialog PUBLIC imgui_core)
-endif()
-
 if(pkg-config)
   if(pkg_config_requires_list)
     list(SORT pkg_config_requires_list)
@@ -1051,13 +1023,6 @@ if(install)
     install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
   endif()
 
-  if(imguifiledialog)
-    install(EXPORT imguifiledialog_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::ImGuiFileDialog:: FILE CMakeForImGui-ImGuiFileDialog-Targets.cmake)
-    install(TARGETS imguifiledialog EXPORT imguifiledialog_export FILE_SET imguifiledialog_set)
-    install(FILES ${_imfiledialog_dir}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR}/ImGuiFileDialog)
-    install(FILES ${_imfiledialog_dir}/Documentation.md DESTINATION ${CMAKE_INSTALL_DATADIR}/ImGuiFileDialog/docs)
-  endif()
-
   if(pkg-config)
     install(FILES ${PROJECT_BINARY_DIR}/dearimgui.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
   endif()
@@ -1122,7 +1087,6 @@ set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backe
 DearImGui_Misc_Options
 DearImGui_Misc_Cpp DearImGui_Misc_FreeType DearImGui_Misc_Debugger DearImGui_Misc_Fonts
 thirdparty
-imguifiledialog
 DearImGui_Examples
 Example_NULL
 Example_Allegro5 Example_Android_OpenGL3
