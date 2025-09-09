@@ -66,15 +66,10 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 
 option(thirdparty "" OFF)
-cmake_dependent_option(imgui_club "" OFF thirdparty OFF)
 cmake_dependent_option(imgui_markdown "" OFF thirdparty OFF)
 cmake_dependent_option(implot "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 18900)" OFF)
 cmake_dependent_option(implot3d "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 19000)" OFF)
 cmake_dependent_option(imguifiledialog "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 19200)" OFF)
-
-cmake_dependent_option(imgui_memory_editor "" OFF imgui_club OFF)
-cmake_dependent_option(imgui_multicontext_compositor "" OFF "imgui_club AND (${IMGUI_VERSION} VERSION_GREATER 19080)" OFF)
-cmake_dependent_option(imgui_threaded_rendering "" OFF imgui_club OFF)
 
 option(BUILD_SHARED_LIBS "" OFF)
 
@@ -958,36 +953,6 @@ if(DearImGui_Backend_OSX)
   endif()
 endif()
 
-if(imgui_club)
-  if(NOT IMGUI_CLUB_SOURCE_DIR)
-    message(FATAL_ERROR "set IMGUI_CLUB_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_CLUB_SOURCE_DIR=path.to.imgui_club ...")
-  endif()
-  cmake_path(SET _imgui_club_dir ${IMGUI_CLUB_SOURCE_DIR})
-
-  if(imgui_memory_editor)
-    add_library(imgui_memory_editor INTERFACE)
-    target_sources(imgui_memory_editor INTERFACE FILE_SET imgui_memory_editor_set BASE_DIRS ${_imgui_club_dir}/imgui_memory_editor TYPE HEADERS FILES ${_imgui_club_dir}/imgui_memory_editor/imgui_memory_editor.h)
-  endif()
-
-  if(imgui_multicontext_compositor)
-    add_library(imgui_multicontext_compositor)
-    target_sources(imgui_multicontext_compositor
-      PRIVATE ${_imgui_club_dir}/imgui_multicontext_compositor/imgui_multicontext_compositor.cpp
-      PUBLIC FILE_SET imgui_multicontext_compositor_set
-      BASE_DIRS ${_imgui_club_dir}/imgui_multicontext_compositor
-      TYPE HEADERS
-      FILES ${_imgui_club_dir}/imgui_multicontext_compositor/imgui_multicontext_compositor.h)
-    target_link_libraries(imgui_multicontext_compositor PUBLIC imgui_core)
-
-    list(APPEND imgui_thirdparty_list imgui_multicontext_compositor)
- endif()
-
-  if(imgui_threaded_rendering)
-    add_library(imgui_threaded_rendering INTERFACE)
-    target_sources(imgui_threaded_rendering INTERFACE FILE_SET imgui_threaded_rendering_set BASE_DIRS ${_imgui_club_dir}/imgui_threaded_rendering TYPE HEADERS FILES ${_imgui_club_dir}/imgui_threaded_rendering/imgui_threaded_rendering.h)
-  endif()
-endif()
-
 if(imgui_markdown)
   if(NOT IMGUI_MARKDOWN_SOURCE_DIR)
     message(FATAL_ERROR "set IMGUI_MARKDOWN_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_MARKDOWN_SOURCE_DIR=path.to.imgui_markdown...")
@@ -1135,24 +1100,6 @@ if(install)
     install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
   endif()
 
-  if(imgui_club)
-    install(EXPORT imgui_club_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::imgui_club:: FILE CMakeForImGui-imgui_club-Targets.cmake)
-
-    if(imgui_threaded_rendering)
-      install(TARGETS imgui_threaded_rendering EXPORT imgui_club_export FILE_SET imgui_threaded_rendering_set)
-    endif()
-
-    if(imgui_memory_editor)
-      install(TARGETS imgui_memory_editor EXPORT imgui_club_export FILE_SET imgui_memory_editor_set)
-    endif()
-
-    if(imgui_multicontext_compositor)
-      install(TARGETS imgui_multicontext_compositor EXPORT imgui_club_export FILE_SET imgui_multicontext_compositor_set)
-    endif()
-
-    install(FILES ${_imgui_club_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_club)
-  endif()
-
   if(imgui_markdown)
     install(EXPORT imgui_markdown_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::imgui_markdown:: FILE CMakeForImGui-imgui_markdown-Targets.cmake)
     install(TARGETS imgui_markdown EXPORT imgui_markdown_export FILE_SET imgui_markdown_set)
@@ -1242,7 +1189,7 @@ set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backe
 DearImGui_Misc_Options
 DearImGui_Misc_Cpp DearImGui_Misc_FreeType DearImGui_Misc_Debugger DearImGui_Misc_Fonts
 thirdparty
-imgui_club imgui_markdown implot implot3d imguifiledialog
+imgui_markdown implot implot3d imguifiledialog
 DearImGui_Examples
 Example_NULL
 Example_Allegro5 Example_Android_OpenGL3
