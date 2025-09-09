@@ -208,39 +208,6 @@ jobs:
           -D Example_Win32_DirectX12=ON
           -D Example_SDL2_DirectX11=ON
 
-
-      - name: Check ImGui version whether ImPlot supported
-        shell: bash
-        id: is_implot_supported_by_this_version
-        run: |
-          version=${{ matrix.tag }}
-
-          if [[ "$version" =~ ^v[0-9]+\.[0-9]+$ ]]; then
-            version="${version}.0"
-          fi
-
-          result=$(semver compare $version v1.89.0)
-          echo $result
-
-          echo "result=$result" >> $GITHUB_OUTPUT
-
-      - name: Checkout ImPlot
-        if: steps.is_implot_supported_by_this_version.outputs.result == '1'
-        uses: actions/checkout@v4
-        with:
-          repository: epezent/implot
-          show-progress: false
-          path: implot
-
-      - name: Configure configure CMakeForImGui enabled ImPlot
-        if: steps.is_implot_supported_by_this_version.outputs.result == '1'
-        run: >
-          cmake
-          -S ${{ github.workspace }}/CMakeForImGui
-          -B ${{ github.workspace }}/build
-          -D thirdparty=ON
-          -D implot=ON -D IMPLOT_SOURCE_DIR=$PWD/implot
-
       - name: Check ImGui version whether ImPlot3D supported
         shell: bash
         id: is_implot3d_supported_by_this_version
