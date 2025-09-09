@@ -81,11 +81,11 @@ option(BUILD_SHARED_LIBS "" OFF)
 
 option(pkg-config "Generate dearimgui.pc file" OFF)
 
-option(install "" ON)
-option(uninstall "" ON)
-cmake_dependent_option(install_examples "" OFF install OFF)
+option(install "Install the library" ON)
+option(uninstall "A custom target 'uninstall' is generated to undo latest install step" ON)
+cmake_dependent_option(install_examples "Install example executables along with the library" OFF install OFF)
 
-option(visualize_targets "Visualize linkage graph" OFF)
+option(visualize_targets "A custom target 'graph' that shows linkage graph enabled to generate a targets.png on build directory" OFF)
 mark_as_advanced(FORCE visualize_targets)
 
 cmake_dependent_option(DearImGui_Backend_SDLRenderer2 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 18420)" OFF)
