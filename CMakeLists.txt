@@ -65,8 +65,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   option(DearImGui_Backend_OSX "" OFF)
 endif()
 
-option(thirdparty "" OFF)
-
 option(BUILD_SHARED_LIBS "" OFF)
 
 option(pkg-config "Generate dearimgui.pc file" OFF)
@@ -126,7 +124,6 @@ cmake_dependent_option(Example_NULL "" OFF DearImGui_Examples OFF)
 
 set(imgui_backends_list)
 set(imgui_examples_list)
-set(imgui_thirdparty_list)
 set(pkg_config_requires_list)
 
 cmake_path(SET imgui_include_dir ${_imgui_dir})
@@ -962,11 +959,6 @@ if(pkg-config)
     string(JOIN " " pkg_config_imgui_backends_string ${pkg_config_imgui_backends_list})
   endif()
 
-  if(imgui_thirdparty_list)
-    list(TRANSFORM imgui_thirdparty_list PREPEND "-l")
-    string(JOIN " " imgui_thirdparty_string ${imgui_thirdparty_list})
-  endif()
-
   file(CONFIGURE OUTPUT ${PROJECT_BINARY_DIR}/dearimgui.pc CONTENT
 [=[
 prefix=@CMAKE_INSTALL_PREFIX@
@@ -981,7 +973,7 @@ URL: @PROJECT_HOMEPAGE_URL@
 
 Requires: @pkg_config_requires_string@
 Conflicts:
-Libs: -L${libdir} -limgui_core @pkg_config_imgui_backends_string@ @imgui_thirdparty_string@
+Libs: -L${libdir} -limgui_core @pkg_config_imgui_backends_string@
 Libs.private:
 Cflags: -I${includedir}
 ]=] @ONLY)
@@ -1086,7 +1078,6 @@ feature_summary(WHAT ALL)
 set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 DearImGui_Backend_DirectX10 DearImGui_Backend_DirectX11 DearImGui_Backend_DirectX12 DearImGui_Backend_OSX DearImGui_Backend_Metal
 DearImGui_Misc_Options
 DearImGui_Misc_Cpp DearImGui_Misc_FreeType DearImGui_Misc_Debugger DearImGui_Misc_Fonts
-thirdparty
 DearImGui_Examples
 Example_NULL
 Example_Allegro5 Example_Android_OpenGL3
