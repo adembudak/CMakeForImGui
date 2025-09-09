@@ -66,7 +66,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 
 option(thirdparty "" OFF)
-cmake_dependent_option(imgui_markdown "" OFF thirdparty OFF)
 cmake_dependent_option(implot "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 18900)" OFF)
 cmake_dependent_option(implot3d "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 19000)" OFF)
 cmake_dependent_option(imguifiledialog "" OFF "thirdparty AND (${IMGUI_VERSION} VERSION_GREATER 19200)" OFF)
@@ -953,16 +952,6 @@ if(DearImGui_Backend_OSX)
   endif()
 endif()
 
-if(imgui_markdown)
-  if(NOT IMGUI_MARKDOWN_SOURCE_DIR)
-    message(FATAL_ERROR "set IMGUI_MARKDOWN_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_MARKDOWN_SOURCE_DIR=path.to.imgui_markdown...")
-  endif()
-  cmake_path(SET _immarkdown_dir ${IMGUI_MARKDOWN_SOURCE_DIR})
-
-  add_library(imgui_markdown INTERFACE)
-  target_sources(imgui_markdown INTERFACE FILE_SET imgui_markdown_set BASE_DIRS ${_immarkdown_dir} TYPE HEADERS FILES ${_immarkdown_dir}/imgui_markdown.h)
-endif()
-
 if(implot)
   if(NOT IMPLOT_SOURCE_DIR)
     message(FATAL_ERROR "set IMPLOT_SOURCE_DIR to proceed:\ne.g. cmake -DIMPLOT_SOURCE_DIR=path.to.implot ...")
@@ -1100,12 +1089,6 @@ if(install)
     install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
   endif()
 
-  if(imgui_markdown)
-    install(EXPORT imgui_markdown_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::imgui_markdown:: FILE CMakeForImGui-imgui_markdown-Targets.cmake)
-    install(TARGETS imgui_markdown EXPORT imgui_markdown_export FILE_SET imgui_markdown_set)
-    install(FILES ${_immarkdown_dir}/License.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/imgui_markdown)
-  endif()
-
   if(implot)
     install(EXPORT implot_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE Unofficial::ImPlot:: FILE CMakeForImGui-ImPlot-Targets.cmake)
     install(TARGETS implot EXPORT implot_export FILE_SET implot_set)
@@ -1189,7 +1172,7 @@ set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backe
 DearImGui_Misc_Options
 DearImGui_Misc_Cpp DearImGui_Misc_FreeType DearImGui_Misc_Debugger DearImGui_Misc_Fonts
 thirdparty
-imgui_markdown implot implot3d imguifiledialog
+implot implot3d imguifiledialog
 DearImGui_Examples
 Example_NULL
 Example_Allegro5 Example_Android_OpenGL3
