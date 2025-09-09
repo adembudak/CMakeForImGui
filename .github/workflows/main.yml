@@ -321,7 +321,8 @@ jobs:
       - name: Install
         run: >
           cmake
-          --install ${{ github.workspace }}/build
+          --build ${{ github.workspace }}/build
+          --target install
           --config ${{ matrix.build-type }}
 
       - name: Uninstall
