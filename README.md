@@ -11,7 +11,7 @@ cmake -D IMGUI_SOURCE_DIR=path.to.imgui -S . -B build
 Setting `IMGUI_SOURCE_DIR` variable on configuration step is mandatory. An example usage might look like this:
 
 ```cmake
-cmake -G 'Ninja Multi-Config' -DIMGUI_SOURCE_DIR=imgui -S . -B build
+cmake -G 'Ninja Multi-Config' -D IMGUI_SOURCE_DIR=imgui -S . -B build
 cmake -D DearImGui_Backend_SDL2=ON -D DearImGui_Backend_OpenGL3=ON -S . -B build
 cmake --build build --config Release
 cmake --install build --config Release
@@ -69,7 +69,7 @@ All the include paths are kept as is. [This repo](https://github.com/adembudak/C
 # project setup
 # ...
 
-find_package(CMakeForImGui CONFIG REQUIRED)
+find_package(DearImGui CONFIG REQUIRED)
 # ...
 target_link_libraries(tgt PUBLIC ImGui::Backend_SDL2 ImGui::Backend_OpenGL3)
 ```
