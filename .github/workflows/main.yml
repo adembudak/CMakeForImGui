@@ -95,23 +95,6 @@ jobs:
         with:
           cmake-version: '4.0.0'
 
-      - name: Install semver-tool for semantic version comparision
-        uses: actions/checkout@v4
-        with:
-          repository: fsaintjacques/semver-tool
-          show-progress: false
-          path: semver-tool
-
-      - name: Add it to the path
-        shell: bash
-        run: |
-          chmod +x "$PWD/semver-tool/src/semver"
-          echo "$PWD/semver-tool/src" >> $GITHUB_PATH
-
-      - name: Make sure it's added to the path
-        shell: bash
-        run: semver --version
-
       - name: Check out ImGui repository
         uses: actions/checkout@v4
         with:
