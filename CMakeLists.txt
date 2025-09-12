@@ -12,6 +12,11 @@ include(CMakePackageConfigHelpers)
 include(CMakePrintHelpers)
 include(FeatureSummary)
 
+get_property(is_generator_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(NOT is_generator_multi_config)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release RelWithDebInfo MinSizeRel)
+endif()
+
 if(NOT IMGUI_SOURCE_DIR)
   message(FATAL_ERROR "set IMGUI_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_SOURCE_DIR=path.to.imgui ...")
 endif()
@@ -23,10 +28,10 @@ string(REGEX MATCH "[0-9]+" IMGUI_VERSION ${imgui_version_string})
 
 message(STATUS "ImGui version ${IMGUI_VERSION}")
 
-get_property(is_generator_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-if(NOT is_generator_multi_config)
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release RelWithDebInfo MinSizeRel)
-endif()
+file(READ ${_imgui_dir}/imconfig.h imconfig_h_string)
+string(REGEX REPLACE  "//#define (IMGUI_(ENABLE|DISABLE|USER|USE|DEFINE|DEBUG)[_A-Z0-9]*)" "#cmakedefine \\1" imconfig_h_in ${imconfig_h_string})
+file(WRITE ${PROJECT_BINARY_DIR}/imconfig.h.in ${imconfig_h_in})
+configure_file(${PROJECT_BINARY_DIR}/imconfig.h.in ${PROJECT_BINARY_DIR}/imconfig.h)
 
 option(DearImGui_Misc_Options "Miscellaneous options" OFF)
 cmake_dependent_option(DearImGui_Misc_Cpp "" OFF DearImGui_Misc_Options OFF)
@@ -129,45 +134,16 @@ set(pkg_config_requires_list)
 cmake_path(SET imgui_include_dir ${_imgui_dir})
 cmake_path(ABSOLUTE_PATH imgui_include_dir NORMALIZE)
 
-if(CMAKE_CROSSCOMPILING)
-  set(configuration_information_return_value 15) # can't run try_run() on Android, just enable them all
-else()
-  try_run(configuration_information_return_value compilation_result SOURCE_FROM_CONTENT check_configuration_information_in_imconfig_h.cpp
-[=[
-#include <imconfig.h>
-
-int main() {
-// pack some compile-time configuration definitions related to build on an integer
-  unsigned result = 0;
-
-#if defined(IMGUI_ENABLE_FREETYPE)
-  result |= (0b1 << 0);
-#endif
-
-#if defined(IMGUI_ENABLE_FREETYPE_LUNASVG)
-  result |= (0b1 << 1);
-#endif
-
-#if defined(IMGUI_ENABLE_FREETYPE_PLUTOSVG)
-  result |= (0b1 << 2);
-#endif
-  return result;
-}
-]=] COMPILE_DEFINITIONS "-I${imgui_include_dir}" NO_CACHE NO_LOG)
-
- # unpack them in here
-  math(EXPR is_imgui_freetype_enabled_in_imconfig "((${configuration_information_return_value} >> 0) & 1)")
-  math(EXPR is_imgui_freetype_lunasvg_enabled_in_imconfig "((${configuration_information_return_value} >> 1) & 1)")
-  math(EXPR is_imgui_freetype_plutosvg_enabled_in_imconfig "((${configuration_information_return_value} >> 2) & 1)")
-endif()
-
 add_library(imgui_core)
 target_sources(imgui_core
   PRIVATE ${_imgui_dir}/imgui.cpp ${_imgui_dir}/imgui_draw.cpp ${_imgui_dir}/imgui_tables.cpp ${_imgui_dir}/imgui_widgets.cpp ${_imgui_dir}/imgui_demo.cpp
   PUBLIC FILE_SET imgui_core_set
   BASE_DIRS ${_imgui_dir}
   TYPE HEADERS
-  FILES ${_imgui_dir}/imgui.h ${_imgui_dir}/imconfig.h ${_imgui_dir}/imgui_internal.h ${_imgui_dir}/imstb_rectpack.h ${_imgui_dir}/imstb_textedit.h ${_imgui_dir}/imstb_truetype.h)
+  FILES ${_imgui_dir}/imgui.h ${_imgui_dir}/imgui_internal.h ${_imgui_dir}/imstb_rectpack.h ${_imgui_dir}/imstb_textedit.h ${_imgui_dir}/imstb_truetype.h
+  PUBLIC FILE_SET HEADERS
+  BASE_DIRS ${PROJECT_BINARY_DIR}
+  FILES ${PROJECT_BINARY_DIR}/imconfig.h)
 target_compile_features(imgui_core PUBLIC cxx_std_11)
 
 if(DearImGui_Misc_Options)
@@ -181,7 +157,7 @@ if(DearImGui_Misc_Options)
   endif()
 
   if(DearImGui_Misc_FreeType)
-    if(NOT is_imgui_freetype_enabled_in_imconfig)
+    if(NOT IMGUI_ENABLE_FREETYPE)
       message(WARNING "misc_freetype option is enabled but IMGUI_ENABLE_FREETYPE is not defined on imconfig.h. FreeType support feature will not be available.")
       set(misc_freetype OFF)
     else()
@@ -195,14 +171,14 @@ if(DearImGui_Misc_Options)
         FILES ${_imgui_dir}/misc/freetype/imgui_freetype.h)
       target_link_libraries(imgui_core PUBLIC Freetype::Freetype)
 
-      if(is_imgui_freetype_lunasvg_enabled_in_imconfig)
+      if(IMGUI_ENABLE_FREETYPE_LUNASVG)
         if(${IMGUI_VERSION} VERSION_LESS 19200)
           find_package(lunasvg 2.4.3 EXACT CONFIG REQUIRED)
         else()
           find_package(lunasvg CONFIG REQUIRED)
         endif()
         target_link_libraries(imgui_core PUBLIC lunasvg::lunasvg)
-      elseif(is_imgui_freetype_plutosvg_enabled_in_imconfig)
+      elseif(IMGUI_ENABLE_FREETYPE_PLUTOSVG)
         find_package(plutosvg CONFIG REQUIRED)
         target_link_libraries(imgui_core PUBLIC plutosvg::plutosvg)
       endif()
@@ -986,7 +962,7 @@ if(install)
   install(DIRECTORY ${_imgui_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(FILES ${_imgui_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(EXPORT imgui_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE ImGui:: FILE DearImGuiTargets.cmake)
-  install(TARGETS imgui_core EXPORT imgui_export FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
+  install(TARGETS imgui_core EXPORT imgui_export FILE_SET imgui_core_set FILE_SET HEADERS FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
 
   if(DearImGui_Misc_Options)
     if(DearImGui_Misc_Debugger)
