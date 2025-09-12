@@ -135,7 +135,6 @@ jobs:
           -D install=ON
           -D install_examples=ON
           -D uninstall=ON
-          -D DearImGui_Misc_Options=ON -D DearImGui_Misc_Cpp=ON -D DearImGui_Misc_FreeType=ON -D DearImGui_Misc_Debugger=ON -D DearImGui_Misc_Fonts=ON
           -D pkg-config=ON
           -D DearImGui_Backend_Allegro5=ON
           -D DearImGui_Backend_FreeGLUT=ON
