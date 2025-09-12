@@ -143,7 +143,6 @@ jobs:
           -D DearImGui_Backend_SDLGPU3=ON
           -D DearImGui_Backend_SDLRenderer3=ON
           -D DearImGui_Backend_WebGPU=OFF
-          -D DearImGui_Examples=ON
           -D Example_NULL=ON
           -D Example_GLFW_OpenGL2=ON -D Example_GLFW_OpenGL3=ON -D Example_GLFW_Vulkan=ON -D Example_GLFW_Metal=ON -D Example_GLFW_WebGPU=OFF
           -D Example_SDL2_OpenGL2=ON -D Example_SDL2_OpenGL3=ON -D Example_SDL2_Vulkan=ON -D Example_SDL2_Metal=ON
@@ -256,7 +255,6 @@ jobs:
           -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
           -D DearImGui_Backend_Android=ON
           -D DearImGui_Backend_OpenGL3=ON
-          -D DearImGui_Examples=ON
           -D Example_Android_OpenGL3=ON
           --toolchain ${ANDROID_NDK_ROOT}/build/cmake/android.toolchain.cmake
 
