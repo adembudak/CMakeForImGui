@@ -51,13 +51,17 @@ Following backend options are available:
 | DearImGui_Backend_OSX            | `ImGui::Backend_OSX`          |
 | DearImGui_Backend_Metal          | `ImGui::Backend_Metal`        |
 
-All backend options are `OFF` by default.
+All backend options are `OFF` by default and all the configuration macros on `imconfig.h` are available as a CMake option:
+
+```bash
+cmake -D IMGUI_DISABLE_DEMO_WINDOWS=ON -D IMGUI_ENABLE_FREETYPE=ON -S imgui -B build
+```
 
 Example programs set as dependent options, like:
 ```cmake
-cmake_dependent_option(Example_SDL2_OpenGL3 "" OFF "DearImGui_Examples AND DearImGui_Backend_SDL2 AND DearImGui_Backend_OpenGL3" OFF)
+cmake_dependent_option(Example_SDL2_OpenGL3 "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_OpenGL3" OFF)
 ```
-The `Example_SDL2_OpenGL3` option will be available only when the `DearImGui_Examples` option and the corresponding backends are `ON`. The same is true for all the other examples and they're `OFF` by default.
+The `Example_SDL2_OpenGL3` option will be available only corresponding backends are `ON`. The same is true for all the other examples and they're `OFF` by default.
 
 Libraries and examples can be installed by setting `install` and `install_examples` options `ON`, respectively. An `uninstall` custom target is also provided to remove the artifacts where are they installed.
 
@@ -73,11 +77,6 @@ find_package(DearImGui CONFIG REQUIRED)
 # ...
 target_link_libraries(tgt PUBLIC ImGui::Backend_SDL2 ImGui::Backend_OpenGL3)
 ```
-Some alternative designs are also considered:
-- On [single-target](https://github.com/adembudak/CMakeForImGui/tree/single-target) branch all the targets are (ImGui itself and backends) linked with a single `Unofficial::DearImGui::imgui` target rather than a target per backend.
-- On [thirdparties-as-components](https://github.com/adembudak/CMakeForImGui/tree/thirdparties-as-components) branch some thirdparty projects can be specified as `COMPONENTS` option of `find_package()`.
-- On [pre.v1.80](https://github.com/adembudak/CMakeForImGui/tree/pre.v1.80) the build script tries to support Dear ImGui versions before v1.80.
-
 ### With `pkg-config` command
 
 The build script can be used to generate **pkg-config** file:
@@ -88,6 +87,13 @@ This generates a `dearimgui.pc` file in build directory which can be installed a
 ```bash
 c++ -o out main.cpp $(pkg-config --cflags --libs dearimgui)
 ```
+## Alternative approaches
+
+Some alternative designs are also considered:
+- On [single-target](https://github.com/adembudak/CMakeForImGui/tree/single-target) branch all the targets are (ImGui itself and backends) linked with a single `Unofficial::DearImGui::imgui` target rather than a target per backend.
+- On [pre.v1.80](https://github.com/adembudak/CMakeForImGui/tree/pre.v1.80) the build script tries to support Dear ImGui versions before v1.80.
+- On [thirdparties-as-components](https://github.com/adembudak/CMakeForImGui/tree/thirdparties-as-components) branch some thirdparty projects can be specified as `COMPONENTS` option of `find_package()`.
+- On [CMakeForImGuiThirdParties](https://github.com/adembudak/CMakeForImGuiThirdParties) repository it's shown how thirdparty ImGui software benefit from this script.
 
 ## License
 
