@@ -713,13 +713,13 @@ endif()
 if((DearImGui_Backend_DirectX9 OR DearImGui_Backend_DirectX10 OR DearImGui_Backend_DirectX11 OR DearImGui_Backend_DirectX12) AND (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC"))
   set(sdk_version ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION})
 
-  find_path(
-    Windows_SDK_INCLUDE_DIR d3d9.h
+  find_path(Windows_SDK_INCLUDE_DIR
+    NAMES d3d9.h
     PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots;KitsRoot10]" "C:/Program Files (x86)/Windows Kits/10"
     PATH_SUFFIXES "Include/${sdk_version}/shared" NO_CACHE REQUIRED)
 
-  find_path(
-    Windows_SDK_INCLUDE_DIR_1 d3d10.h d3d10_1.h d3d11.h d3d12.h d3dcompiler.h
+  find_path(Windows_SDK_INCLUDE_DIR_1
+    NAMES d3d10.h d3d10_1.h d3d11.h d3d12.h d3dcompiler.h
     PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots;KitsRoot10]" "C:/Program Files (x86)/Windows Kits/10"
     PATH_SUFFIXES "Include/${sdk_version}/um" NO_CACHE REQUIRED)
 
@@ -742,8 +742,7 @@ if((DearImGui_Backend_DirectX9 OR DearImGui_Backend_DirectX10 OR DearImGui_Backe
     message(FATAL_ERROR "-- Unsupported architecture: ${_arch}")
   endif()
 
-  find_path(
-    Windows_SDK_LIB_DIR
+  find_path(Windows_SDK_LIB_DIR
     NAMES d3d9.lib d3d10.lib d3d10_1.lib d3d11.lib d3d12.lib d3dcompiler.lib
     PATHS "[HKLM/SOFTWARE/Microsoft/Windows Kits/Installed Roots;KitsRoot10]"
     PATH_SUFFIXES "Lib/${sdk_version}/um/${arch}" "C:/Program Files (x86)/Windows Kits/10/Lib/${sdk_version}/um/${arch}" REGISTRY_VIEW HOST NO_CACHE REQUIRED)
