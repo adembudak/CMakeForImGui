@@ -29,8 +29,8 @@ string(REGEX MATCH "[0-9]+" IMGUI_VERSION ${imgui_version_string})
 message(STATUS "ImGui version ${IMGUI_VERSION}")
 
 file(READ ${_imgui_dir}/imconfig.h imconfig_h_string)
-string(REGEX REPLACE  "//#define (IMGUI_(ENABLE|DISABLE|USER|USE|DEFINE|DEBUG)[_A-Z0-9]*)" "#cmakedefine \\1" imconfig_h_in ${imconfig_h_string})
-file(WRITE ${PROJECT_BINARY_DIR}/imconfig.h.in ${imconfig_h_in})
+string(REGEX REPLACE  "//#define (IMGUI_(ENABLE|DISABLE|USER|USE|DEFINE|DEBUG)[_A-Z0-9]*)" "#cmakedefine \\1" imconfig_h_in_string ${imconfig_h_string})
+file(WRITE ${PROJECT_BINARY_DIR}/imconfig.h.in ${imconfig_h_in_string})
 configure_file(${PROJECT_BINARY_DIR}/imconfig.h.in ${PROJECT_BINARY_DIR}/imconfig.h)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
@@ -41,14 +41,14 @@ option(DearImGui_Backend_Allegro5 "" OFF)
 option(DearImGui_Backend_GLFW "" OFF)
 option(DearImGui_Backend_FreeGLUT "" OFF)
 option(DearImGui_Backend_SDL2 "" OFF)
-option(DearImGui_Backend_SDLRenderer2 "" OFF)
-option(DearImGui_Backend_SDL3 "" OFF)
-option(DearImGui_Backend_SDLGPU3 "" OFF)
-option(DearImGui_Backend_SDLRenderer3 "" OFF)
+cmake_dependent_option(DearImGui_Backend_SDLRenderer2 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 18420)" OFF)
+cmake_dependent_option(DearImGui_Backend_SDL3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19100)" OFF)
+cmake_dependent_option(DearImGui_Backend_SDLGPU3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19160)" OFF)
+cmake_dependent_option(DearImGui_Backend_SDLRenderer3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19100)" OFF)
 option(DearImGui_Backend_OpenGL2 "" OFF)
 option(DearImGui_Backend_OpenGL3 "" OFF)
 option(DearImGui_Backend_Vulkan "" OFF)
-option(DearImGui_Backend_WebGPU "" OFF)
+cmake_dependent_option(DearImGui_Backend_WebGPU "" OFF "(${IMGUI_VERSION} VERSION_GREATER 18000)" OFF)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   option(DearImGui_Backend_Win32 "" OFF)
@@ -65,20 +65,14 @@ endif()
 
 option(BUILD_SHARED_LIBS "" OFF)
 
-option(pkg-config "Generate dearimgui.pc file" OFF)
+option(Pkg-config "Generate dearimgui.pc file" OFF)
 
-option(install "Install the library" ON)
-option(uninstall "A custom target 'uninstall' is generated to undo latest install step" ON)
-cmake_dependent_option(install_examples "Install example executables along with the library" OFF install OFF)
+option(Install "Install Dear ImGui" ON)
+option(Uninstall "A custom target 'uninstall' is generated to undo latest install step" ON)
+cmake_dependent_option(Install_examples "Install Dear ImGui examples" OFF Install OFF)
 
 option(visualize_targets "A custom target 'graph' that shows linkage graph enabled to generate a targets.png on build directory" OFF)
 mark_as_advanced(FORCE visualize_targets)
-
-cmake_dependent_option(DearImGui_Backend_SDLRenderer2 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 18420)" OFF)
-cmake_dependent_option(DearImGui_Backend_SDL3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19100)" OFF)
-cmake_dependent_option(DearImGui_Backend_SDLRenderer3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19100)" OFF)
-cmake_dependent_option(DearImGui_Backend_SDLGPU3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19160)" OFF)
-cmake_dependent_option(DearImGui_Backend_WebGPU "" OFF "(${IMGUI_VERSION} VERSION_GREATER 18000)" OFF)
 
 cmake_dependent_option(Example_Android_OpenGL3 "" OFF "DearImGui_Backend_Android AND DearImGui_Backend_OpenGL3" OFF)
 
@@ -95,7 +89,6 @@ cmake_dependent_option(Example_SDL2_OpenGL3 "" OFF "DearImGui_Backend_SDL2 AND D
 cmake_dependent_option(Example_SDL2_Vulkan "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_Vulkan" OFF)
 cmake_dependent_option(Example_SDL2_DirectX11 "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_DirectX11" OFF)
 cmake_dependent_option(Example_SDL2_Metal "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_Metal" OFF)
-
 cmake_dependent_option(Example_SDL2_SDLRenderer2 "" OFF "DearImGui_Backend_SDLRenderer2 AND DearImGui_Backend_SDL2" OFF)
 
 cmake_dependent_option(Example_Allegro5 "" OFF DearImGui_Backend_Allegro5 OFF)
@@ -103,9 +96,7 @@ cmake_dependent_option(Example_Allegro5 "" OFF DearImGui_Backend_Allegro5 OFF)
 cmake_dependent_option(Example_SDL3_OpenGL3 "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_OpenGL3" OFF)
 cmake_dependent_option(Example_SDL3_Vulkan "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_Vulkan AND (${IMGUI_VERSION} VERSION_GREATER 19140)" OFF)
 cmake_dependent_option(Example_SDL3_Metal "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_Metal AND (${IMGUI_VERSION} VERSION_GREATER 19210)" OFF)
-
 cmake_dependent_option(Example_SDL3_SDLGPU3 "" OFF DearImGui_Backend_SDLGPU3 OFF)
-
 cmake_dependent_option(Example_SDL3_SDLRenderer3 "" OFF "DearImGui_Backend_SDLRenderer3 AND DearImGui_Backend_SDL3" OFF)
 
 cmake_dependent_option(Example_Win32_OpenGL3 "" OFF "DearImGui_Backend_Win32 AND DearImGui_Backend_OpenGL3 AND (${IMGUI_VERSION} VERSION_GREATER 18950)" OFF)
@@ -901,7 +892,7 @@ if(DearImGui_Backend_OSX)
   endif()
 endif()
 
-if(pkg-config)
+if(Pkg-config)
   if(pkg_config_requires_list)
     list(SORT pkg_config_requires_list)
     list(REMOVE_DUPLICATES pkg_config_requires_list)
@@ -935,7 +926,7 @@ Cflags: -I${includedir}
 
 endif()
 
-if(install)
+if(Install)
   set_property(GLOBAL PROPERTY INSTALL_PARALLEL ON)
 
   install(DIRECTORY ${_imgui_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
@@ -955,7 +946,7 @@ if(install)
     install(TARGETS ${name} EXPORT imgui_export FILE_SET ${file_set})
   endforeach()
 
-  if(install_examples)
+  if(Install_examples)
     if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
       set_target_properties(${imgui_examples_list} PROPERTIES MACOSX_BUNDLE TRUE)
     endif()
@@ -963,7 +954,7 @@ if(install)
     install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
   endif()
 
-  if(pkg-config)
+  if(Pkg-config)
     install(FILES ${PROJECT_BINARY_DIR}/dearimgui.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
   endif()
 
@@ -973,7 +964,7 @@ if(install)
   install(FILES ${PROJECT_BINARY_DIR}/DearImGuiConfig.cmake ${PROJECT_BINARY_DIR}/DearImGuiConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui)
 endif()
 
-if(uninstall)
+if(Uninstall)
   file(CONFIGURE
     OUTPUT cmake_uninstall.cmake
     CONTENT
@@ -989,16 +980,14 @@ foreach(file IN LISTS files_to_uninstall)
 endforeach()
 ]=] @ONLY)
 
-  add_custom_target(
-    uninstall
+  add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${PROJECT_BINARY_DIR}/cmake_uninstall.cmake
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 endif()
 
 if(visualize_targets)
   if(NOT EXISTS ${PROJECT_BINARY_DIR}/CMakeGraphVizOptions.cmake)
-    file(
-      WRITE ${PROJECT_BINARY_DIR}/CMakeGraphVizOptions.cmake
+    file(WRITE ${PROJECT_BINARY_DIR}/CMakeGraphVizOptions.cmake
 [=[
 set(GRAPHVIZ_GENERATE_PER_TARGET FALSE)
 set(GRAPHVIZ_GENERATE_DEPENDERS FALSE)
@@ -1007,8 +996,7 @@ set(GRAPHVIZ_GENERATE_DEPENDERS FALSE)
 
   find_program(DOT_COMMAND dot REQUIRED)
 
-  add_custom_target(
-    graph
+  add_custom_target(graph
     COMMAND ${CMAKE_COMMAND} --graphviz=targets.dot ${PROJECT_BINARY_DIR}
     COMMAND ${DOT_COMMAND} -Tpng targets.dot -o targets.png
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
@@ -1032,7 +1020,7 @@ Example_SDL2_DirectX11 Example_SDL2_OpenGL2 Example_SDL2_OpenGL3 Example_SDL2_Vu
 Example_SDL3_OpenGL3 Example_SDL3_SDLGPU3 Example_SDL3_SDLRenderer3 Example_SDL3_Vulkan Example_SDL3_Metal
 Example_Win32_DirectX9 Example_Win32_DirectX10 Example_Win32_DirectX11 Example_Win32_DirectX12 Example_Win32_OpenGL3 Example_Win32_Vulkan
 Example_Apple_Metal Example_Apple_OpenGL2
-BUILD_SHARED_LIBS pkg-config install install_examples uninstall visualize_targets)
+BUILD_SHARED_LIBS Pkg-config Install Install_examples Uninstall visualize_targets)
 list(SORT options CASE INSENSITIVE)
 
 message(STATUS "Configuration summary:\n")

@@ -127,10 +127,10 @@ jobs:
           -D VCPKG_MANIFEST_DIR=${{ github.workspace }}/CMakeForImGui/.github/workflows
           -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here
           -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
-          -D install=ON
-          -D install_examples=ON
-          -D uninstall=ON
-          -D pkg-config=ON
+          -D Install=ON
+          -D Install_examples=ON
+          -D Uninstall=ON
+          -D Pkg-config=ON
           -D DearImGui_Backend_Allegro5=ON
           -D DearImGui_Backend_FreeGLUT=ON
           -D DearImGui_Backend_GLFW=ON
