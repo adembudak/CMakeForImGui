@@ -114,9 +114,6 @@ set(imgui_backends_list)
 set(imgui_examples_list)
 set(pkg_config_requires_list)
 
-cmake_path(SET imgui_include_dir ${_imgui_dir})
-cmake_path(ABSOLUTE_PATH imgui_include_dir NORMALIZE)
-
 add_library(imgui_core)
 target_sources(imgui_core
   PRIVATE ${_imgui_dir}/imgui.cpp ${_imgui_dir}/imgui_draw.cpp ${_imgui_dir}/imgui_tables.cpp ${_imgui_dir}/imgui_widgets.cpp ${_imgui_dir}/imgui_demo.cpp
