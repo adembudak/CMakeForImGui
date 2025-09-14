@@ -752,16 +752,16 @@ if(DearImGui_Backend_DirectX9)
     PUBLIC FILE_SET imgui_impl_dx9_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
-    FILES ${_imgui_dir}/backends/imgui_impl_dx9.h
-    PRIVATE FILE_SET HEADERS
-    BASE_DIRS $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_INCLUDE_DIR}>
-    FILES $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_INCLUDE_DIR}/d3d9.h>)
+    FILES ${_imgui_dir}/backends/imgui_impl_dx9.h)
+  target_link_libraries(imgui_impl_dx9 PUBLIC imgui_core)
 
-  target_link_directories(imgui_impl_dx9
-    PRIVATE $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_LIB_DIR}>)
-  target_link_libraries(imgui_impl_dx9
-    PUBLIC imgui_core
-    PUBLIC d3d9.lib)
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_link_directories(imgui_impl_dx9 PRIVATE ${Windows_SDK_LIB_DIR})
+    target_link_libraries(imgui_impl_dx9 PUBLIC d3d9.lib)
+    target_sources(imgui_impl_dx9 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/d3d9.h)
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang") # cross compiling with mingw or msys2
+    target_link_libraries(imgui_impl_dx9 PUBLIC d3d9.lib)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_dx9)
 endif()
@@ -773,22 +773,19 @@ if(DearImGui_Backend_DirectX10)
     PUBLIC FILE_SET imgui_impl_dx10_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
-    FILES ${_imgui_dir}/backends/imgui_impl_dx10.h
-    PRIVATE FILE_SET HEADERS
-    BASE_DIRS $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_INCLUDE_DIR_1}>
-    FILES
-      $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_INCLUDE_DIR_1}/d3d10_1.h>
-      $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_INCLUDE_DIR_1}/d3d10.h>
-      $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h>)
+    FILES ${_imgui_dir}/backends/imgui_impl_dx10.h)
+  target_link_libraries(imgui_impl_dx10 PUBLIC imgui_core)
 
-  target_link_directories(imgui_impl_dx10
-    PRIVATE $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_LIB_DIR}>)
-  target_link_libraries(imgui_impl_dx10
-    PUBLIC imgui_core
-    PUBLIC
-      $<$<CXX_COMPILER_ID:MSVC>:d3d10_1.lib>
-      d3d10.lib
-      d3dcompiler.lib)
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_link_directories(imgui_impl_dx10 PRIVATE ${Windows_SDK_LIB_DIR})
+    target_link_libraries(imgui_impl_dx10 PUBLIC d3d10_1.lib d3d10.lib d3dcompiler.lib)
+    target_sources(imgui_impl_dx10
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1}
+      FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d10_1.h ${Windows_SDK_INCLUDE_DIR_1}/d3d10.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_link_libraries(imgui_impl_dx10 PUBLIC d3d10.lib d3dcompiler.lib)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_dx10)
 endif()
@@ -800,18 +797,19 @@ if(DearImGui_Backend_DirectX11)
     PUBLIC FILE_SET imgui_impl_dx11_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
-    FILES ${_imgui_dir}/backends/imgui_impl_dx11.h
-    PRIVATE FILE_SET HEADERS
-    BASE_DIRS $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_INCLUDE_DIR_1}>
-    FILES
-      $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_INCLUDE_DIR_1}/d3d11.h
-      $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h>)
+    FILES ${_imgui_dir}/backends/imgui_impl_dx11.h)
+  target_link_libraries(imgui_impl_dx11 PUBLIC imgui_core)
 
-  target_link_directories(imgui_impl_dx11
-    PRIVATE $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_LIB_DIR}>)
-  target_link_libraries(imgui_impl_dx11
-    PUBLIC imgui_core
-    PUBLIC d3d11.lib d3dcompiler.lib)
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_link_directories(imgui_impl_dx11 PRIVATE ${Windows_SDK_LIB_DIR})
+    target_link_libraries(imgui_impl_dx11 PUBLIC d3d11.lib d3dcompiler.lib)
+    target_sources(imgui_impl_dx11
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1}
+      FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d11.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_link_libraries(imgui_impl_dx11 PUBLIC d3d11.lib d3dcompiler.lib)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_dx11)
 endif()
@@ -823,21 +821,22 @@ if(DearImGui_Backend_DirectX12)
     PUBLIC FILE_SET imgui_impl_dx12_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
-    FILES ${_imgui_dir}/backends/imgui_impl_dx12.h
-    PRIVATE FILE_SET HEADERS
-    BASE_DIRS $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_INCLUDE_DIR_1}>
-    FILES
-      $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_INCLUDE_DIR_1}/d3d12.h
-      $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h>
-    PRIVATE FILE_SET HEADERS
-    BASE_DIRS $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_INCLUDE_DIR}>
-    FILES $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_INCLUDE_DIR}/dxgi1_4.h>)
+    FILES ${_imgui_dir}/backends/imgui_impl_dx12.h)
+  target_link_libraries(imgui_impl_dx12 PUBLIC imgui_core)
 
-  target_link_directories(imgui_impl_dx12
-    PRIVATE $<$<CXX_COMPILER_ID:MSVC>:${Windows_SDK_LIB_DIR}>)
-  target_link_libraries(imgui_impl_dx12
-    PUBLIC imgui_core
-    PUBLIC d3d12.lib dxgi.lib d3dcompiler.lib)
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_link_directories(imgui_impl_dx12 PRIVATE ${Windows_SDK_LIB_DIR})
+    target_link_libraries(imgui_impl_dx12 PUBLIC d3d12.lib dxgi.lib d3dcompiler.lib)
+    target_sources(imgui_impl_dx12
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1}
+      FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d12.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS ${Windows_SDK_INCLUDE_DIR}
+      FILES ${Windows_SDK_INCLUDE_DIR}/dxgi1_4.h)
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_link_libraries(imgui_impl_dx12 PUBLIC d3d12.lib dxgi.lib d3dcompiler.lib)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_dx12)
 endif()
