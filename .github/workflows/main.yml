@@ -68,6 +68,10 @@ jobs:
           show-progress: false
           path: CMakeForImGui
 
+      - name: Define VCPKG_ROOT env var as an alias to VCPKG_INSTALLATION_ROOT
+        shell: bash
+        run: echo "VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT" >> $GITHUB_ENV
+
       - name: Setup vcpkg
         uses: johnwason/vcpkg-action@v7
         id: vcpkg
@@ -80,47 +84,47 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           cd ${{ github.workspace }}/CMakeForImGui
-          cmake -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Linux
+          cmake -DIMGUI_SOURCE_DIR=${{ github.workspace }}/imgui -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Linux
           cmake --build --preset Linux
 
       - name: Configure and build on macOS
         if: matrix.os == 'macos-15'
         run: |
           cd ${{ github.workspace }}/CMakeForImGui
-          cmake -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Darwin
+          cmake -DIMGUI_SOURCE_DIR=${{ github.workspace }}/imgui -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Darwin
           cmake --build --preset Darwin --config ${{ matrix.build-type }}
 
       - name:  Configure and build on Windows
         if: matrix.os == 'windows-latest'
         run: |
           cd ${{ github.workspace }}/CMakeForImGui
-          cmake -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Windows
+          cmake -DIMGUI_SOURCE_DIR=${{ github.workspace }}/imgui -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Windows
           cmake --build --preset Windows --config ${{ matrix.build-type }}
 
       - name: Fix install paths on Windows
         if: matrix.os == 'windows-latest'
         run: >
-          (Get-Content -Path "${{ github.workspace }}\\build\\cmake_install.cmake")
+          (Get-Content -Path "${{ github.workspace }}\\CMakeForImGui\\build\\cmake_install.cmake")
           | ForEach-Object {$_ -replace 'D:\\a\\CMakeForImGui\\', 'D:/a/CMakeForImGui/'}
-          | Set-Content -Path "${{ github.workspace }}\\build\\cmake_install.cmake"
+          | Set-Content -Path "${{ github.workspace }}\\CMakeForImGui\\build\\cmake_install.cmake"
 
       - name: Install
         run: >
           cmake
-          --build ${{ github.workspace }}/build
+          --build ${{ github.workspace }}/CMakeForImGui/build
           --target install
           --config ${{ matrix.build-type }}
 
       - name: Uninstall
         run: >
           cmake
-          --build ${{ github.workspace }}/build
+          --build ${{ github.workspace }}/CMakeForImGui/build
           --target uninstall
 
       - name: Package
         run: >
           cmake
-          --build ${{ github.workspace }}/build
+          --build ${{ github.workspace }}/CMakeForImGui/build
           --target package
           --config ${{ matrix.build-type }}
 
@@ -129,7 +133,7 @@ jobs:
 
         with:
           name: build.imgui-${{ matrix.tag }}.${{ matrix.os }}.${{ matrix.triplet }}.${{ matrix.build-type }}
-          path: ${{ github.workspace }}/build/package
+          path: ${{ github.workspace }}/CMakeForImGui/build/package
 
       - run: echo "Job exited by ${{ job.status }}."
 
@@ -157,7 +161,7 @@ jobs:
       - name: Configure
         run: |
           cd ${{ github.workspace }}/CMakeForImGui
-          cmake --preset Android
+          cmake -DIMGUI_SOURCE_DIR=${{ github.workspace }}/imgui --preset Android
 
       - name: Build
         run: |

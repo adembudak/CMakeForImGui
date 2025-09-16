@@ -28,7 +28,7 @@
       "hidden": true,
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "visualize_targets": "ON",
+        "visualize_targets": "OFF",
         "Install": "ON",
         "Install_examples": "ON",
         "Uninstall": "ON",
@@ -144,6 +144,7 @@
     },
     {
       "name": "Windows",
+      "binaryDir": "build",
       "generator": "Visual Studio 17 2022",
       "inherits": [
         "build_requirements",
