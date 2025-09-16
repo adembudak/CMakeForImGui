@@ -124,7 +124,7 @@ jobs:
           -B ${{ github.workspace }}/build
           -G "${{ matrix.generator }}"
           -D VCPKG_MANIFEST_MODE=ON
-          -D VCPKG_MANIFEST_DIR=${{ github.workspace }}/CMakeForImGui/.github/workflows
+          -D VCPKG_MANIFEST_DIR=${{ github.workspace }}/CMakeForImGui
           -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here
           -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
           -D Install=ON
