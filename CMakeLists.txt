@@ -132,6 +132,21 @@ target_sources(imgui_core
   FILES ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
 target_compile_features(imgui_core PUBLIC cxx_std_11)
 
+set(IMGUI_USER_CONFIG "" CACHE FILEPATH "File path to user specified configuration file")
+if(IMGUI_USER_CONFIG)
+  if(NOT EXISTS ${IMGUI_USER_CONFIG})
+    message(WARNING "Specified IMGUI_USER_CONFIG file is not exist: ${IMGUI_SOURCE_DIR}")
+  else()
+    cmake_path(SET imgui_user_config NORMALIZE ${IMGUI_USER_CONFIG})
+    cmake_path(GET imgui_user_config FILENAME imgui_user_config_filename)
+    cmake_path(ABSOLUTE_PATH imgui_user_config_filename OUTPUT_VARIABLE imgui_user_config_absolute_path)
+
+    message(STATUS "IMGUI_USER_CONFIG: ${imgui_user_config_absolute_path}")
+
+    target_compile_definitions(imgui_core PUBLIC IMGUI_USER_CONFIG="${imgui_user_config_absolute_path}")
+  endif()
+endif()
+
 if(IMGUI_ENABLE_FREETYPE)
   find_package(freetype CONFIG REQUIRED)
 
