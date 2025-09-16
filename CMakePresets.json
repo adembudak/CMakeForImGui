@@ -1,0 +1,161 @@
+{
+  "$schema": "https://cmake.org/cmake/help/latest/_downloads/3e2d73bff478d88a7de0de736ba5e361/schema.json",
+  "version": 10,
+  "cmakeMinimumRequired": {
+    "major": 4,
+    "minor": 0,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "assume_imgui_is_there",
+      "hidden": true,
+      "$comment": "Assume Dear ImGui is present and in imgui/ folder for more smooth first time usage experience",
+      "cacheVariables": {
+        "IMGUI_SOURCE_DIR": "imgui"
+      }
+    },
+    {
+      "name": "build_requirements",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_STANDARD": "11",
+        "CMAKE_CXX_STANDARD_REQUIRED": "TRUE"
+      }
+    },
+    {
+      "name": "tooling",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "visualize_targets": "ON",
+        "Install": "ON",
+        "Install_examples": "ON",
+        "Uninstall": "ON",
+        "Pkg-config": "ON"
+      },
+      "graphviz": "${sourceDir}/build/CMakeGraphVizOptions.cmake"
+    },
+    {
+      "name": "vcpkg",
+      "hidden": true,
+      "cacheVariables": {
+        "VCPKG_MANIFEST_MODE": "ON",
+        "VCPKG_MANIFEST_DIR": "${sourceDir}"
+      },
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+    },
+    {
+      "name": "backends",
+      "hidden": true,
+      "cacheVariables": {
+        "DearImGui_Backend_Allegro5": "ON",
+        "DearImGui_Backend_FreeGLUT": "ON",
+        "DearImGui_Backend_GLFW": "ON",
+        "DearImGui_Backend_OpenGL2": "ON",
+        "DearImGui_Backend_OpenGL3": "ON",
+        "DearImGui_Backend_Vulkan": "ON",
+        "DearImGui_Backend_SDL2": "ON",
+        "DearImGui_Backend_SDLRenderer2": "ON",
+        "DearImGui_Backend_SDL3": "ON",
+        "DearImGui_Backend_SDLGPU3": "ON",
+        "DearImGui_Backend_SDLRenderer3": "ON",
+        "DearImGui_Backend_WebGPU": "OFF"
+      }
+    },
+    {
+      "name": "examples",
+      "hidden": true,
+      "cacheVariables": {
+        "Example_NULL": "ON",
+        "Example_GLFW_OpenGL2": "ON",
+        "Example_GLFW_OpenGL3": "ON",
+        "Example_GLFW_Vulkan": "ON",
+        "Example_GLFW_Metal": "ON",
+        "Example_GLFW_WebGPU": "OFF",
+        "Example_SDL2_OpenGL2": "ON",
+        "Example_SDL2_OpenGL3": "ON",
+        "Example_SDL2_Vulkan": "ON",
+        "Example_SDL2_Metal": "ON",
+        "Example_SDL3_OpenGL3": "ON",
+        "Example_SDL3_Vulkan": "ON",
+        "Example_SDL3_Metal": "ON",
+        "Example_SDL3_SDLGPU3": "ON",
+        "Example_SDL2_SDLRenderer2": "ON",
+        "Example_SDL3_SDLRenderer3": "ON",
+        "Example_FreeGLUT_OpenGL2": "ON",
+        "Example_Allegro5": "ON"
+      }
+    },
+    {
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Android"
+      },
+      "name": "Android",
+      "binaryDir": "build",
+      "cacheVariables": {
+        "DearImGui_Backend_Android": "ON",
+        "DearImGui_Backend_OpenGL3": "ON",
+        "Example_Android_OpenGL3": "ON"
+      },
+      "toolchainFile": "$env{ANDROID_NDK_ROOT}/build/cmake/android.toolchain.cmake"
+    },
+    {
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      },
+      "name": "Darwin",
+      "generator": "Xcode",
+      "binaryDir": "build",
+      "inherits": [
+        "build_requirements",
+        "tooling",
+        "vcpkg",
+        "backends",
+        "examples",
+        "assume_imgui_is_there"
+      ],
+      "cacheVariables": {
+        "DearImGui_Backend_Metal": "ON",
+        "DearImGui_Backend_OSX": "ON",
+        "Example_Apple_OpenGL2": "ON",
+        "Example_Apple_Metal": "ON"
+      }
+    },
+    {
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "name": "Windows",
+      "generator": "Visual Studio 17 2022",
+      "inherits": [
+        "build_requirements",
+        "tooling",
+        "vcpkg",
+        "backends",
+        "examples",
+        "assume_imgui_is_there"
+      ],
+      "cacheVariables": {
+        "DearImGui_Backend_Win32": "ON",
+        "DearImGui_Backend_DirectX9": "ON",
+        "DearImGui_Backend_DirectX10": "ON",
+        "DearImGui_Backend_DirectX11": "ON",
+        "DearImGui_Backend_DirectX12": "ON",
+        "Example_Win32_OpenGL3": "ON",
+        "Example_Win32_Vulkan": "ON",
+        "Example_Win32_DirectX9": "ON",
+        "Example_Win32_DirectX10": "ON",
+        "Example_Win32_DirectX11": "ON",
+        "Example_Win32_DirectX12": "ON",
+        "Example_SDL2_DirectX11": "ON"
+      }
+    }
+  ]
+}
