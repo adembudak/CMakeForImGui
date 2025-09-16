@@ -88,13 +88,11 @@
       }
     },
     {
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Android"
-      },
       "name": "Android",
       "binaryDir": "build",
+      "inherits": [
+        "assume_imgui_is_there"
+      ],
       "cacheVariables": {
         "DearImGui_Backend_Android": "ON",
         "DearImGui_Backend_OpenGL3": "ON",
@@ -103,11 +101,6 @@
       "toolchainFile": "$env{ANDROID_NDK_ROOT}/build/cmake/android.toolchain.cmake"
     },
     {
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Darwin"
-      },
       "name": "Darwin",
       "generator": "Xcode",
       "binaryDir": "build",
@@ -124,14 +117,32 @@
         "DearImGui_Backend_OSX": "ON",
         "Example_Apple_OpenGL2": "ON",
         "Example_Apple_Metal": "ON"
-      }
-    },
-    {
+      },
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      },
+        "rhs": "Darwin"
+      }
+    },
+    {
+      "name": "Linux",
+      "binaryDir": "build",
+      "generator": "Unix Makefiles",
+      "inherits": [
+        "build_requirements",
+        "tooling",
+        "vcpkg",
+        "backends",
+        "examples",
+        "assume_imgui_is_there"
+      ],
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+    {
       "name": "Windows",
       "generator": "Visual Studio 17 2022",
       "inherits": [
@@ -155,6 +166,56 @@
         "Example_Win32_DirectX11": "ON",
         "Example_Win32_DirectX12": "ON",
         "Example_SDL2_DirectX11": "ON"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "Android",
+      "configurePreset": "Android",
+      "inheritConfigureEnvironment": true,
+      "cleanFirst": true
+    },
+    {
+      "name": "Darwin",
+      "configurePreset": "Darwin",
+      "inheritConfigureEnvironment": true,
+      "cleanFirst": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
+      "name": "Linux",
+      "configurePreset": "Linux",
+      "inheritConfigureEnvironment": true,
+      "cleanFirst": true,
+      "nativeToolOptions": [
+        "--jobs=4",
+        "--load-average=4"
+      ],
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "name": "Windows",
+      "configurePreset": "Windows",
+      "inheritConfigureEnvironment": true,
+      "cleanFirst": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
       }
     }
   ]
