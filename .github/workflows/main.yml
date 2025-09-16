@@ -113,7 +113,7 @@ jobs:
         uses: johnwason/vcpkg-action@v7
         id: vcpkg
         with:
-          manifest-dir: ${{ github.workspace }}/CMakeForImGui/.github/workflows
+          manifest-dir: ${{ github.workspace }}/CMakeForImGui
           triplet: ${{ matrix.triplet }}
           token: ${{ github.token }}
 
