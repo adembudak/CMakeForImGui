@@ -218,5 +218,59 @@
         "rhs": "Windows"
       }
     }
+  ],
+  "workflowPresets": [
+    {
+      "name": "Android",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "Android"
+        },
+        {
+          "type": "build",
+          "name": "Android"
+        }
+      ]
+    },
+    {
+      "name": "Darwin",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "Darwin"
+        },
+        {
+          "type": "build",
+          "name": "Darwin"
+        }
+      ]
+    },
+    {
+      "name": "Linux",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "Linux"
+        },
+        {
+          "type": "build",
+          "name": "Linux"
+        }
+      ]
+    },
+    {
+      "name": "Windows",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "Windows"
+        },
+        {
+          "type": "build",
+          "name": "Windows"
+        }
+      ]
+    }
   ]
 }
