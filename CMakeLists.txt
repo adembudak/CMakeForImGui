@@ -17,6 +17,7 @@ if(NOT is_generator_multi_config)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release RelWithDebInfo MinSizeRel)
 endif()
 
+set(IMGUI_SOURCE_DIR "" CACHE PATH "Path to Dear ImGui source tree")
 if(NOT IMGUI_SOURCE_DIR)
   message(FATAL_ERROR "set IMGUI_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_SOURCE_DIR=path.to.imgui ...")
 endif()
