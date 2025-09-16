@@ -21,15 +21,12 @@ jobs:
 
           include:
             - os: ubuntu-latest
-              generator: 'Unix Makefiles'
               triplet: x64-linux
 
             - os: macos-15
-              generator: 'Ninja Multi-Config'
               triplet: x64-osx
 
             - os: windows-latest
-              generator: 'Visual Studio 17 2022'
               triplet: x64-windows
 
           tag:
@@ -117,78 +114,26 @@ jobs:
           triplet: ${{ matrix.triplet }}
           token: ${{ github.token }}
 
-      - name: Configure
-        run: >
-          cmake
-          -S ${{ github.workspace }}/CMakeForImGui
-          -B ${{ github.workspace }}/build
-          -G "${{ matrix.generator }}"
-          -D VCPKG_MANIFEST_MODE=ON
-          -D VCPKG_MANIFEST_DIR=${{ github.workspace }}/CMakeForImGui
-          -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here
-          -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
-          -D Install=ON
-          -D Install_examples=ON
-          -D Uninstall=ON
-          -D Pkg-config=ON
-          -D DearImGui_Backend_Allegro5=ON
-          -D DearImGui_Backend_FreeGLUT=ON
-          -D DearImGui_Backend_GLFW=ON
-          -D DearImGui_Backend_OpenGL2=ON
-          -D DearImGui_Backend_OpenGL3=ON
-          -D DearImGui_Backend_Vulkan=ON
-          -D DearImGui_Backend_SDL2=ON
-          -D DearImGui_Backend_SDLRenderer2=ON
-          -D DearImGui_Backend_SDL3=ON
-          -D DearImGui_Backend_SDLGPU3=ON
-          -D DearImGui_Backend_SDLRenderer3=ON
-          -D DearImGui_Backend_WebGPU=OFF
-          -D Example_NULL=ON
-          -D Example_GLFW_OpenGL2=ON -D Example_GLFW_OpenGL3=ON -D Example_GLFW_Vulkan=ON -D Example_GLFW_Metal=ON -D Example_GLFW_WebGPU=OFF
-          -D Example_SDL2_OpenGL2=ON -D Example_SDL2_OpenGL3=ON -D Example_SDL2_Vulkan=ON -D Example_SDL2_Metal=ON
-          -D Example_SDL3_OpenGL3=ON -D Example_SDL3_Vulkan=ON -D Example_SDL3_Metal=ON
-          -D Example_SDL3_SDLGPU3=ON
-          -D Example_SDL2_SDLRenderer2=ON
-          -D Example_SDL3_SDLRenderer3=ON
-          -D Example_FreeGLUT_OpenGL2=ON
-          -D Example_Allegro5=ON
-          --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+      - name: Configure and build on Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd ${{ github.workspace }}/CMakeForImGui
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Linux
+          cmake --build --preset Linux
 
-      - name: Configurations for macOS related backends
+      - name: Configure and build on macOS
         if: matrix.os == 'macos-15'
-        run: >
-          cmake
-          -S ${{ github.workspace }}/CMakeForImGui
-          -B ${{ github.workspace }}/build
-          -D DearImGui_Backend_Metal=ON
-          -D DearImGui_Backend_OSX=ON
-          -D Example_Apple_OpenGL2=ON
-          -D Example_Apple_Metal=ON
+        run: |
+          cd ${{ github.workspace }}/CMakeForImGui
+          cmake -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Darwin
+          cmake --build --preset Darwin --config ${{ matrix.build-type }}
 
-      - name: Configurations for Windows related backends
+      - name:  Configure and build on Windows
         if: matrix.os == 'windows-latest'
-        run: >
-          cmake
-          -S ${{ github.workspace }}/CMakeForImGui
-          -B ${{ github.workspace }}/build
-          -D DearImGui_Backend_Win32=ON
-          -D DearImGui_Backend_DirectX9=ON
-          -D DearImGui_Backend_DirectX10=ON
-          -D DearImGui_Backend_DirectX11=ON
-          -D DearImGui_Backend_DirectX12=ON
-          -D Example_Win32_OpenGL3=ON
-          -D Example_Win32_Vulkan=ON
-          -D Example_Win32_DirectX9=ON
-          -D Example_Win32_DirectX10=ON
-          -D Example_Win32_DirectX11=ON
-          -D Example_Win32_DirectX12=ON
-          -D Example_SDL2_DirectX11=ON
-
-      - name: Build
-        run: >
-          cmake
-          --build ${{ github.workspace }}/build
-          --config ${{ matrix.build-type }}
+        run: |
+          cd ${{ github.workspace }}/CMakeForImGui
+          cmake -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Windows
+          cmake --build --preset Windows --config ${{ matrix.build-type }}
 
       - name: Fix install paths on Windows
         if: matrix.os == 'windows-latest'
@@ -248,20 +193,14 @@ jobs:
           path: CMakeForImGui
 
       - name: Configure
-        run: >
-          cmake
-          -S ${{ github.workspace }}/CMakeForImGui
-          -B ${{ github.workspace }}/build
-          -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
-          -D DearImGui_Backend_Android=ON
-          -D DearImGui_Backend_OpenGL3=ON
-          -D Example_Android_OpenGL3=ON
-          --toolchain ${ANDROID_NDK_ROOT}/build/cmake/android.toolchain.cmake
+        run: |
+          cd ${{ github.workspace }}/CMakeForImGui
+          cmake --preset Android
 
       - name: Build
-        run: >
-          cmake
-          --build ${{ github.workspace }}/build
+        run: |
+          cd ${{ github.workspace }}/CMakeForImGui
+          cmake --build --preset Android
 
       - name: Upload
         uses: actions/upload-artifact@v4
