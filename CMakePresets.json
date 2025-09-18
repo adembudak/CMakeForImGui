@@ -10,7 +10,7 @@
     {
       "name": "assume_imgui_is_there",
       "hidden": true,
-      "$comment": "Assume Dear ImGui is present and in imgui/ folder for more smooth first time usage experience",
+      "$comment": "Assume Dear ImGui is present and in ${sourceDir}/imgui/ folder for more smooth first time usage experience",
       "cacheVariables": {
         "IMGUI_SOURCE_DIR": "imgui"
       }
@@ -35,6 +35,45 @@
         "Pkg-config": "ON"
       },
       "graphviz": "${sourceDir}/build/CMakeGraphVizOptions.cmake"
+    },
+    {
+      "name": "imconfig_h",
+      "hidden": true,
+      "cacheVariables": {
+        "IMGUI_DISABLE_OBSOLETE_FUNCTIONS": "OFF",
+        "IMGUI_DISABLE": "OFF",
+        "IMGUI_DISABLE_DEMO_WINDOWS": "OFF",
+        "IMGUI_DISABLE_DEBUG_TOOLS": "OFF",
+        "IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCTIONS": "OFF",
+        "IMGUI_ENABLE_WIN32_DEFAULT_IME_FUNCTIONS": "OFF",
+        "IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS": "OFF",
+        "IMGUI_DISABLE_WIN32_FUNCTIONS": "OFF",
+        "IMGUI_ENABLE_OSX_DEFAULT_CLIPBOARD_FUNCTIONS": "OFF",
+        "IMGUI_DISABLE_DEFAULT_SHELL_FUNCTIONS": "OFF",
+        "IMGUI_DISABLE_DEFAULT_FORMAT_FUNCTIONS": "OFF",
+        "IMGUI_DISABLE_DEFAULT_MATH_FUNCTIONS": "OFF",
+        "IMGUI_DISABLE_FILE_FUNCTIONS": "OFF",
+        "IMGUI_DISABLE_DEFAULT_FILE_FUNCTIONS": "OFF",
+        "IMGUI_DISABLE_DEFAULT_ALLOCATORS": "OFF",
+        "IMGUI_DISABLE_DEFAULT_FONT": "OFF",
+        "IMGUI_DISABLE_SSE": "OFF",
+        "IMGUI_ENABLE_TEST_ENGINE": "OFF",
+        "IMGUI_INCLUDE_IMGUI_USER_H": "OFF",
+        "IMGUI_USE_BGRA_PACKED_COLOR": "OFF",
+        "IMGUI_USE_LEGACY_CRC32_ADLER": "OFF",
+        "IMGUI_USE_WCHAR32": "OFF",
+        "IMGUI_DISABLE_STB_TRUETYPE_IMPLEMENTATION": "OFF",
+        "IMGUI_DISABLE_STB_RECT_PACK_IMPLEMENTATION": "OFF",
+        "IMGUI_DISABLE_STB_SPRINTF_IMPLEMENTATION": "OFF",
+        "IMGUI_USE_STB_SPRINTF": "OFF",
+        "IMGUI_ENABLE_FREETYPE": "OFF",
+        "IMGUI_ENABLE_FREETYPE_PLUTOSVG": "OFF",
+        "IMGUI_ENABLE_FREETYPE_LUNASVG": "OFF",
+        "IMGUI_ENABLE_STB_TRUETYPE": "OFF",
+        "IMGUI_DEFINE_MATH_OPERATORS": "OFF",
+        "IMGUI_DEBUG_HIGHLIGHT_ALL_ID_CONFLICTS": "OFF",
+        "IMGUI_DEBUG_PARANOID": "OFF"
+      }
     },
     {
       "name": "vcpkg",
@@ -91,7 +130,8 @@
       "name": "Android",
       "binaryDir": "build",
       "inherits": [
-        "assume_imgui_is_there"
+        "assume_imgui_is_there",
+        "imconfig_h"
       ],
       "cacheVariables": {
         "DearImGui_Backend_Android": "ON",
@@ -105,12 +145,13 @@
       "generator": "Xcode",
       "binaryDir": "build",
       "inherits": [
+        "assume_imgui_is_there",
+        "imconfig_h",
         "build_requirements",
         "tooling",
         "vcpkg",
         "backends",
-        "examples",
-        "assume_imgui_is_there"
+        "examples"
       ],
       "cacheVariables": {
         "DearImGui_Backend_Metal": "ON",
@@ -129,12 +170,13 @@
       "binaryDir": "build",
       "generator": "Unix Makefiles",
       "inherits": [
+        "assume_imgui_is_there",
+        "imconfig_h",
         "build_requirements",
         "tooling",
         "vcpkg",
         "backends",
-        "examples",
-        "assume_imgui_is_there"
+        "examples"
       ],
       "condition": {
         "type": "equals",
@@ -147,12 +189,13 @@
       "binaryDir": "build",
       "generator": "Visual Studio 17 2022",
       "inherits": [
+        "assume_imgui_is_there",
+        "imconfig_h",
         "build_requirements",
         "tooling",
         "vcpkg",
         "backends",
-        "examples",
-        "assume_imgui_is_there"
+        "examples"
       ],
       "cacheVariables": {
         "DearImGui_Backend_Win32": "ON",
