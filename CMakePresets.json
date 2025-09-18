@@ -140,6 +140,19 @@
       "toolchainFile": "$env{ANDROID_NDK_ROOT}/build/cmake/android.toolchain.cmake"
     },
     {
+      "name": "Core",
+      "displayName": "Just the core library, no backends",
+      "description": "Just the core library, no backends",
+      "binaryDir": "build",
+      "generator": "Ninja Multi-Config",
+      "inherits": [
+        "assume_imgui_is_there",
+        "imconfig_h",
+        "build_requirements",
+        "tooling"
+      ]
+    },
+    {
       "name": "Darwin",
       "generator": "Xcode",
       "binaryDir": "build",
@@ -163,6 +176,22 @@
         "lhs": "${hostSystemName}",
         "rhs": "Darwin"
       }
+    },
+    {
+      "name": "Default",
+      "displayName": "Backends without platform dependencies, like Metal or DirectX",
+      "description": "Backends without platform dependencies, like Metal or DirectX",
+      "binaryDir": "build",
+      "generator": "Ninja Multi-Config",
+      "inherits": [
+        "assume_imgui_is_there",
+        "imconfig_h",
+        "build_requirements",
+        "tooling",
+        "vcpkg",
+        "backends",
+        "examples"
+      ]
     },
     {
       "name": "Linux",
@@ -225,6 +254,12 @@
       "cleanFirst": true
     },
     {
+      "name": "Core",
+      "configurePreset": "Core",
+      "inheritConfigureEnvironment": true,
+      "cleanFirst": true
+    },
+    {
       "name": "Darwin",
       "configurePreset": "Darwin",
       "inheritConfigureEnvironment": true,
@@ -234,6 +269,12 @@
         "lhs": "${hostSystemName}",
         "rhs": "Darwin"
       }
+    },
+    {
+      "name": "Default",
+      "configurePreset": "Default",
+      "inheritConfigureEnvironment": true,
+      "cleanFirst": true
     },
     {
       "name": "Linux",
@@ -277,6 +318,19 @@
       ]
     },
     {
+      "name": "Core",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "Core"
+        },
+        {
+          "type": "build",
+          "name": "Core"
+        }
+      ]
+    },
+    {
       "name": "Darwin",
       "steps": [
         {
@@ -286,6 +340,19 @@
         {
           "type": "build",
           "name": "Darwin"
+        }
+      ]
+    },
+    {
+      "name": "Default",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "Default"
+        },
+        {
+          "type": "build",
+          "name": "Default"
         }
       ]
     },
