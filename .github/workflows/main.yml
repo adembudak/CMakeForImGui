@@ -30,6 +30,7 @@ jobs:
               triplet: x64-windows
 
           tag:
+            - v1.92.3
             - v1.92.2
             - v1.92.1
             - v1.92.0
