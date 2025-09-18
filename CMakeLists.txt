@@ -145,6 +145,7 @@ target_sources(imgui_core
   BASE_DIRS ${_imgui_dir}/misc/cpp
   TYPE HEADERS
   FILES ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
+target_link_libraries(imgui_core PRIVATE "$<$<AND:$<PLATFORM_ID:Darwin>,$<BOOL:${IMGUI_ENABLE_OSX_DEFAULT_CLIPBOARD_FUNCTIONS}>>:-framework ApplicationServices>")
 target_compile_features(imgui_core PUBLIC cxx_std_11)
 
 if(IMGUI_ENABLE_FREETYPE)
