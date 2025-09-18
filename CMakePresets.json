@@ -33,8 +33,7 @@
         "Install_examples": "ON",
         "Uninstall": "ON",
         "Pkg-config": "ON"
-      },
-      "graphviz": "${sourceDir}/build/CMakeGraphVizOptions.cmake"
+      }
     },
     {
       "name": "imconfig_h",
