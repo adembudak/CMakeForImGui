@@ -30,7 +30,7 @@ string(REGEX MATCH "[0-9]+" IMGUI_VERSION ${imgui_version_string})
 message(STATUS "ImGui version ${IMGUI_VERSION}")
 
 file(READ ${_imgui_dir}/imconfig.h imconfig_h_string)
-string(REGEX REPLACE  "//#define (IMGUI_(ENABLE|DISABLE|USER|USE|DEFINE|DEBUG)[_A-Z0-9]*)" "#cmakedefine \\1" imconfig_h_in_string ${imconfig_h_string})
+string(REGEX REPLACE  "//#define (IMGUI_(ENABLE|DISABLE|USER|USE|DEFINE|DEBUG|INCLUDE)[_A-Z0-9]*)" "#cmakedefine \\1" imconfig_h_in_string ${imconfig_h_string})
 file(WRITE ${PROJECT_BINARY_DIR}/imconfig.h.in ${imconfig_h_in_string})
 configure_file(${PROJECT_BINARY_DIR}/imconfig.h.in ${PROJECT_BINARY_DIR}/imconfig.h)
 
@@ -115,20 +115,11 @@ set(imgui_backends_list)
 set(imgui_examples_list)
 set(pkg_config_requires_list)
 
-set(IMGUI_USER_CONFIG "" CACHE FILEPATH "File path to user specified configuration file")
-if(IMGUI_USER_CONFIG)
-  if(NOT EXISTS ${IMGUI_USER_CONFIG})
-    message(WARNING "Specified IMGUI_USER_CONFIG file is not exist: ${IMGUI_SOURCE_DIR}")
-  else()
-    cmake_path(SET imgui_user_config NORMALIZE ${IMGUI_USER_CONFIG})
-    cmake_path(GET imgui_user_config FILENAME imgui_user_config_filename)
-    cmake_path(ABSOLUTE_PATH imgui_user_config_filename OUTPUT_VARIABLE imgui_user_config_absolute_path)
-
-    message(STATUS "IMGUI_USER_CONFIG: ${imgui_user_config_absolute_path}")
-
-    target_compile_definitions(imgui_core PUBLIC IMGUI_USER_CONFIG="${imgui_user_config_absolute_path}")
-  endif()
-endif()
+set(IMGUI_USER_CONFIG "" CACHE FILEPATH "File path to user specified configuration file (relative to imgui/ folder)")
+set(IMGUI_USER_H_FILENAME "" CACHE FILEPATH "")
+set(IMGUI_STB_TRUETYPE_FILENAME "" CACHE FILEPATH "")
+set(IMGUI_STB_RECT_PACK_FILENAME "" CACHE FILEPATH "")
+set(IMGUI_STB_SPRINTF_FILENAME "" CACHE FILEPATH "")
 
 add_library(imgui_core)
 target_sources(imgui_core
@@ -147,6 +138,26 @@ target_sources(imgui_core
   FILES ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
 target_link_libraries(imgui_core PRIVATE "$<$<AND:$<PLATFORM_ID:Darwin>,$<BOOL:${IMGUI_ENABLE_OSX_DEFAULT_CLIPBOARD_FUNCTIONS}>>:-framework ApplicationServices>")
 target_compile_features(imgui_core PUBLIC cxx_std_11)
+
+if(IMGUI_USER_CONFIG) # this and imgui_config_FILENAME file paths below must be relative to imgui/ folder
+  target_compile_definitions(imgui_core PUBLIC IMGUI_USER_CONFIG="${IMGUI_USER_CONFIG}")
+endif()
+
+if(IMGUI_USER_H_FILENAME)
+  target_compile_definitions(imgui_core PRIVATE IMGUI_INCLUDE_IMGUI_USER_H IMGUI_USER_H_FILENAME="${IMGUI_USER_H_FILENAME}")
+endif()
+
+if(IMGUI_STB_TRUETYPE_FILENAME)
+  target_compile_definitions(imgui_core PRIVATE IMGUI_STB_TRUETYPE_FILENAME="${IMGUI_STB_TRUETYPE_FILENAME}")
+endif()
+
+if(IMGUI_STB_RECT_PACK_FILENAME)
+  target_compile_definitions(imgui_core PRIVATE IMGUI_STB_RECT_PACK_FILENAME="${IMGUI_STB_RECT_PACK_FILENAME}")
+endif()
+
+if(IMGUI_STB_SPRINTF_FILENAME)
+  target_compile_definitions(imgui_core PRIVATE IMGUI_STB_SPRINTF_FILENAME="${IMGUI_STB_SPRINTF_FILENAME}")
+endif()
 
 if(IMGUI_ENABLE_FREETYPE)
   find_package(freetype CONFIG REQUIRED)
