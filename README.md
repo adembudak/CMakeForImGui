@@ -12,7 +12,7 @@ Setting `IMGUI_SOURCE_DIR` variable on configuration step is mandatory. An examp
 
 ```cmake
 cmake -G 'Ninja Multi-Config' -D IMGUI_SOURCE_DIR=imgui -S . -B build
-cmake -D IMGUI_ENABLE_FREETYPE=ON -D DearImGui_Backend_SDL2=ON -D DearImGui_Backend_OpenGL3=ON -S . -B build # imconfig.h option IMGUI_ENABLE_FREETYPE
+cmake -D IMGUI_ENABLE_FREETYPE=ON -D DearImGui_Backend_SDL2=ON -D DearImGui_Backend_OpenGL3=ON -S . -B build # Options in imconfig.h, like IMGUI_ENABLE_FREETYPE, can be specified
 cmake --build build --config Release
 cmake --install build --config Release
 ```
@@ -59,11 +59,7 @@ Following backend options are available:
 | DearImGui_Backend_OSX            | `ImGui::Backend_OSX`          |
 | DearImGui_Backend_Metal          | `ImGui::Backend_Metal`        |
 
-All backend options are `OFF` by default and all the configuration macros on `imconfig.h` are available as a CMake option:
-
-```bash
-cmake -D IMGUI_DISABLE_DEMO_WINDOWS=ON -D IMGUI_ENABLE_FREETYPE=ON -S imgui -B build
-```
+All backend options are `OFF` by default and all the configuration macros on `imconfig.h` are available as a CMake option.
 
 Example programs set as dependent options, like:
 ```cmake
@@ -71,7 +67,7 @@ cmake_dependent_option(Example_SDL2_OpenGL3 "" OFF "DearImGui_Backend_SDL2 AND D
 ```
 The `Example_SDL2_OpenGL3` option will be available only corresponding backends are `ON`. The same is true for all the other examples and they're `OFF` by default.
 
-Libraries and examples can be installed by setting `install` and `install_examples` options `ON`, respectively. An `uninstall` custom target is also provided to remove the artifacts where are they installed.
+Libraries and examples can be installed by setting `Install` and `Install_examples` options `ON`, respectively. An `Uninstall` custom target is also provided to remove the artifacts where they are installed.
 
 ## Usage
 
@@ -89,7 +85,7 @@ target_link_libraries(tgt PUBLIC ImGui::Backend_SDL2 ImGui::Backend_OpenGL3)
 
 The build script can be used to generate **pkg-config** file:
 ```cmake
-cmake -Dpkg-config=ON -S . -B build
+cmake -D Pkg-config=ON -S . -B build
 ```
 This generates a `dearimgui.pc` file in build directory which can be installed and used, like:
 ```bash
