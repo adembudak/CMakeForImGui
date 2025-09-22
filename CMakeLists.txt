@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 4.0.0)
 
 project(CMakeForImGui
-  VERSION 1.0.0.0
+  VERSION 1.0.0.1
   DESCRIPTION "CMake build support for Dear ImGui"
   HOMEPAGE_URL "https://github.com/adembudak/CMakeForImGui"
   LANGUAGES CXX)
@@ -973,9 +973,10 @@ if(Install)
   if(Install_examples)
     if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
       set_target_properties(${imgui_examples_list} PROPERTIES MACOSX_BUNDLE TRUE)
+      install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications)
+    else()
+      install(TARGETS ${imgui_examples_list})
     endif()
-
-    install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
   endif()
 
   if(Pkg-config)
