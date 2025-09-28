@@ -1,5 +1,5 @@
 name: GitHub Actions
-run-name: ${{ github.actor }} is testing out ${{ github.repository }}
+run-name: CMakeForImGui Workflow
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
     paths-ignore:
       - 'README.md'
       - 'LICENSE.md'
-      - '.github/depandabot.yml'
+      - '.github/dependabot.yml'
 
 jobs:
   Configure-Build-Install-Uninstall-Package-Upload:
@@ -30,6 +30,7 @@ jobs:
               triplet: x64-windows
 
           tag:
+            - master
             - v1.92.3
             - v1.92.2
             - v1.92.1
@@ -44,19 +45,12 @@ jobs:
             - v1.91.2
             - v1.91.1
             - v1.91.0
-            - v1.90.9
-            - v1.90.8
-            - v1.90.7
-            - v1.90.6
-            - v1.90.5
-            - v1.90.4
-            - v1.90.3
-            - v1.90.2
-            - v1.90.1
-            - v1.90
 
           build-type:
             - Debug
+            - Release
+            - RelWithDebInfo
+            - MinSizeRel
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -103,21 +97,21 @@ jobs:
           triplet: ${{ matrix.triplet }}
           token: ${{ github.token }}
 
-      - name: Configure and build on Ubuntu
+      - name: Configure and Build on Ubuntu
         if: matrix.os == 'ubuntu-latest'
         run: |
           cd ${{ github.workspace }}/CMakeForImGui
-          cmake -DIMGUI_SOURCE_DIR=${{ github.workspace }}/imgui -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Linux
-          cmake --build --preset Linux
+          cmake -DIMGUI_SOURCE_DIR=${{ github.workspace }}/imgui -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Default
+          cmake --build --preset Default --config ${{ matrix.build-type }}
 
-      - name: Configure and build on macOS
+      - name: Configure and Build on macOS
         if: matrix.os == 'macos-15'
         run: |
           cd ${{ github.workspace }}/CMakeForImGui
           cmake -DIMGUI_SOURCE_DIR=${{ github.workspace }}/imgui -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Darwin
           cmake --build --preset Darwin --config ${{ matrix.build-type }}
 
-      - name:  Configure and build on Windows
+      - name:  Configure and Build on Windows
         if: matrix.os == 'windows-latest'
         run: |
           cd ${{ github.workspace }}/CMakeForImGui
@@ -137,6 +131,21 @@ jobs:
           --build ${{ github.workspace }}/CMakeForImGui/build
           --target install
           --config ${{ matrix.build-type }}
+
+      - name: Configure test folder
+        run: >
+          cmake
+          -S ${{ github.workspace }}/CMakeForImGui/test
+          -B ${{ github.workspace }}/CMakeForImGui/test/build
+          -D CMAKE_BUILD_TYPE=${{ matrix.build-type }}
+          -D VCPKG_MANIFEST_MODE=ON
+          -D VCPKG_MANIFEST_DIR=${{ github.workspace }}/CMakeForImGui
+          -D DearImGui_DIR=${{ github.workspace }}/install.in.here/lib/cmake/DearImGui
+          -D IMGUI_SOURCE_DIR=${{ github.workspace }}/imgui
+          --toolchain ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+      - name: Build test folder
+        run: cmake --build ${{ github.workspace }}/CMakeForImGui/test/build --config ${{ matrix.build-type }}
 
       - name: Uninstall
         run: >
