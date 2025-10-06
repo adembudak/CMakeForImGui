@@ -274,9 +274,6 @@ if(DearImGui_Backend_Vulkan)
 endif()
 
 if(DearImGui_Backend_WebGPU)
-  find_package(Threads REQUIRED)
-  find_package(Dawn REQUIRED)
-
   add_library(imgui_impl_wgpu)
   target_sources(imgui_impl_wgpu
     PRIVATE ${_imgui_dir}/backends/imgui_impl_wgpu.cpp
@@ -284,10 +281,18 @@ if(DearImGui_Backend_WebGPU)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_wgpu.h)
-  target_link_libraries(imgui_impl_wgpu
-    PUBLIC imgui_core
-    PUBLIC dawn::webgpu_dawn dawn::dawn_public_config Threads::Threads)
-  target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+
+  target_link_libraries(imgui_impl_wgpu PUBLIC imgui_core)
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+  else()
+    find_package(Threads REQUIRED)
+    find_package(Dawn REQUIRED)
+
+    target_link_libraries(imgui_impl_wgpu
+      PUBLIC dawn::webgpu_dawn dawn::dawn_public_config Threads::Threads)
+    target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_wgpu)
 endif()
