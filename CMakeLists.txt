@@ -397,7 +397,10 @@ if(DearImGui_Backend_Allegro5)
 endif()
 
 if(DearImGui_Backend_GLFW)
-  find_package(glfw3 CONFIG REQUIRED)
+  if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+  else()
+    find_package(glfw3 CONFIG REQUIRED)
+  endif()
 
   add_library(imgui_impl_glfw)
   target_sources(imgui_impl_glfw
@@ -408,7 +411,7 @@ if(DearImGui_Backend_GLFW)
     FILES ${_imgui_dir}/backends/imgui_impl_glfw.h)
   target_link_libraries(imgui_impl_glfw
     PUBLIC imgui_core
-    PUBLIC glfw)
+    PUBLIC $<$<NOT:$<PLATFORM_ID:Emscripten>>:glfw>)
 
   list(APPEND imgui_backends_list imgui_impl_glfw)
   list(APPEND pkg_config_requires_list glfw3)
@@ -416,7 +419,13 @@ if(DearImGui_Backend_GLFW)
   if(Example_GLFW_OpenGL3)
     add_executable(example_glfw_opengl3)
     target_sources(example_glfw_opengl3 PRIVATE ${_imgui_dir}/examples/example_glfw_opengl3/main.cpp)
+    target_compile_options(example_glfw_opengl3 PRIVATE $<$<PLATFORM_ID:Emscripten>:--use-port=contrib.glfw3>)
+    target_link_options(example_glfw_opengl3 PRIVATE $<$<PLATFORM_ID:Emscripten>:--use-port=contrib.glfw3>)
     target_link_libraries(example_glfw_opengl3 PRIVATE imgui_impl_glfw imgui_impl_opengl3)
+
+    if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+      set_target_properties(example_glfw_opengl3 PROPERTIES SUFFIX ".html")
+    endif() # $ emrun example_glfw_opengl3.html
 
     list(APPEND imgui_examples_list example_glfw_opengl3)
   endif()
