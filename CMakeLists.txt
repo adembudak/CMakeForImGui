@@ -475,7 +475,9 @@ if(DearImGui_Backend_FreeGLUT)
 endif()
 
 if(DearImGui_Backend_SDL2)
-  find_package(SDL2 CONFIG REQUIRED)
+  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    find_package(SDL2 CONFIG REQUIRED)
+  endif()
 
   add_library(imgui_impl_sdl2)
   target_sources(imgui_impl_sdl2
@@ -486,7 +488,9 @@ if(DearImGui_Backend_SDL2)
     FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/backends/imgui_impl_sdl2.h,${_imgui_dir}/backends/imgui_impl_sdl.h>)
   target_link_libraries(imgui_impl_sdl2
     PUBLIC imgui_core
-    PUBLIC $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>)
+    PUBLIC $<$<NOT:$<PLATFORM_ID:Emscripten>>:$<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>>)
+  target_compile_options(imgui_impl_sdl2 PUBLIC $<$<PLATFORM_ID:Emscripten>:--use-port=sdl2>)
+  target_link_options(imgui_impl_sdl2 PUBLIC $<$<PLATFORM_ID:Emscripten>:--use-port=sdl2>)
 
   list(APPEND imgui_backends_list imgui_impl_sdl2)
   list(APPEND pkg_config_requires_list sdl2)
