@@ -477,6 +477,8 @@ if(DearImGui_Backend_GLFW)
     set_target_properties(example_glfw_wgpu PROPERTIES OUTPUT_NAME index)
     add_custom_command(TARGET example_glfw_wgpu
       POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${_imgui_dir}/examples/example_glfw_wgpu/web/index.html $<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.html)
+
+    list(APPEND imgui_examples_list example_glfw_wgpu)
   endif() # $ emrun build.directory/example_glfw_wgpu.html
 endif()
 
