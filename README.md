@@ -1,4 +1,4 @@
-[CMake](https://cmake.org) build script support for [Dear ImGui](https://github.com/ocornut/imgui). This builds and installs the library and backends, also builds example programs.
+[CMake](https://cmake.org) build support for [Dear ImGui](https://github.com/ocornut/imgui). This builds and installs the library and backends, also builds example programs.
 
 This work proposed for the Dear ImGui upstream: https://github.com/ocornut/imgui/issues/8896
 
@@ -83,7 +83,7 @@ target_link_libraries(tgt PUBLIC ImGui::Backend_SDL2 ImGui::Backend_OpenGL3)
 ```
 ### With `pkg-config` command
 
-The build script can be used to generate **pkg-config** file:
+The build script can be used to generate a **pkg-config** file:
 ```cmake
 cmake -D Pkg-config=ON -S . -B build
 ```
@@ -95,9 +95,9 @@ c++ -o out main.cpp $(pkg-config --cflags --libs dearimgui)
 
 Some alternative designs are also considered:
 - On [single-target](https://github.com/adembudak/CMakeForImGui/tree/single-target) branch all the targets are (ImGui itself and backends) linked with a single `Unofficial::DearImGui::imgui` target rather than a target per backend.
-- On [pre.v1.80](https://github.com/adembudak/CMakeForImGui/tree/pre.v1.80) the build script tries to support Dear ImGui versions before v1.80.
+- On [pre.v1.80](https://github.com/adembudak/CMakeForImGui/tree/pre.v1.80) it's tried to add support Dear ImGui versions before v1.80.
 - On [thirdparties-as-components](https://github.com/adembudak/CMakeForImGui/tree/thirdparties-as-components) branch some thirdparty projects can be specified as `COMPONENTS` option of `find_package()`.
-- On [CMakeForImGuiThirdParties](https://github.com/adembudak/CMakeForImGuiThirdParties) repository it's shown how thirdparty ImGui software benefit from this script.
+- On [CMakeForImGuiThirdParties](https://github.com/adembudak/CMakeForImGuiThirdParties) repository it's shown how thirdparty ImGui software benefit from this work.
 
 ## License
 
