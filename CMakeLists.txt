@@ -455,6 +455,29 @@ if(DearImGui_Backend_GLFW)
 
     list(APPEND imgui_examples_list example_glfw_metal)
   endif()
+
+  if(Example_GLFW_WebGPU)
+  # WebGPU support must be enabled on used web browser:
+    # On Chrome: Go to the address chrome://flags/ and toggle 'Unsafe WebGPU Support' to 'Enabled'
+    # On Firefox Nightly: Go to the address about:config, search as WebGPU and make sure 'dom.webgpu.enabled' set to true
+    # On Safari: Go Settings > Advanced > check 'Show features for web developers' and then on Feature Flags > check 'WebGPU'
+
+    # Known to work with Emscripten 4.0.10 with a deprecation notice
+    # Can be installed with:
+    # $ emsdk install 4.0.10
+    # $ emsdk activate 4.0.10
+    # https://emscripten.org/docs/getting_started/downloads.html
+
+    add_executable(example_glfw_wgpu)
+    target_sources(example_glfw_wgpu PRIVATE ${_imgui_dir}/examples/example_glfw_wgpu/main.cpp)
+    target_compile_features(example_glfw_wgpu PRIVATE cxx_std_17)
+    target_compile_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 -sUSE_WEBGPU) #--use-port=emdawnwebgpu)
+    target_link_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 -sUSE_WEBGPU) #--use-port=emdawnwebgpu)
+    target_link_libraries(example_glfw_wgpu PRIVATE imgui_impl_glfw imgui_impl_wgpu)
+    set_target_properties(example_glfw_wgpu PROPERTIES OUTPUT_NAME index)
+    add_custom_command(TARGET example_glfw_wgpu
+      POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${_imgui_dir}/examples/example_glfw_wgpu/web/index.html $<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.html)
+  endif() # $ emrun build.directory/example_glfw_wgpu.html
 endif()
 
 if(DearImGui_Backend_FreeGLUT)
