@@ -194,6 +194,28 @@
       ]
     },
     {
+      "name": "Emscripten",
+      "binaryDir": "build",
+      "generator": "Ninja Multi-Config",
+      "inherits": [
+        "assume_imgui_is_there",
+        "imconfig_h",
+        "build_requirements",
+        "tooling"
+      ],
+      "cacheVariables": {
+        "DearImGui_Backend_SDL2": "ON",
+        "DearImGui_Backend_GLFW": "ON",
+        "DearImGui_Backend_WebGPU": "ON",
+        "DearImGui_Backend_OpenGL3": "ON",
+
+        "Example_GLFW_WebGPU": "ON",
+        "Example_GLFW_OpenGL3": "ON",
+        "Example_SDL2_OpenGL3": "ON"
+      },
+      "toolchainFile": "$env{EMSCRIPTEN}/cmake/Modules/Platform/Emscripten.cmake"
+    },
+    {
       "name": "Linux",
       "binaryDir": "build",
       "generator": "Unix Makefiles",
@@ -277,6 +299,12 @@
       "cleanFirst": true
     },
     {
+      "name": "Emscripten",
+      "configurePreset": "Emscripten",
+      "inheritConfigureEnvironment": true,
+      "cleanFirst": true
+    },
+    {
       "name": "Linux",
       "configurePreset": "Linux",
       "inheritConfigureEnvironment": true,
@@ -353,6 +381,19 @@
         {
           "type": "build",
           "name": "Default"
+        }
+      ]
+    },
+    {
+      "name": "Emscripten",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "Emscripten"
+        },
+        {
+          "type": "build",
+          "name": "Emscripten"
         }
       ]
     },
