@@ -461,6 +461,7 @@ if(DearImGui_Backend_GLFW)
     # On Chrome: Go to the address chrome://flags/ and toggle 'Unsafe WebGPU Support' to 'Enabled'
     # On Firefox Nightly: Go to the address about:config, search as WebGPU and make sure 'dom.webgpu.enabled' set to true
     # On Safari: Go Settings > Advanced > check 'Show features for web developers' and then on Feature Flags > check 'WebGPU'
+    # On Edge: Works just fine, edge://gpu/
 
     # Known to work with Emscripten 4.0.10 with a deprecation notice
     # Can be installed with:
@@ -633,6 +634,10 @@ if(DearImGui_Backend_SDL3)
     target_sources(example_sdl3_opengl3 PRIVATE ${_imgui_dir}/examples/example_sdl3_opengl3/main.cpp)
     target_link_libraries(example_sdl3_opengl3 PRIVATE imgui_impl_sdl3 imgui_impl_opengl3)
     target_compile_definitions(example_sdl3_opengl3 PRIVATE $<$<VERSION_LESS:${IMGUI_VERSION},19130>:SDL_INIT_TIMER=0x00000001u>)
+
+    if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+      set_target_properties(example_sdl3_opengl3 PROPERTIES SUFFIX ".html")
+    endif()
 
     list(APPEND imgui_examples_list example_sdl3_opengl3)
   endif()
