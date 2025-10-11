@@ -463,10 +463,10 @@ if(DearImGui_Backend_GLFW)
     # On Safari: Go Settings > Advanced > check 'Show features for web developers' and then on Feature Flags > check 'WebGPU'
     # On Edge: Works just fine, edge://gpu/
 
-    # Known to work with Emscripten 4.0.10 with a deprecation notice
+    # Known to work with Emscripten 4.0.16 with a deprecation notice
     # Can be installed with:
-    # $ emsdk install 4.0.10
-    # $ emsdk activate 4.0.10
+    # $ emsdk install 4.0.16
+    # $ emsdk activate 4.0.16
     # https://emscripten.org/docs/getting_started/downloads.html
 
     add_executable(example_glfw_wgpu)

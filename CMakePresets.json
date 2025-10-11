@@ -213,6 +213,7 @@
         "Example_GLFW_OpenGL3": "ON",
         "Example_SDL2_OpenGL3": "ON"
       },
+      "$comment": "EMSCRIPTEN env variable must be defined and also must be on the PATH and it points to where Emscripten compiler is. If it's installed with emsdk, EMSCRIPTEN is $env{EMSDK}/upstream/emscripten/ (EMSDK envrironment variable is defined when: '$ emsdk activate latest' command is run",
       "toolchainFile": "$env{EMSCRIPTEN}/cmake/Modules/Platform/Emscripten.cmake"
     },
     {
