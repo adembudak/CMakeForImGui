@@ -470,9 +470,9 @@ if(DearImGui_Backend_GLFW)
     # https://emscripten.org/docs/getting_started/downloads.html
 
     add_executable(example_glfw_wgpu)
-    target_sources(example_glfw_wgpu PRIVATE ${_imgui_dir}/examples/example_glfw_wgpu/main.cpp)
     target_compile_features(example_glfw_wgpu PRIVATE cxx_std_17)
     target_compile_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 -sUSE_WEBGPU) #--use-port=emdawnwebgpu)
+    target_sources(example_glfw_wgpu PRIVATE ${_imgui_dir}/examples/example_glfw_wgpu/main.cpp)
     target_link_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 -sUSE_WEBGPU) #--use-port=emdawnwebgpu)
     target_link_libraries(example_glfw_wgpu PRIVATE imgui_impl_glfw imgui_impl_wgpu)
     set_target_properties(example_glfw_wgpu PROPERTIES OUTPUT_NAME index)
@@ -1023,7 +1023,22 @@ if(Install)
       set_target_properties(${imgui_examples_list} PROPERTIES MACOSX_BUNDLE TRUE)
       install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications)
     elseif(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-      # Where to put Emscripten artifacts on [GNUInstallDirs]?
+      foreach(tgt example_glfw_opengl3 example_sdl2_opengl3 example_sdl3_opengl3)
+        if(TARGET ${tgt})
+          install(FILES
+                    $<TARGET_FILE_DIR:${tgt}>/${tgt}.html
+                    $<TARGET_FILE_DIR:${tgt}>/${tgt}.js
+                    $<TARGET_FILE_DIR:${tgt}>/${tgt}.wasm
+                  DESTINATION ${CMAKE_INSTALL_BINDIR}/${tgt})
+        endif()
+        if(TARGET example_glfw_wgpu) # this condition should not be exist and should be handled above
+          install(FILES
+                    $<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.html
+                    $<TARGET_FILE_DIR:example_glfw_wgpu>/index.js
+                    $<TARGET_FILE_DIR:example_glfw_wgpu>/index.wasm
+                  DESTINATION ${CMAKE_INSTALL_BINDIR}/example_glfw_wgpu)
+        endif()
+      endforeach()
     else()
       install(TARGETS ${imgui_examples_list})
     endif()
