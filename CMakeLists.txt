@@ -1022,6 +1022,8 @@ if(Install)
     if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
       set_target_properties(${imgui_examples_list} PROPERTIES MACOSX_BUNDLE TRUE)
       install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications)
+    elseif(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+      # Where to put Emscripten artifacts on [GNUInstallDirs]?
     else()
       install(TARGETS ${imgui_examples_list})
     endif()
