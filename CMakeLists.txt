@@ -274,6 +274,9 @@ if(DearImGui_Backend_Vulkan)
 endif()
 
 if(DearImGui_Backend_WebGPU)
+  set(IMGUI_IMPL_WEBGPU_BACKEND_DAWN "" CACHE BOOL "")
+  set(IMGUI_IMPL_WEBGPU_BACKEND_WGPU "" CACHE BOOL "")
+
   add_library(imgui_impl_wgpu)
   target_sources(imgui_impl_wgpu
     PRIVATE ${_imgui_dir}/backends/imgui_impl_wgpu.cpp
@@ -284,7 +287,26 @@ if(DearImGui_Backend_WebGPU)
 
   target_link_libraries(imgui_impl_wgpu PUBLIC imgui_core)
 
+  if(IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+    target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+  endif()
+
+  if(IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
+    target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
+  endif()
+
   if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    find_program(EMSCRIPTEN_COMPILER_COMMAND NAMES emcc em++ REQUIRED)
+
+    execute_process(COMMAND ${EMSCRIPTEN_COMPILER_COMMAND} --version
+      OUTPUT_VARIABLE emscripten_compiler_command_version_output)
+
+    string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" EMSCRIPTEN_VERSION ${emscripten_compiler_command_version_output})
+    message(STATUS "Emscripten version ${EMSCRIPTEN_VERSION}")
+
+    target_compile_options(imgui_impl_wgpu PRIVATE $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
+    target_link_options(imgui_impl_wgpu PRIVATE $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
+    target_compile_definitions(imgui_impl_wgpu PUBLIC $<$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>:IMGUI_IMPL_WEBGPU_BACKEND_DAWN>)
   else()
     find_package(Threads REQUIRED)
     find_package(Dawn REQUIRED)
