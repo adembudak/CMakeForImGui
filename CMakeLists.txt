@@ -458,10 +458,10 @@ if(DearImGui_Backend_GLFW)
 
   if(Example_GLFW_WebGPU)
   # WebGPU support must be enabled on used web browser:
-    # On Chrome: Go to the address chrome://flags/ and toggle 'Unsafe WebGPU Support' to 'Enabled'
-    # On Firefox Nightly: Go to the address about:config, search as WebGPU and make sure 'dom.webgpu.enabled' set to true
-    # On Safari: Go Settings > Advanced > check 'Show features for web developers' and then on Feature Flags > check 'WebGPU'
+    # On Chrome: On address chrome://flags/ and toggle 'Unsafe WebGPU Support' to 'Enabled'
     # On Edge: Works just fine, edge://gpu/
+    # On Firefox Nightly: On address about:config, search as 'WebGPU' and make sure 'dom.webgpu.enabled' set to true
+    # On Safari: Settings > Advanced > check 'Show features for web developers' and then on Feature Flags > check 'WebGPU'
 
     # Known to work with Emscripten 4.0.16 with a deprecation notice
     # Can be installed with:
