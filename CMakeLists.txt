@@ -312,7 +312,8 @@ if(DearImGui_Backend_WebGPU)
     find_package(Dawn REQUIRED)
 
     target_link_libraries(imgui_impl_wgpu
-      PUBLIC dawn::webgpu_dawn dawn::dawn_public_config Threads::Threads)
+      PUBLIC dawn::webgpu_dawn dawn::dawn_public_config
+      PUBLIC Threads::Threads)
     target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
   endif()
 
@@ -382,8 +383,8 @@ Android NDK toolchain is not used
     cmake_path(SET android_example_output_path ${_imgui_dir}/examples/example_android_opengl3/android/app/build/outputs/apk)
     cmake_path(ABSOLUTE_PATH android_example_output_path NORMALIZE)
 
-    add_custom_command(TARGET imgui_impl_android POST_BUILD
-      COMMAND ${GRADLE_COMMAND} --project-dir ${_imgui_dir}/examples/example_android_opengl3/android assembleRelease
+    add_custom_command(TARGET imgui_impl_android
+      POST_BUILD COMMAND ${GRADLE_COMMAND} --project-dir ${_imgui_dir}/examples/example_android_opengl3/android assembleRelease
       WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
       COMMENT "Building .apk files. Output will be on: ${android_example_output_path}"
       VERBATIM)
@@ -497,6 +498,7 @@ if(DearImGui_Backend_GLFW)
     target_sources(example_glfw_wgpu PRIVATE ${_imgui_dir}/examples/example_glfw_wgpu/main.cpp)
     target_link_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 -sUSE_WEBGPU) #--use-port=emdawnwebgpu)
     target_link_libraries(example_glfw_wgpu PRIVATE imgui_impl_glfw imgui_impl_wgpu)
+
     set_target_properties(example_glfw_wgpu PROPERTIES OUTPUT_NAME index)
     add_custom_command(TARGET example_glfw_wgpu
       POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${_imgui_dir}/examples/example_glfw_wgpu/web/index.html $<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.html)
