@@ -32,7 +32,8 @@
         "Install": "ON",
         "Install_examples": "ON",
         "Uninstall": "ON",
-        "Pkg-config": "ON"
+        "Pkg-config": "ON",
+        "PrintConfigurationSummary": "ON"
       }
     },
     {

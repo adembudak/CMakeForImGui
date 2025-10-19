@@ -75,6 +75,8 @@ cmake_dependent_option(Install_examples "Install Dear ImGui examples" OFF Instal
 option(visualize_targets "A custom target 'graph' that shows linkage graph enabled to generate a targets.png on build directory" OFF)
 mark_as_advanced(FORCE visualize_targets)
 
+option(PrintConfigurationSummary "Print enabled/disabled features at the end of configuration" ON)
+
 cmake_dependent_option(Example_Android_OpenGL3 "" OFF "DearImGui_Backend_Android AND DearImGui_Backend_OpenGL3" OFF)
 
 cmake_dependent_option(Example_GLFW_OpenGL2 "" OFF "DearImGui_Backend_GLFW AND DearImGui_Backend_OpenGL2" OFF)
@@ -1123,21 +1125,23 @@ set(CPACK_PACKAGE_DIRECTORY ${PROJECT_BINARY_DIR}/package)
 
 include(CPack)
 
-feature_summary(WHAT ALL)
+if(PrintConfigurationSummary)
+  feature_summary(WHAT ALL)
 
-set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 DearImGui_Backend_DirectX10 DearImGui_Backend_DirectX11 DearImGui_Backend_DirectX12 DearImGui_Backend_OSX DearImGui_Backend_Metal
-Example_NULL
-Example_Allegro5 Example_Android_OpenGL3
-Example_GLFW_OpenGL2 Example_GLFW_OpenGL3 Example_GLFW_Vulkan Example_GLFW_Metal Example_GLFW_WebGPU
-Example_FreeGLUT_OpenGL2
-Example_SDL2_DirectX11 Example_SDL2_OpenGL2 Example_SDL2_OpenGL3 Example_SDL2_Vulkan Example_SDL2_Metal Example_SDL2_SDLRenderer2
-Example_SDL3_OpenGL3 Example_SDL3_SDLGPU3 Example_SDL3_SDLRenderer3 Example_SDL3_Vulkan Example_SDL3_Metal
-Example_Win32_DirectX9 Example_Win32_DirectX10 Example_Win32_DirectX11 Example_Win32_DirectX12 Example_Win32_OpenGL3 Example_Win32_Vulkan
-Example_Apple_Metal Example_Apple_OpenGL2
-BUILD_SHARED_LIBS Pkg-config Install Install_examples Uninstall visualize_targets)
-list(SORT options CASE INSENSITIVE)
+  set(options DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 DearImGui_Backend_DirectX10 DearImGui_Backend_DirectX11 DearImGui_Backend_DirectX12 DearImGui_Backend_OSX DearImGui_Backend_Metal
+  Example_NULL
+  Example_Allegro5 Example_Android_OpenGL3
+  Example_GLFW_OpenGL2 Example_GLFW_OpenGL3 Example_GLFW_Vulkan Example_GLFW_Metal Example_GLFW_WebGPU
+  Example_FreeGLUT_OpenGL2
+  Example_SDL2_DirectX11 Example_SDL2_OpenGL2 Example_SDL2_OpenGL3 Example_SDL2_Vulkan Example_SDL2_Metal Example_SDL2_SDLRenderer2
+  Example_SDL3_OpenGL3 Example_SDL3_SDLGPU3 Example_SDL3_SDLRenderer3 Example_SDL3_Vulkan Example_SDL3_Metal
+  Example_Win32_DirectX9 Example_Win32_DirectX10 Example_Win32_DirectX11 Example_Win32_DirectX12 Example_Win32_OpenGL3 Example_Win32_Vulkan
+  Example_Apple_Metal Example_Apple_OpenGL2
+  BUILD_SHARED_LIBS Pkg-config Install Install_examples Uninstall visualize_targets)
+  list(SORT options CASE INSENSITIVE)
 
-message(STATUS "Configuration summary:\n")
-foreach(o IN LISTS options)
-  message(" * ${o}: ${${o}}")
-endforeach()
+  message(STATUS "Configuration summary:\n")
+  foreach(o IN LISTS options)
+    message(" * ${o}: ${${o}}")
+  endforeach()
+endif()
