@@ -131,7 +131,7 @@ target_sources(imgui_core
   TYPE HEADERS
   FILES ${_imgui_dir}/imgui.h ${_imgui_dir}/imgui_internal.h ${_imgui_dir}/imstb_rectpack.h ${_imgui_dir}/imstb_textedit.h ${_imgui_dir}/imstb_truetype.h
   PUBLIC FILE_SET HEADERS
-  BASE_DIRS ${PROJECT_BINARY_DIR}
+  BASE_DIRS ${PROJECT_BINARY_DIR}/generated
   FILES ${PROJECT_BINARY_DIR}/generated/imconfig.h
   PRIVATE ${_imgui_dir}/misc/cpp/imgui_stdlib.cpp
   PUBLIC FILE_SET imgui_misc_cpp_set
