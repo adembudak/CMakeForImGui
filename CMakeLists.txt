@@ -422,8 +422,7 @@ if(DearImGui_Backend_Allegro5)
 endif()
 
 if(DearImGui_Backend_GLFW)
-  if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-  else()
+  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten") # Using Emscripten provided --use-port= option instead. $ em++ --show-ports
     find_package(glfw3 CONFIG REQUIRED)
   endif()
 
