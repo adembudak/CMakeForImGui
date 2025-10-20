@@ -1,0 +1,94 @@
+name: GitHub Actions
+run-name: ${{ github.actor }} is testing out ${{ github.repository }}
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE.md'
+      - '.github/depandabot.yml'
+
+jobs:
+  Configure-Build-Install-Uninstall-Package-Upload:
+    strategy:
+      matrix:
+          os:
+            - ubuntu-latest
+
+          tag:
+            - master
+
+          build-type:
+            - Debug
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - run: echo "Triggered by ${{ github.event_name }} on ${{ github.repository }} using ${{ github.ref}} branch and running on ${{ runner.os }}."
+
+      - name: Setup Emscripten
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git ${{ github.workspace }}/emsdk
+          cd ${{ github.workspace }}/emsdk
+          echo "EMSDK=${{ github.workspace }}/emsdk" >> $GITHUB_ENV
+          echo "PATH=$PATH:${{ github.workspace }}/emsdk" >> $GITHUB_ENV
+          echo "EMSCRIPTEN=${{ github.workspace }}/emsdk/upstream/emscripten" >> $GITHUB_ENV
+          echo "PATH=$PATH:${{ github.workspace }}/emsdk/upstream/emscripten" >> $GITHUB_ENV
+          source ./emsdk_env.sh
+          emsdk install latest
+          emsdk activate latest
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '4.0.0'
+
+      - name: Check out ImGui repository
+        uses: actions/checkout@v4
+        with:
+          repository: ocornut/imgui
+          show-progress: false
+          ref: ${{ matrix.tag }}
+          path: imgui
+
+      - name: Check out CMakeForImGui
+        uses: actions/checkout@v4
+        with:
+          show-progress: false
+          path: CMakeForImGui
+
+      - name: Configure and build on Ubuntu
+        run: |
+          cd ${{ github.workspace }}/CMakeForImGui
+          cmake -DIMGUI_SOURCE_DIR=${{ github.workspace }}/imgui -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Emscripten
+          cmake --build --preset Emscripten
+
+      - name: Install
+        run: >
+          cmake
+          --build ${{ github.workspace }}/CMakeForImGui/build
+          --target install
+          --config ${{ matrix.build-type }}
+
+      - name: Uninstall
+        run: >
+          cmake
+          --build ${{ github.workspace }}/CMakeForImGui/build
+          --target uninstall
+
+      - name: Package
+        run: >
+          cmake
+          --build ${{ github.workspace }}/CMakeForImGui/build
+          --target package
+          --config ${{ matrix.build-type }}
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: build.imgui-${{ matrix.tag }}.${{ matrix.os }}.${{ matrix.build-type }}
+          path: ${{ github.workspace }}/CMakeForImGui/build/package
+
+      - run: echo "Job exited by ${{ job.status }}."
