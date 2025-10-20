@@ -31,8 +31,8 @@ message(STATUS "ImGui version ${IMGUI_VERSION}")
 
 file(READ ${_imgui_dir}/imconfig.h imconfig_h_string)
 string(REGEX REPLACE  "//#define (IMGUI_(ENABLE|DISABLE|USER|USE|DEFINE|DEBUG|INCLUDE)[_A-Z0-9]*)" "#cmakedefine \\1" imconfig_h_in_string ${imconfig_h_string})
-file(WRITE ${PROJECT_BINARY_DIR}/imconfig.h.in ${imconfig_h_in_string})
-configure_file(${PROJECT_BINARY_DIR}/imconfig.h.in ${PROJECT_BINARY_DIR}/imconfig.h)
+file(WRITE ${PROJECT_BINARY_DIR}/generated/imconfig.h.in ${imconfig_h_in_string})
+configure_file(${PROJECT_BINARY_DIR}/generated/imconfig.h.in ${PROJECT_BINARY_DIR}/generated/imconfig.h)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
   option(DearImGui_Backend_Android "" OFF)
@@ -132,7 +132,7 @@ target_sources(imgui_core
   FILES ${_imgui_dir}/imgui.h ${_imgui_dir}/imgui_internal.h ${_imgui_dir}/imstb_rectpack.h ${_imgui_dir}/imstb_textedit.h ${_imgui_dir}/imstb_truetype.h
   PUBLIC FILE_SET HEADERS
   BASE_DIRS ${PROJECT_BINARY_DIR}
-  FILES ${PROJECT_BINARY_DIR}/imconfig.h
+  FILES ${PROJECT_BINARY_DIR}/generated/imconfig.h
   PRIVATE ${_imgui_dir}/misc/cpp/imgui_stdlib.cpp
   PUBLIC FILE_SET imgui_misc_cpp_set
   BASE_DIRS ${_imgui_dir}/misc/cpp
