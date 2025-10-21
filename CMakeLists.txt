@@ -422,7 +422,7 @@ if(DearImGui_Backend_Allegro5)
 endif()
 
 if(DearImGui_Backend_GLFW)
-  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten") # Using Emscripten provided --use-port= option instead. $ em++ --show-ports
+  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten") # Using Emscripten provided --use-port=contrib.glfw3 option instead. $ em++ --show-ports
     find_package(glfw3 CONFIG REQUIRED)
   endif()
 
@@ -638,7 +638,9 @@ if(DearImGui_Backend_SDLRenderer2)
 endif()
 
 if(DearImGui_Backend_SDL3)
-  find_package(SDL3 CONFIG REQUIRED)
+  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    find_package(SDL3 CONFIG REQUIRED)
+  endif()
 
   add_library(imgui_impl_sdl3)
   target_sources(imgui_impl_sdl3
@@ -649,7 +651,9 @@ if(DearImGui_Backend_SDL3)
     FILES ${_imgui_dir}/backends/imgui_impl_sdl3.h)
   target_link_libraries(imgui_impl_sdl3
     PUBLIC imgui_core
-    PUBLIC SDL3::SDL3)
+    PUBLIC $<$<NOT:$<PLATFORM_ID:Emscripten>>:SDL3::SDL3>)
+  target_compile_options(imgui_impl_sdl3 PUBLIC $<$<PLATFORM_ID:Emscripten>:--use-port=sdl3>)
+  target_link_options(imgui_impl_sdl3 PUBLIC $<$<PLATFORM_ID:Emscripten>:--use-port=sdl3>)
   target_compile_definitions(imgui_impl_sdl3 PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},19130>:SDL_ENABLE_OLD_NAMES>)
 
   list(APPEND imgui_backends_list imgui_impl_sdl3)
