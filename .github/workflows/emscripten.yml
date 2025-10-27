@@ -58,8 +58,8 @@ jobs:
           echo "EMSCRIPTEN=${{ github.workspace }}/emsdk/upstream/emscripten" >> $GITHUB_ENV
           echo "PATH=$PATH:${{ github.workspace }}/emsdk/upstream/emscripten" >> $GITHUB_ENV
           source ./emsdk_env.sh
-          emsdk install latest
-          emsdk activate latest
+          emsdk install 4.0.16
+          emsdk activate 4.0.16
 
       - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v2
