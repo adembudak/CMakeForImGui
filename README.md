@@ -1,4 +1,4 @@
-[CMake](https://cmake.org) build support for [Dear ImGui](https://github.com/ocornut/imgui). This builds and installs the library and backends, also builds example programs.
+[CMake](https://cmake.org) build support for [Dear ImGui](https://github.com/ocornut/imgui). It can build and install the library, backends and examples.
 
 This work proposed for the Dear ImGui upstream: https://github.com/ocornut/imgui/issues/8896
 
@@ -59,9 +59,9 @@ Following backend options are available:
 | DearImGui_Backend_OSX            | `ImGui::Backend_OSX`          |
 | DearImGui_Backend_Metal          | `ImGui::Backend_Metal`        |
 
-All backend options are `OFF` by default and all the configuration macros on `imconfig.h` are available as a CMake option.
+All backend options are `OFF` by default and all the configuration macros on `imconfig.h` can be passed as CMake command like with `-D` variable.
 
-Example programs set as dependent options, like:
+Example programs set as dependent options corresponding to their used backends, like:
 ```cmake
 cmake_dependent_option(Example_SDL2_OpenGL3 "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_OpenGL3" OFF)
 ```
@@ -97,6 +97,7 @@ Some alternative designs are also considered:
 - On [single-target](https://github.com/adembudak/CMakeForImGui/tree/single-target) branch all the targets are (ImGui itself and backends) linked with a single `Unofficial::DearImGui::imgui` target rather than a target per backend.
 - On [pre.v1.80](https://github.com/adembudak/CMakeForImGui/tree/pre.v1.80) it's tried to add support Dear ImGui versions before v1.80.
 - On [thirdparties-as-components](https://github.com/adembudak/CMakeForImGui/tree/thirdparties-as-components) branch some thirdparty projects can be specified as `COMPONENTS` option of `find_package()`.
+These branches differentiated too much from the main at this point.
 - On [CMakeForImGuiThirdParties](https://github.com/adembudak/CMakeForImGuiThirdParties) repository it's shown how thirdparty ImGui software benefit from this work.
 
 ## License
