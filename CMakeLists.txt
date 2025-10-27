@@ -117,7 +117,7 @@ set(imgui_backends_list)
 set(imgui_examples_list)
 set(pkg_config_requires_list)
 
-set(IMGUI_USER_CONFIG "" CACHE FILEPATH "File path to user specified configuration file (relative to imgui/ folder)")
+set(IMGUI_USER_CONFIG "" CACHE FILEPATH "File path to user specified configuration file")
 set(IMGUI_USER_H_FILENAME "" CACHE FILEPATH "")
 set(IMGUI_STB_TRUETYPE_FILENAME "" CACHE FILEPATH "")
 set(IMGUI_STB_RECT_PACK_FILENAME "" CACHE FILEPATH "")
@@ -141,23 +141,33 @@ target_sources(imgui_core
 target_link_libraries(imgui_core PRIVATE "$<$<AND:$<PLATFORM_ID:Darwin>,$<BOOL:${IMGUI_ENABLE_OSX_DEFAULT_CLIPBOARD_FUNCTIONS}>>:-framework ApplicationServices>")
 target_compile_features(imgui_core PUBLIC cxx_std_11)
 
-if(IMGUI_USER_CONFIG) # this and imgui_config_FILENAME file paths below must be relative to imgui/ folder
+if(IMGUI_USER_CONFIG)
+  cmake_path(SET IMGUI_USER_CONFIG ${IMGUI_USER_CONFIG})
+  cmake_path(ABSOLUTE_PATH IMGUI_USER_CONFIG NORMALIZE)
   target_compile_definitions(imgui_core PUBLIC IMGUI_USER_CONFIG="${IMGUI_USER_CONFIG}")
 endif()
 
 if(IMGUI_USER_H_FILENAME)
+  cmake_path(SET IMGUI_USER_H_FILENAME ${IMGUI_USER_H_FILENAME})
+  cmake_path(ABSOLUTE_PATH IMGUI_USER_H_FILENAME NORMALIZE)
   target_compile_definitions(imgui_core PRIVATE IMGUI_INCLUDE_IMGUI_USER_H IMGUI_USER_H_FILENAME="${IMGUI_USER_H_FILENAME}")
 endif()
 
 if(IMGUI_STB_TRUETYPE_FILENAME)
+  cmake_path(SET IMGUI_STB_TRUETYPE_FILENAME ${IMGUI_STB_TRUETYPE_FILENAME})
+  cmake_path(ABSOLUTE_PATH IMGUI_STB_TRUETYPE_FILENAME NORMALIZE)
   target_compile_definitions(imgui_core PRIVATE IMGUI_STB_TRUETYPE_FILENAME="${IMGUI_STB_TRUETYPE_FILENAME}")
 endif()
 
 if(IMGUI_STB_RECT_PACK_FILENAME)
+  cmake_path(SET IMGUI_STB_RECT_PACK_FILENAME ${IMGUI_STB_RECT_PACK_FILENAME})
+  cmake_path(ABSOLUTE_PATH IMGUI_STB_RECT_PACK_FILENAME NORMALIZE)
   target_compile_definitions(imgui_core PRIVATE IMGUI_STB_RECT_PACK_FILENAME="${IMGUI_STB_RECT_PACK_FILENAME}")
 endif()
 
 if(IMGUI_STB_SPRINTF_FILENAME)
+  cmake_path(SET IMGUI_STB_SPRINTF_FILENAME ${IMGUI_STB_SPRINTF_FILENAME})
+  cmake_path(ABSOLUTE_PATH IMGUI_STB_SPRINTF_FILENAME NORMALIZE)
   target_compile_definitions(imgui_core PRIVATE IMGUI_STB_SPRINTF_FILENAME="${IMGUI_STB_SPRINTF_FILENAME}")
 endif()
 
