@@ -1079,8 +1079,9 @@ if(Install)
     if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
       set_target_properties(${imgui_examples_list} PROPERTIES MACOSX_BUNDLE TRUE)
       install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications)
+
     elseif(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-      foreach(tgt example_glfw_opengl3 example_sdl2_opengl3 example_sdl3_opengl3)
+      foreach(tgt example_glfw_opengl3 example_sdl2_opengl3 example_sdl2_wgpu example_sdl3_opengl3 example_sdl3_wgpu)
         if(TARGET ${tgt})
           install(FILES
                     $<TARGET_FILE_DIR:${tgt}>/${tgt}.html
@@ -1088,14 +1089,15 @@ if(Install)
                     $<TARGET_FILE_DIR:${tgt}>/${tgt}.wasm
                   DESTINATION ${CMAKE_INSTALL_BINDIR}/${tgt})
         endif()
-        if(TARGET example_glfw_wgpu) # this condition should not be exist and should be handled above
-          install(FILES
-                    $<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.html
-                    $<TARGET_FILE_DIR:example_glfw_wgpu>/index.js
-                    $<TARGET_FILE_DIR:example_glfw_wgpu>/index.wasm
-                  DESTINATION ${CMAKE_INSTALL_BINDIR}/example_glfw_wgpu)
-        endif()
       endforeach()
+      if(TARGET example_glfw_wgpu)
+        install(FILES
+                  $<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.html
+                  $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.js,$<TARGET_FILE_DIR:example_glfw_wgpu>/index.js>
+                  $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.wasm,$<TARGET_FILE_DIR:example_glfw_wgpu>/index.wasm>
+                DESTINATION ${CMAKE_INSTALL_BINDIR}/example_glfw_wgpu)
+      endif()
+
     else()
       install(TARGETS ${imgui_examples_list})
     endif()
