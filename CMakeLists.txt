@@ -697,6 +697,23 @@ if(DearImGui_Backend_SDL3)
 
     list(APPEND imgui_examples_list example_sdl3_metal)
   endif()
+
+  if(Example_SDL3_WebGPU)
+    add_executable(example_sdl3_wgpu)
+    target_sources(example_sdl3_wgpu PRIVATE ${_imgui_dir}/examples/example_sdl3_wgpu/main.cpp)
+    target_link_libraries(example_sdl3_wgpu PRIVATE imgui_impl_sdl3 imgui_impl_wgpu)
+
+    if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+      target_compile_options(example_sdl3_wgpu PRIVATE $<IF:$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
+      target_link_options(example_sdl3_wgpu PRIVATE $<IF:$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
+      target_compile_definitions(example_sdl3_wgpu PRIVATE $<IF:$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>,IMGUI_IMPL_WEBGPU_BACKEND_DAWN,IMGUI_IMPL_WEBGPU_BACKEND_WGPU>)
+      target_compile_features(example_sdl3_wgpu PRIVATE cxx_std_17)
+
+      set_target_properties(example_sdl3_wgpu PROPERTIES SUFFIX ".html")
+    endif()
+
+    list(APPEND imgui_examples_list example_sdl3_wgpu)
+  endif()
 endif()
 
 if(DearImGui_Backend_SDLGPU3)
