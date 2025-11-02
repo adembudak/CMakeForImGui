@@ -116,10 +116,12 @@
         "Example_SDL2_OpenGL3": "ON",
         "Example_SDL2_Vulkan": "ON",
         "Example_SDL2_Metal": "ON",
+        "Example_SDL2_WebGPU": "OFF",
         "Example_SDL3_OpenGL3": "ON",
         "Example_SDL3_Vulkan": "ON",
         "Example_SDL3_Metal": "ON",
         "Example_SDL3_SDLGPU3": "ON",
+        "Example_SDL3_WebGPU": "OFF",
         "Example_SDL2_SDLRenderer2": "ON",
         "Example_SDL3_SDLRenderer3": "ON",
         "Example_FreeGLUT_OpenGL2": "ON",
@@ -214,7 +216,9 @@
         "Example_GLFW_WebGPU": "ON",
         "Example_GLFW_OpenGL3": "ON",
         "Example_SDL2_OpenGL3": "ON",
-        "Example_SDL3_OpenGL3": "ON"
+        "Example_SDL2_WebGPU": "ON",
+        "Example_SDL3_OpenGL3": "ON",
+        "Example_SDL3_WebGPU": "ON"
       },
       "$comment": "EMSCRIPTEN env variable must be defined and also must be on the PATH and it points to where Emscripten compiler is. If it's installed with emsdk, EMSCRIPTEN is $env{EMSDK}/upstream/emscripten/ (EMSDK envrironment variable is defined when: '$ emsdk activate latest' command is run",
       "toolchainFile": "$env{EMSCRIPTEN}/cmake/Modules/Platform/Emscripten.cmake"
