@@ -277,6 +277,7 @@ if(DearImGui_Backend_WebGPU)
     FILES ${_imgui_dir}/backends/imgui_impl_wgpu.h)
 
   target_link_libraries(imgui_impl_wgpu PUBLIC imgui_core)
+  target_compile_features(imgui_impl_wgpu PRIVATE cxx_std_17)
 
   if(IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
     target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
