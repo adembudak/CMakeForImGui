@@ -490,6 +490,8 @@ if(DearImGui_Backend_GLFW)
     target_link_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
     target_link_libraries(example_glfw_wgpu PRIVATE imgui_impl_glfw imgui_impl_wgpu)
 
+    set_target_properties(example_glfw_wgpu PROPERTIES SUFFIX ".html")
+
     if(${IMGUI_VERSION} VERSION_LESS 19240)
       set_target_properties(example_glfw_wgpu PROPERTIES OUTPUT_NAME index)
       add_custom_command(TARGET example_glfw_wgpu
