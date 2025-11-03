@@ -303,7 +303,7 @@ if(DearImGui_Backend_WebGPU)
     FILES ${_imgui_dir}/backends/imgui_impl_wgpu.h
     PRIVATE FILE_SET HEADERS
     BASE_DIRS $<$<NOT:$<PLATFORM_ID:Emscripten>>:${WGPU_INCLUDE_DIR}>
-    FILES ${WGPU_INCLUDE_DIR}/webgpu/webgpu.h)
+    FILES $<$<NOT:$<PLATFORM_ID:Emscripten>>:${WGPU_INCLUDE_DIR}/webgpu/webgpu.h>)
 
   target_link_libraries(imgui_impl_wgpu PUBLIC imgui_core)
   target_compile_features(imgui_impl_wgpu PRIVATE cxx_std_17)
@@ -507,18 +507,25 @@ if(DearImGui_Backend_GLFW)
     # https://emscripten.org/docs/getting_started/downloads.html
 
     add_executable(example_glfw_wgpu)
-    target_compile_features(example_glfw_wgpu PRIVATE cxx_std_17)
-    target_compile_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
-    target_sources(example_glfw_wgpu PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19050>,${_imgui_dir}/examples/example_glfw_wgpu/main.cpp,${_imgui_dir}/examples/example_emscripten_wgpu/main.cpp>)
-    target_link_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
+    target_sources(example_glfw_wgpu
+      PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19050>,${_imgui_dir}/examples/example_glfw_wgpu/main.cpp,${_imgui_dir}/examples/example_emscripten_wgpu/main.cpp>
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS $<$<NOT:$<PLATFORM_ID:Emscripten>>:${WGPU_INCLUDE_DIR}>
+      FILES $<$<NOT:$<PLATFORM_ID:Emscripten>>:${WGPU_INCLUDE_DIR}/webgpu/webgpu.h>)
     target_link_libraries(example_glfw_wgpu PRIVATE imgui_impl_glfw imgui_impl_wgpu)
 
-    set_target_properties(example_glfw_wgpu PROPERTIES SUFFIX ".html")
+    if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+      target_compile_features(example_glfw_wgpu PRIVATE cxx_std_17)
+      target_compile_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
+      target_link_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
 
-    if(${IMGUI_VERSION} VERSION_LESS 19240)
-      set_target_properties(example_glfw_wgpu PROPERTIES OUTPUT_NAME index)
-      add_custom_command(TARGET example_glfw_wgpu
-        POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${_imgui_dir}/examples/$<IF:$<VERSION_GREATER:${IMGUI_VERSION},19050>,example_glfw_wgpu,example_emscripten_wgpu>/web/index.html $<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.html)
+      set_target_properties(example_glfw_wgpu PROPERTIES SUFFIX ".html")
+
+      if(${IMGUI_VERSION} VERSION_LESS 19240)
+        set_target_properties(example_glfw_wgpu PROPERTIES OUTPUT_NAME index)
+        add_custom_command(TARGET example_glfw_wgpu
+          POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${_imgui_dir}/examples/$<IF:$<VERSION_GREATER:${IMGUI_VERSION},19050>,example_glfw_wgpu,example_emscripten_wgpu>/web/index.html $<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.html)
+      endif()
     endif()
 
     list(APPEND imgui_examples_list example_glfw_wgpu)
@@ -626,7 +633,12 @@ if(DearImGui_Backend_SDL2)
 
   if(Example_SDL2_WebGPU)
     add_executable(example_sdl2_wgpu)
-    target_sources(example_sdl2_wgpu PRIVATE ${_imgui_dir}/examples/example_sdl2_wgpu/main.cpp)
+    target_sources(example_sdl2_wgpu
+      PRIVATE ${_imgui_dir}/examples/example_sdl2_wgpu/main.cpp
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS $<$<NOT:$<PLATFORM_ID:Emscripten>>:${WGPU_INCLUDE_DIR}>
+      FILES $<$<NOT:$<PLATFORM_ID:Emscripten>>:${WGPU_INCLUDE_DIR}/webgpu/webgpu.h>)
+
     target_link_libraries(example_sdl2_wgpu PRIVATE imgui_impl_sdl2 imgui_impl_wgpu)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
@@ -723,7 +735,12 @@ if(DearImGui_Backend_SDL3)
 
   if(Example_SDL3_WebGPU)
     add_executable(example_sdl3_wgpu)
-    target_sources(example_sdl3_wgpu PRIVATE ${_imgui_dir}/examples/example_sdl3_wgpu/main.cpp)
+    target_sources(example_sdl3_wgpu
+      PRIVATE ${_imgui_dir}/examples/example_sdl3_wgpu/main.cpp
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS $<$<NOT:$<PLATFORM_ID:Emscripten>>:${WGPU_INCLUDE_DIR}>
+      FILES $<$<NOT:$<PLATFORM_ID:Emscripten>>:${WGPU_INCLUDE_DIR}/webgpu/webgpu.h>)
+
     target_link_libraries(example_sdl3_wgpu PRIVATE imgui_impl_sdl3 imgui_impl_wgpu)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
