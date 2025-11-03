@@ -521,7 +521,7 @@ if(DearImGui_Backend_GLFW)
 
       set_target_properties(example_glfw_wgpu PROPERTIES SUFFIX ".html")
 
-      if(${IMGUI_VERSION} VERSION_LESS 19240)
+      if(${IMGUI_VERSION} VERSION_LESS_EQUAL 19240)
         set_target_properties(example_glfw_wgpu PROPERTIES OUTPUT_NAME index)
         add_custom_command(TARGET example_glfw_wgpu
           POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${_imgui_dir}/examples/$<IF:$<VERSION_GREATER:${IMGUI_VERSION},19050>,example_glfw_wgpu,example_emscripten_wgpu>/web/index.html $<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.html)
