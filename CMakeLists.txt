@@ -267,6 +267,32 @@ endif()
 if(DearImGui_Backend_WebGPU)
   set(IMGUI_IMPL_WEBGPU_BACKEND_DAWN "" CACHE BOOL "")
   set(IMGUI_IMPL_WEBGPU_BACKEND_WGPU "" CACHE BOOL "")
+  set(WGPU_DIR "" CACHE PATH "https://github.com/gfx-rs/wgpu-native/releases")
+
+  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    if(IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+      find_package(Threads REQUIRED)
+      find_package(Dawn REQUIRED)
+
+    elseif(IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
+      find_path(WGPU_INCLUDE_DIR
+        NAMES webgpu/wgpu.h webgpu/webgpu.h
+        PATHS ${WGPU_DIR}
+        PATH_SUFFIXES include
+        DOC "https://github.com/gfx-rs/wgpu-native"
+        NO_CMAKE_SYSTEM_PATH
+        NO_CACHE
+        REQUIRED)
+
+      find_library(WGPU_LIBRARIES wgpu_native
+        PATHS ${WGPU_DIR}
+        PATH_SUFFIXES lib
+        DOC "https://github.com/gfx-rs/wgpu-native"
+        NO_CMAKE_SYSTEM_PATH
+        NO_CACHE
+        REQUIRED)
+    endif()
+  endif()
 
   add_library(imgui_impl_wgpu)
   target_sources(imgui_impl_wgpu
@@ -274,18 +300,13 @@ if(DearImGui_Backend_WebGPU)
     PUBLIC FILE_SET imgui_impl_wgpu_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
-    FILES ${_imgui_dir}/backends/imgui_impl_wgpu.h)
+    FILES ${_imgui_dir}/backends/imgui_impl_wgpu.h
+    PRIVATE FILE_SET HEADERS
+    BASE_DIRS $<$<NOT:$<PLATFORM_ID:Emscripten>>:${WGPU_INCLUDE_DIR}>
+    FILES ${WGPU_INCLUDE_DIR}/webgpu/webgpu.h)
 
   target_link_libraries(imgui_impl_wgpu PUBLIC imgui_core)
   target_compile_features(imgui_impl_wgpu PRIVATE cxx_std_17)
-
-  if(IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
-    target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
-  endif()
-
-  if(IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
-    target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
-  endif()
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     find_program(EMSCRIPTEN_COMPILER_COMMAND NAMES emcc em++ REQUIRED)
@@ -300,13 +321,15 @@ if(DearImGui_Backend_WebGPU)
     target_link_options(imgui_impl_wgpu PRIVATE $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
     target_compile_definitions(imgui_impl_wgpu PUBLIC $<$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>:IMGUI_IMPL_WEBGPU_BACKEND_DAWN>)
   else()
-    find_package(Threads REQUIRED)
-    find_package(Dawn REQUIRED)
-
-    target_link_libraries(imgui_impl_wgpu
-      PUBLIC dawn::webgpu_dawn dawn::dawn_public_config
-      PUBLIC Threads::Threads)
-    target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+    if(IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+      target_link_libraries(imgui_impl_wgpu
+        PUBLIC dawn::webgpu_dawn dawn::dawn_public_config
+        PUBLIC Threads::Threads)
+      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+    elseif(IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
+      target_link_libraries(imgui_impl_wgpu PUBLIC ${WGPU_LIBRARIES})
+      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
+    endif()
   endif()
 
   list(APPEND imgui_backends_list imgui_impl_wgpu)
