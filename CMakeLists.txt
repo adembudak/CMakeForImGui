@@ -1108,8 +1108,8 @@ if(Install)
   install(DIRECTORY ${_imgui_dir}/misc/fonts DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui FILES_MATCHING PATTERN "*.ttf")
 
   foreach(backend IN LISTS imgui_backends_list)
-    get_property(name TARGET ${backend} PROPERTY NAME)
-    get_property(file_set TARGET ${backend} PROPERTY HEADER_SETS)
+    get_target_property(name ${backend} NAME)
+    get_target_property(file_set ${backend} HEADER_SETS)
     list(REMOVE_ITEM file_set HEADERS)
 
     install(TARGETS ${name} EXPORT imgui_export FILE_SET ${file_set})
