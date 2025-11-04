@@ -291,6 +291,8 @@ if(DearImGui_Backend_WebGPU)
         NO_CMAKE_SYSTEM_PATH
         NO_CACHE
         REQUIRED)
+    else()
+      message(FATAL_ERROR "One of the WebGPU backend must be selected. Try to set one of the options IMGUI_IMPL_WEBGPU_BACKEND_DAWN or IMGUI_IMPL_WEBGPU_BACKEND_WGPU")
     endif()
   endif()
 
