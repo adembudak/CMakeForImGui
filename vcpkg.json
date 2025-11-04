@@ -9,7 +9,10 @@
     {
       "name": "glfw3",
       "features": [
-        "wayland"
+        {
+          "name": "wayland",
+          "platform": "linux"
+        }
       ]
     },
     "lunasvg",
