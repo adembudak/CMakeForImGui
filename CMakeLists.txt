@@ -275,6 +275,10 @@ if(DearImGui_Backend_WebGPU)
       find_package(Dawn REQUIRED)
 
     elseif(IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
+      if(NOT WGPU_DIR)
+        message(FATAL_ERROR "WebGPU backend WGPU selected but WGPU_DIR is not set")
+      endif()
+
       find_path(WGPU_INCLUDE_DIR
         NAMES webgpu/wgpu.h webgpu/webgpu.h
         PATHS ${WGPU_DIR}
