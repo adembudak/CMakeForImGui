@@ -80,7 +80,8 @@
       "hidden": true,
       "cacheVariables": {
         "VCPKG_MANIFEST_MODE": "ON",
-        "VCPKG_MANIFEST_DIR": "${sourceDir}"
+        "VCPKG_MANIFEST_DIR": "${sourceDir}",
+        "VCPKG_INSTALL_OPTIONS": "--no-print-usage"
       },
       "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
     },
