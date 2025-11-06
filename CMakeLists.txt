@@ -300,6 +300,11 @@ if(DearImGui_Backend_WebGPU)
     endif()
   endif()
 
+  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    enable_language(OBJCXX)
+    set_source_files_properties(${_imgui_dir}/backends/imgui_impl_wgpu.cpp PROPERTIES LANGUAGE OBJCXX)
+  endif()
+
   add_library(imgui_impl_wgpu)
   target_sources(imgui_impl_wgpu
     PRIVATE ${_imgui_dir}/backends/imgui_impl_wgpu.cpp
@@ -311,7 +316,9 @@ if(DearImGui_Backend_WebGPU)
     BASE_DIRS $<$<NOT:$<PLATFORM_ID:Emscripten>>:${WGPU_INCLUDE_DIR}>
     FILES $<$<NOT:$<PLATFORM_ID:Emscripten>>:${WGPU_INCLUDE_DIR}/webgpu/webgpu.h>)
 
-  target_link_libraries(imgui_impl_wgpu PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_wgpu
+    PUBLIC imgui_core
+    INTERFACE "$<$<PLATFORM_ID:Darwin>:-framework QuartzCore -framework Metal>")
   target_compile_features(imgui_impl_wgpu PRIVATE cxx_std_17)
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
