@@ -288,6 +288,7 @@ if(DearImGui_Backend_WebGPU)
         NO_CACHE
         REQUIRED)
 
+      list(PREPEND CMAKE_FIND_LIBRARY_SUFFIXES .a) # just prefer static libraries to avoid dealing with RPATH for now
       find_library(WGPU_LIBRARIES wgpu_native
         PATHS ${WGPU_DIR}
         PATH_SUFFIXES lib
