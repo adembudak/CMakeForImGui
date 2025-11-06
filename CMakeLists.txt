@@ -270,6 +270,14 @@ if(DearImGui_Backend_WebGPU)
   set(WGPU_DIR "" CACHE PATH "https://github.com/gfx-rs/wgpu-native/releases")
 
   if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    if(IMGUI_IMPL_WEBGPU_BACKEND_DAWN AND IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
+      message(FATAL_ERROR "One of the WebGPU backend Dawn or WGPU must be selected but not both at the same time.  Try to unset one of the options IMGUI_IMPL_WEBGPU_BACKEND_DAWN or IMGUI_IMPL_WEBGPU_BACKEND_WGPU.")
+    endif()
+
+    if(NOT IMGUI_IMPL_WEBGPU_BACKEND_DAWN AND NOT IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
+      message(FATAL_ERROR "One of the WebGPU backend must be selected. Try to set one of the options IMGUI_IMPL_WEBGPU_BACKEND_DAWN or IMGUI_IMPL_WEBGPU_BACKEND_WGPU")
+    endif()
+
     if(IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
       find_package(Threads REQUIRED)
       find_package(Dawn REQUIRED)
@@ -296,8 +304,6 @@ if(DearImGui_Backend_WebGPU)
         NO_CMAKE_SYSTEM_PATH
         NO_CACHE
         REQUIRED)
-    else()
-      message(FATAL_ERROR "One of the WebGPU backend must be selected. Try to set one of the options IMGUI_IMPL_WEBGPU_BACKEND_DAWN or IMGUI_IMPL_WEBGPU_BACKEND_WGPU")
     endif()
   endif()
 
@@ -322,7 +328,6 @@ if(DearImGui_Backend_WebGPU)
   target_link_libraries(imgui_impl_wgpu
     PUBLIC imgui_core
     INTERFACE "$<$<PLATFORM_ID:Darwin>:-framework QuartzCore -framework Metal>")
-  target_compile_features(imgui_impl_wgpu PRIVATE cxx_std_17)
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     find_program(EMSCRIPTEN_COMPILER_COMMAND NAMES emcc em++ REQUIRED)
@@ -1229,7 +1234,8 @@ if(PrintConfigurationSummary)
     Example_Win32_DirectX9 Example_Win32_DirectX10 Example_Win32_DirectX11 Example_Win32_DirectX12 Example_Win32_OpenGL3 Example_Win32_Vulkan
     Example_Apple_Metal Example_Apple_OpenGL2
     BUILD_SHARED_LIBS Pkg-config Install Install_examples Uninstall visualize_targets
-    IMGUI_USER_CONFIG IMGUI_USER_H_FILENAME IMGUI_STB_TRUETYPE_FILENAME IMGUI_STB_RECT_PACK_FILENAME IMGUI_STB_SPRINTF_FILENAME)
+    IMGUI_USER_CONFIG IMGUI_USER_H_FILENAME IMGUI_STB_TRUETYPE_FILENAME IMGUI_STB_RECT_PACK_FILENAME IMGUI_STB_SPRINTF_FILENAME
+    IMGUI_IMPL_WEBGPU_BACKEND_DAWN IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
   list(SORT options CASE INSENSITIVE)
 
   message(STATUS "Configuration summary:\n")
