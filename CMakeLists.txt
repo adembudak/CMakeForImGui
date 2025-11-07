@@ -535,7 +535,7 @@ if(DearImGui_Backend_GLFW)
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       target_compile_features(example_glfw_wgpu PRIVATE cxx_std_17)
       target_compile_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
-      target_link_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
+      target_link_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU> -sASYNCIFY)
 
       set_target_properties(example_glfw_wgpu PROPERTIES SUFFIX ".html")
 
@@ -661,7 +661,7 @@ if(DearImGui_Backend_SDL2)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       target_compile_options(example_sdl2_wgpu PRIVATE $<IF:$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
-      target_link_options(example_sdl2_wgpu PRIVATE $<IF:$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
+      target_link_options(example_sdl2_wgpu PRIVATE $<IF:$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>,--use-port=emdawnwebgpu,-sUSE_WEBGPU> -sASYNCIFY)
       target_compile_definitions(example_sdl2_wgpu PRIVATE $<IF:$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>,IMGUI_IMPL_WEBGPU_BACKEND_DAWN,IMGUI_IMPL_WEBGPU_BACKEND_WGPU>)
       target_compile_features(example_sdl2_wgpu PRIVATE cxx_std_17)
 
@@ -764,7 +764,7 @@ if(DearImGui_Backend_SDL3)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       target_compile_options(example_sdl3_wgpu PRIVATE $<IF:$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
-      target_link_options(example_sdl3_wgpu PRIVATE $<IF:$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
+      target_link_options(example_sdl3_wgpu PRIVATE $<IF:$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>,--use-port=emdawnwebgpu,-sUSE_WEBGPU> -sASYNCIFY)
       target_compile_definitions(example_sdl3_wgpu PRIVATE $<IF:$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>,IMGUI_IMPL_WEBGPU_BACKEND_DAWN,IMGUI_IMPL_WEBGPU_BACKEND_WGPU>)
       target_compile_features(example_sdl3_wgpu PRIVATE cxx_std_17)
 
