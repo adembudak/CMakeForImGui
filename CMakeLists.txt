@@ -281,12 +281,12 @@ if(DearImGui_Backend_WebGPU)
     target_link_libraries(imgui_impl_wgpu INTERFACE "-framework QuartzCore -framework Metal")
   endif()
 
-  set(IMGUI_IMPL_WEBGPU_BACKEND_DAWN "" CACHE BOOL "")
-  set(IMGUI_IMPL_WEBGPU_BACKEND_WGPU "" CACHE BOOL "")
-  set(WGPU_DIR "" CACHE PATH "https://github.com/gfx-rs/wgpu-native/releases")
-
   if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    if((IMGUI_IMPL_WEBGPU_BACKEND_DAWN AND IMGUI_IMPL_WEBGPU_BACKEND_WGPU) OR (NOT IMGUI_IMPL_WEBGPU_BACKEND_DAWN AND NOT IMGUI_IMPL_WEBGPU_BACKEND_WGPU)) # selected both both or none?
+    set(IMGUI_IMPL_WEBGPU_BACKEND_DAWN "" CACHE BOOL "")
+    set(IMGUI_IMPL_WEBGPU_BACKEND_WGPU "" CACHE BOOL "")
+    set(WGPU_DIR "" CACHE PATH "Path to the folder containing wgpu-native: https://github.com/gfx-rs/wgpu-native/releases")
+
+    if((IMGUI_IMPL_WEBGPU_BACKEND_DAWN AND IMGUI_IMPL_WEBGPU_BACKEND_WGPU) OR (NOT IMGUI_IMPL_WEBGPU_BACKEND_DAWN AND NOT IMGUI_IMPL_WEBGPU_BACKEND_WGPU)) # selected both or none?
       message(FATAL_ERROR "One and only one of the WebGPU backend option: Dawn or WGPU, must be selected: IMGUI_IMPL_WEBGPU_BACKEND_DAWN or IMGUI_IMPL_WEBGPU_BACKEND_WGPU")
     endif()
 
