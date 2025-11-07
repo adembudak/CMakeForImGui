@@ -148,12 +148,12 @@
       "displayName": "Just the core library, no backends",
       "description": "Just the core library, no backends",
       "binaryDir": "build",
-      "generator": "Ninja Multi-Config",
       "inherits": [
         "assume_imgui_is_there",
         "imconfig_h",
         "build_requirements",
-        "tooling"
+        "tooling",
+        "vcpkg"
       ]
     },
     {
