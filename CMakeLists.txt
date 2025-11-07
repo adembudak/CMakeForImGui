@@ -265,27 +265,49 @@ if(DearImGui_Backend_Vulkan)
 endif()
 
 if(DearImGui_Backend_WebGPU)
+  add_library(imgui_impl_wgpu)
+  target_sources(imgui_impl_wgpu
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_wgpu.cpp
+    PUBLIC FILE_SET imgui_impl_wgpu_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_wgpu.h)
+  target_link_libraries(imgui_impl_wgpu PUBLIC imgui_core)
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    enable_language(OBJCXX)
+    set_source_files_properties(${_imgui_dir}/backends/imgui_impl_wgpu.cpp PROPERTIES LANGUAGE OBJCXX)
+
+    target_link_libraries(imgui_impl_wgpu INTERFACE "-framework QuartzCore -framework Metal")
+  endif()
+
   set(IMGUI_IMPL_WEBGPU_BACKEND_DAWN "" CACHE BOOL "")
   set(IMGUI_IMPL_WEBGPU_BACKEND_WGPU "" CACHE BOOL "")
   set(WGPU_DIR "" CACHE PATH "https://github.com/gfx-rs/wgpu-native/releases")
 
   if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    if(IMGUI_IMPL_WEBGPU_BACKEND_DAWN AND IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
-      message(FATAL_ERROR "One of the WebGPU backend Dawn or WGPU must be selected but not both at the same time.  Try to unset one of the options IMGUI_IMPL_WEBGPU_BACKEND_DAWN or IMGUI_IMPL_WEBGPU_BACKEND_WGPU.")
-    endif()
-
-    if(NOT IMGUI_IMPL_WEBGPU_BACKEND_DAWN AND NOT IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
-      message(FATAL_ERROR "One of the WebGPU backend must be selected. Try to set one of the options IMGUI_IMPL_WEBGPU_BACKEND_DAWN or IMGUI_IMPL_WEBGPU_BACKEND_WGPU")
+    if((IMGUI_IMPL_WEBGPU_BACKEND_DAWN AND IMGUI_IMPL_WEBGPU_BACKEND_WGPU) OR (NOT IMGUI_IMPL_WEBGPU_BACKEND_DAWN AND NOT IMGUI_IMPL_WEBGPU_BACKEND_WGPU)) # selected both both or none?
+      message(FATAL_ERROR "One and only one of the WebGPU backend option: Dawn or WGPU, must be selected: IMGUI_IMPL_WEBGPU_BACKEND_DAWN or IMGUI_IMPL_WEBGPU_BACKEND_WGPU")
     endif()
 
     if(IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+
       find_package(Threads REQUIRED)
       find_package(Dawn REQUIRED)
+
+      target_compile_features(imgui_impl_wgpu INTERFACE cxx_std_17)
+
+      target_link_libraries(imgui_impl_wgpu
+        PUBLIC dawn::webgpu_dawn dawn::dawn_public_config
+        PUBLIC Threads::Threads)
 
     elseif(IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
       if(NOT WGPU_DIR)
         message(FATAL_ERROR "WebGPU backend WGPU selected but WGPU_DIR is not set")
       endif()
+
+      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
 
       find_path(WGPU_INCLUDE_DIR
         NAMES webgpu/wgpu.h webgpu/webgpu.h
@@ -296,6 +318,8 @@ if(DearImGui_Backend_WebGPU)
         NO_CACHE
         REQUIRED)
 
+      target_link_libraries(imgui_impl_wgpu PUBLIC ${WGPU_LIBRARIES})
+
       list(PREPEND CMAKE_FIND_LIBRARY_SUFFIXES .a) # just prefer static libraries to avoid dealing with RPATH for now
       find_library(WGPU_LIBRARIES wgpu_native
         PATHS ${WGPU_DIR}
@@ -304,30 +328,13 @@ if(DearImGui_Backend_WebGPU)
         NO_CMAKE_SYSTEM_PATH
         NO_CACHE
         REQUIRED)
+
+      target_sources(imgui_impl_wgpu
+        PRIVATE FILE_SET HEADERS
+        BASE_DIRS ${WGPU_INCLUDE_DIR}
+        FILES ${WGPU_INCLUDE_DIR}/webgpu/webgpu.h)
     endif()
   endif()
-
-  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    enable_language(OBJCXX)
-    set_source_files_properties(${_imgui_dir}/backends/imgui_impl_wgpu.cpp PROPERTIES LANGUAGE OBJCXX)
-  endif()
-
-  add_library(imgui_impl_wgpu)
-  target_sources(imgui_impl_wgpu
-    PRIVATE ${_imgui_dir}/backends/imgui_impl_wgpu.cpp
-    PUBLIC FILE_SET imgui_impl_wgpu_set
-    BASE_DIRS ${_imgui_dir}/backends
-    TYPE HEADERS
-    FILES ${_imgui_dir}/backends/imgui_impl_wgpu.h
-    PRIVATE FILE_SET HEADERS
-    BASE_DIRS $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}>
-    FILES $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}/webgpu/webgpu.h>)
-
-  target_compile_features(imgui_impl_wgpu INTERFACE $<$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_DAWN}>:cxx_std_17>)
-
-  target_link_libraries(imgui_impl_wgpu
-    PUBLIC imgui_core
-    INTERFACE "$<$<PLATFORM_ID:Darwin>:-framework QuartzCore -framework Metal>")
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     find_program(EMSCRIPTEN_COMPILER_COMMAND NAMES emcc em++ REQUIRED)
@@ -341,16 +348,6 @@ if(DearImGui_Backend_WebGPU)
     target_compile_options(imgui_impl_wgpu PRIVATE $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
     target_link_options(imgui_impl_wgpu PRIVATE $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
     target_compile_definitions(imgui_impl_wgpu PUBLIC $<$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>:IMGUI_IMPL_WEBGPU_BACKEND_DAWN>)
-  else()
-    if(IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
-      target_link_libraries(imgui_impl_wgpu
-        PUBLIC dawn::webgpu_dawn dawn::dawn_public_config
-        PUBLIC Threads::Threads)
-      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
-    elseif(IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
-      target_link_libraries(imgui_impl_wgpu PUBLIC ${WGPU_LIBRARIES})
-      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
-    endif()
   endif()
 
   list(APPEND imgui_backends_list imgui_impl_wgpu)
