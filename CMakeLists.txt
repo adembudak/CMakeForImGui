@@ -337,7 +337,10 @@ if(DearImGui_Backend_WebGPU)
   endif()
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    find_program(EMSCRIPTEN_COMPILER_COMMAND NAMES emcc em++ REQUIRED)
+    find_program(EMSCRIPTEN_COMPILER_COMMAND
+      NAMES emcc em++
+      DOC "https://emscripten.org"
+      REQUIRED)
 
     execute_process(COMMAND ${EMSCRIPTEN_COMPILER_COMMAND} --version
       OUTPUT_VARIABLE emscripten_compiler_command_version_output)
@@ -517,12 +520,6 @@ if(DearImGui_Backend_GLFW)
     # On Edge: Works just fine, edge://gpu/
     # On Firefox Nightly: On address about:config, search as 'WebGPU' and make sure 'dom.webgpu.enabled' set to true
     # On Safari: Settings > Advanced > check 'Show features for web developers' and then on Feature Flags > check 'WebGPU'
-
-    # Known to work with Emscripten 4.0.16 with a deprecation notice
-    # Can be installed with:
-    # $ emsdk install 4.0.16
-    # $ emsdk activate 4.0.16
-    # https://emscripten.org/docs/getting_started/downloads.html
 
     add_executable(example_glfw_wgpu)
     target_sources(example_glfw_wgpu
