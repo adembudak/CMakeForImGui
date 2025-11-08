@@ -318,7 +318,10 @@ if(DearImGui_Backend_WebGPU)
         NO_CACHE
         REQUIRED)
 
-      target_link_libraries(imgui_impl_wgpu PUBLIC ${WGPU_LIBRARIES})
+      target_sources(imgui_impl_wgpu
+        PRIVATE FILE_SET HEADERS
+        BASE_DIRS ${WGPU_INCLUDE_DIR}
+        FILES ${WGPU_INCLUDE_DIR}/webgpu/webgpu.h)
 
       list(PREPEND CMAKE_FIND_LIBRARY_SUFFIXES .a) # just prefer static libraries to avoid dealing with RPATH for now
       find_library(WGPU_LIBRARIES wgpu_native
@@ -329,10 +332,7 @@ if(DearImGui_Backend_WebGPU)
         NO_CACHE
         REQUIRED)
 
-      target_sources(imgui_impl_wgpu
-        PRIVATE FILE_SET HEADERS
-        BASE_DIRS ${WGPU_INCLUDE_DIR}
-        FILES ${WGPU_INCLUDE_DIR}/webgpu/webgpu.h)
+      target_link_libraries(imgui_impl_wgpu PUBLIC ${WGPU_LIBRARIES})
     endif()
   endif()
 
