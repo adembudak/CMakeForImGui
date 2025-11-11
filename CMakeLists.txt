@@ -654,7 +654,9 @@ if(DearImGui_Backend_SDL2)
       BASE_DIRS $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}>
       FILES $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}/webgpu/webgpu.h>)
 
-    target_link_libraries(example_sdl2_wgpu PRIVATE imgui_impl_sdl2 imgui_impl_wgpu)
+    target_link_libraries(example_sdl2_wgpu 
+      PRIVATE imgui_impl_sdl2 imgui_impl_wgpu
+      PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       target_compile_options(example_sdl2_wgpu PRIVATE $<IF:$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
@@ -755,7 +757,6 @@ if(DearImGui_Backend_SDL3)
       PRIVATE FILE_SET HEADERS
       BASE_DIRS $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}>
       FILES $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}/webgpu/webgpu.h>)
-
 
     target_link_libraries(example_sdl3_wgpu PRIVATE imgui_impl_sdl3 imgui_impl_wgpu)
 
