@@ -103,7 +103,7 @@ jobs:
         with:
           manifest-dir: ${{ github.workspace }}/CMakeForImGui
           triplet: ${{ matrix.triplet }}
-          revision: '4334d8b4c8916018600212ab4dd4bbdc343065d1'
+          revision: '74e6536215718009aae747d86d84b78376bf9e09'
           token: ${{ github.token }}
 
       - name: Configure and build on Ubuntu
