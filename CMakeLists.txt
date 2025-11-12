@@ -299,7 +299,7 @@ if(DearImGui_Backend_WebGPU)
       target_compile_features(imgui_impl_wgpu INTERFACE cxx_std_17)
 
       target_link_libraries(imgui_impl_wgpu
-        PUBLIC dawn::webgpu_dawn dawn::dawn_public_config
+        PUBLIC dawn::webgpu_dawn
         PUBLIC Threads::Threads)
 
     elseif(IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
