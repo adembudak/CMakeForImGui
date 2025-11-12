@@ -86,8 +86,24 @@
       "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
     },
     {
+      "name": "webgpu_backend_related_cache_variables",
+      "hidden": true,
+      "cacheVariables": {
+        "IMGUI_IMPL_WEBGPU_BACKEND_DAWN": "ON",
+        "IMGUI_IMPL_WEBGPU_BACKEND_WGPU": "OFF",
+        "WGPU_DIR": {
+          "type": "PATH",
+          "value": ""
+        }
+      }
+   },
+   {
       "name": "backends",
       "hidden": true,
+      "inherits": [
+         "webgpu_backend_related_cache_variables"
+      ],
+
       "cacheVariables": {
         "DearImGui_Backend_Allegro5": "ON",
         "DearImGui_Backend_FreeGLUT": "ON",
