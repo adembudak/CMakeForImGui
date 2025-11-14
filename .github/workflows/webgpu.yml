@@ -1,0 +1,130 @@
+name: GitHub Actions
+run-name: WebGPU backend
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE.md'
+      - '.github/dependabot.yml'
+
+jobs:
+  Configure-Build-Install-Uninstall-Package-Upload:
+    strategy:
+      matrix:
+          os:
+            - ubuntu-latest
+            - macos-15
+            - windows-latest
+
+          include:
+            - os: ubuntu-latest
+              triplet: x64-linux
+
+            - os: macos-15
+              triplet: x64-osx
+
+            - os: windows-latest
+              triplet: x64-windows
+
+          build-type:
+            - Debug
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - run: echo "Triggered by ${{ github.event_name }} on ${{ github.repository }} using ${{ github.ref}} branch and running on ${{ runner.os }}."
+
+      - name: Install required packages on Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --assume-yes --fix-missing libxinerama-dev libxcursor-dev mesa-common-dev xorg-dev libglu1-mesa-dev pkg-config libltdl-dev libwayland-dev libxkbcommon-dev wayland-protocols extra-cmake-modules libx11-xcb-dev
+
+      - name: Install required packages on macOS
+        if: matrix.os == 'macos-15'
+        run: brew install --cask xquartz
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '4.0.0'
+
+      - name: Check out ImGui repository
+        uses: actions/checkout@v4
+        with:
+          repository: ocornut/imgui
+          show-progress: false
+          ref: master
+          path: imgui
+
+      - name: Check out CMakeForImGui
+        uses: actions/checkout@v4
+        with:
+          show-progress: false
+          path: CMakeForImGui
+
+      - name: Define VCPKG_ROOT env var as an alias to VCPKG_INSTALLATION_ROOT
+        shell: bash
+        run: echo "VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT" >> $GITHUB_ENV
+
+      - name: Setup vcpkg
+        uses: johnwason/vcpkg-action@v7
+        id: vcpkg
+        with:
+          manifest-dir: ${{ github.workspace }}/CMakeForImGui
+          triplet: ${{ matrix.triplet }}
+          revision: '74e6536215718009aae747d86d84b78376bf9e09'
+          token: ${{ github.token }}
+
+      - name: Configure preset Core
+        run: |
+          cd ${{ github.workspace }}/CMakeForImGui
+          cmake -DIMGUI_SOURCE_DIR=${{ github.workspace }}/imgui -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Core
+
+      - name: Reconfigure with WebGPU backend and related examples enabled
+        run: |
+          cd ${{ github.workspace }}/CMakeForImGui
+          cmake -DVCPKG_INSTALL_OPTIONS=--x-feature=wgpu-dawn -DDearImGui_Backend_WebGPU=ON -DIMGUI_IMPL_WEBGPU_BACKEND_DAWN=ON -DDearImGui_Backend_GLFW=ON -DExample_GLFW_WebGPU=ON -DDearImGui_Backend_SDL2=ON -DExample_SDL2_WebGPU=ON -DDearImGui_Backend_SDL3=ON -DExample_SDL3_WebGPU=ON -S . -B build
+
+      - name: Build
+        run: |
+          cd ${{ github.workspace }}/CMakeForImGui
+          cmake --build build
+
+      - name: Fix install paths on Windows
+        if: matrix.os == 'windows-latest'
+        run: >
+          (Get-Content -Path "${{ github.workspace }}\\CMakeForImGui\\build\\cmake_install.cmake")
+          | ForEach-Object {$_ -replace 'D:\\a\\CMakeForImGui\\', 'D:/a/CMakeForImGui/'}
+          | Set-Content -Path "${{ github.workspace }}\\CMakeForImGui\\build\\cmake_install.cmake"
+
+      - name: Install
+        run: >
+          cmake
+          --build ${{ github.workspace }}/CMakeForImGui/build
+          --target install
+          --config ${{ matrix.build-type }}
+
+      - name: Uninstall
+        run: >
+          cmake
+          --build ${{ github.workspace }}/CMakeForImGui/build
+          --target uninstall
+
+      - name: Package
+        run: >
+          cmake
+          --build ${{ github.workspace }}/CMakeForImGui/build
+          --target package
+          --config ${{ matrix.build-type }}
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: build.imgui-master.${{ matrix.os }}.${{ matrix.triplet }}.${{ matrix.build-type }}
+          path: ${{ github.workspace }}/CMakeForImGui/build/package
+
+      - run: echo "Job exited by ${{ job.status }}."
