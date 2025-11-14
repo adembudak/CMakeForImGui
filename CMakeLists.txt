@@ -294,7 +294,7 @@ if(DearImGui_Backend_WebGPU)
       target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
 
       find_package(Threads REQUIRED)
-      find_package(Dawn REQUIRED)
+      find_package(Dawn CONFIG REQUIRED)
 
       target_compile_features(imgui_impl_wgpu INTERFACE cxx_std_17)
 
