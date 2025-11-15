@@ -17,7 +17,19 @@
     },
     "lunasvg",
     "plutosvg",
-    "sdl2",
+    {
+      "name": "sdl2",
+      "features": [
+        {
+          "name": "wayland",
+          "platform": "linux"
+        },
+        {
+          "name": "x11",
+          "platform": "linux"
+        }
+      ]
+    },
     "sdl3",
     "vulkan"
   ],
