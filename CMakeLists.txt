@@ -653,6 +653,7 @@ if(DearImGui_Backend_SDL2)
       PRIVATE FILE_SET HEADERS
       BASE_DIRS $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}>
       FILES $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}/webgpu/webgpu.h>)
+    target_compile_definitions(example_sdl2_wgpu PRIVATE $<$<PLATFORM_ID:Linux>:SDL_VIDEO_DRIVER_WAYLAND>)
 
     target_link_libraries(example_sdl2_wgpu 
       PRIVATE imgui_impl_sdl2 imgui_impl_wgpu
