@@ -27,7 +27,7 @@ jobs:
               triplet: x64-osx
 
             - os: windows-latest
-              triplet: x64-windows-static
+              triplet: x64-windows
 
           tag:
             - master
