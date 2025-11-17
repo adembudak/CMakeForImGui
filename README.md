@@ -38,6 +38,7 @@ Following backend options are available:
 | Build options                    | Targets                       |
 |----------------------------------|-------------------------------|
 | (default)                        | `ImGui::Core`                 |
+| DearImGui_Backend_NULL           | `ImGui::Backend_NULL`         |
 | DearImGui_Backend_Android        | `ImGui::Backend_Android`      |
 | DearImGui_Backend_OpenGL2        | `ImGui::Backend_OpenGL2`      |
 | DearImGui_Backend_OpenGL3        | `ImGui::Backend_OpenGL3`      |

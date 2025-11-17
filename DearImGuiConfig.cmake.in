@@ -26,6 +26,10 @@ if(TARGET ImGui::imgui_impl_glut AND NOT TARGET ImGui::Backend_FreeGLUT)
   add_library(ImGui::Backend_FreeGLUT ALIAS ImGui::imgui_impl_glut)
 endif()
 
+if(TARGET ImGui::imgui_impl_null AND NOT TARGET ImGui::Backend_NULL)
+  add_library(ImGui::Backend_NULL ALIAS ImGui::imgui_impl_null)
+endif()
+
 if(TARGET ImGui::imgui_impl_sdl2 AND NOT TARGET ImGui::Backend_SDL2)
   add_library(ImGui::Backend_SDL2 ALIAS ImGui::imgui_impl_sdl2)
 endif()

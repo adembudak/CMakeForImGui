@@ -107,6 +107,7 @@
       "cacheVariables": {
         "DearImGui_Backend_Allegro5": "ON",
         "DearImGui_Backend_FreeGLUT": "ON",
+        "DearImGui_Backend_NULL": "ON",
         "DearImGui_Backend_GLFW": "ON",
         "DearImGui_Backend_OpenGL2": "ON",
         "DearImGui_Backend_OpenGL3": "ON",

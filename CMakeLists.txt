@@ -41,6 +41,7 @@ endif()
 option(DearImGui_Backend_Allegro5 "" OFF)
 option(DearImGui_Backend_GLFW "" OFF)
 option(DearImGui_Backend_FreeGLUT "" OFF)
+cmake_dependent_option(DearImGui_Backend_NULL "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19245)" OFF)
 option(DearImGui_Backend_SDL2 "" OFF)
 cmake_dependent_option(DearImGui_Backend_SDLRenderer2 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 18420)" OFF)
 cmake_dependent_option(DearImGui_Backend_SDL3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19100)" OFF)
@@ -69,7 +70,7 @@ option(BUILD_SHARED_LIBS "" OFF)
 option(Pkg-config "Generate dearimgui.pc file" OFF)
 
 option(Install "Install Dear ImGui" ON)
-option(Uninstall "A custom target 'uninstall' is generated to undo latest install step" ON)
+option(Uninstall "A custom target 'uninstall' is generated to undo the latest install step" ON)
 cmake_dependent_option(Install_examples "Install Dear ImGui examples" OFF Install OFF)
 
 option(visualize_targets "A custom target 'graph' that shows linkage graph enabled to generate a targets.png on build directory" OFF)
@@ -587,6 +588,19 @@ if(DearImGui_Backend_FreeGLUT)
   endif()
 endif()
 
+if(DearImGui_Backend_NULL)
+  add_library(imgui_impl_null)
+  target_sources(imgui_impl_null
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_null.cpp
+    PUBLIC FILE_SET imgui_impl_null_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_null.h)
+  target_link_libraries(imgui_impl_null PUBLIC imgui_core)
+
+  list(APPEND imgui_backends_list imgui_impl_null)
+endif()
+
 if(DearImGui_Backend_SDL2)
   if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     find_package(SDL2 CONFIG REQUIRED)
@@ -907,7 +921,7 @@ endif()
 if(Example_NULL)
   add_executable(example_null)
   target_sources(example_null PRIVATE ${_imgui_dir}/examples/example_null/main.cpp)
-  target_link_libraries(example_null PRIVATE imgui_core)
+  target_link_libraries(example_null PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19245>,imgui_impl_null,imgui_core>)
 
   list(APPEND imgui_examples_list example_null)
 endif()
@@ -1234,7 +1248,7 @@ if(PrintConfigurationSummary)
   feature_summary(WHAT ALL)
 
   set(options
-    DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 DearImGui_Backend_DirectX10 DearImGui_Backend_DirectX11 DearImGui_Backend_DirectX12 DearImGui_Backend_OSX DearImGui_Backend_Metal
+    DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_NULL DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 DearImGui_Backend_DirectX10 DearImGui_Backend_DirectX11 DearImGui_Backend_DirectX12 DearImGui_Backend_OSX DearImGui_Backend_Metal
     Example_NULL
     Example_Allegro5 Example_Android_OpenGL3
     Example_GLFW_OpenGL2 Example_GLFW_OpenGL3 Example_GLFW_Vulkan Example_GLFW_Metal Example_GLFW_WebGPU
