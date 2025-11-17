@@ -121,19 +121,33 @@ set(pkg_config_requires_list)
 
 add_library(imgui_core)
 target_sources(imgui_core
-  PRIVATE ${_imgui_dir}/imgui.cpp ${_imgui_dir}/imgui_draw.cpp ${_imgui_dir}/imgui_tables.cpp ${_imgui_dir}/imgui_widgets.cpp ${_imgui_dir}/imgui_demo.cpp
+  PRIVATE
+    ${_imgui_dir}/imgui.cpp
+    ${_imgui_dir}/imgui_draw.cpp
+    ${_imgui_dir}/imgui_tables.cpp
+    ${_imgui_dir}/imgui_widgets.cpp
+    ${_imgui_dir}/imgui_demo.cpp
   PUBLIC FILE_SET imgui_core_set
-  BASE_DIRS ${_imgui_dir}
+  BASE_DIRS
+    ${_imgui_dir}
+    ${PROJECT_BINARY_DIR}/generated
   TYPE HEADERS
-  FILES ${_imgui_dir}/imgui.h ${_imgui_dir}/imgui_internal.h ${_imgui_dir}/imstb_rectpack.h ${_imgui_dir}/imstb_textedit.h ${_imgui_dir}/imstb_truetype.h
-  PUBLIC FILE_SET HEADERS
-  BASE_DIRS ${PROJECT_BINARY_DIR}/generated
-  FILES ${PROJECT_BINARY_DIR}/generated/imconfig.h
-  PRIVATE ${_imgui_dir}/misc/cpp/imgui_stdlib.cpp
+  FILES
+    ${_imgui_dir}/imgui.h
+    ${_imgui_dir}/imgui_internal.h
+    ${_imgui_dir}/imstb_rectpack.h
+    ${_imgui_dir}/imstb_textedit.h
+    ${_imgui_dir}/imstb_truetype.h
+    ${PROJECT_BINARY_DIR}/generated/imconfig.h
+  PRIVATE
+    ${_imgui_dir}/misc/cpp/imgui_stdlib.cpp
   PUBLIC FILE_SET imgui_misc_cpp_set
-  BASE_DIRS ${_imgui_dir}/misc/cpp
+  BASE_DIRS
+    ${_imgui_dir}/misc/cpp
   TYPE HEADERS
-  FILES ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
+  FILES
+    ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
+
 target_link_libraries(imgui_core PRIVATE "$<$<AND:$<PLATFORM_ID:Darwin>,$<BOOL:${IMGUI_ENABLE_OSX_DEFAULT_CLIPBOARD_FUNCTIONS}>>:-framework ApplicationServices>")
 target_compile_features(imgui_core PUBLIC cxx_std_11)
 
@@ -655,7 +669,7 @@ if(DearImGui_Backend_SDL2)
       FILES $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}/webgpu/webgpu.h>)
     target_compile_definitions(example_sdl2_wgpu PRIVATE $<$<PLATFORM_ID:Linux>:SDL_VIDEO_DRIVER_WAYLAND>)
 
-    target_link_libraries(example_sdl2_wgpu 
+    target_link_libraries(example_sdl2_wgpu
       PRIVATE imgui_impl_sdl2 imgui_impl_wgpu
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
 
@@ -1119,7 +1133,7 @@ if(Install)
   install(DIRECTORY ${_imgui_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(FILES ${_imgui_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(EXPORT imgui_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE ImGui:: FILE DearImGuiTargets.cmake)
-  install(TARGETS imgui_core EXPORT imgui_export FILE_SET imgui_core_set FILE_SET HEADERS FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
+  install(TARGETS imgui_core EXPORT imgui_export FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
 
   install(DIRECTORY $<$<VERSION_GREATER:${IMGUI_VERSION},18100>:${_imgui_dir}/misc/debuggers> DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(TARGETS binary_to_compressed_c DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/fonts)
