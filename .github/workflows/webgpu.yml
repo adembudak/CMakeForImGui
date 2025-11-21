@@ -32,6 +32,11 @@ jobs:
           build-type:
             - Debug
 
+          backend:
+            - dawn
+            - wgpu-native
+
+
     runs-on: ${{ matrix.os }}
     steps:
       - run: echo "Triggered by ${{ github.event_name }} on ${{ github.repository }} using ${{ github.ref}} branch and running on ${{ runner.os }}."
@@ -79,14 +84,67 @@ jobs:
           token: ${{ github.token }}
 
       - name: Configure preset Core
+        shell: bash
         run: |
           cd ${{ github.workspace }}/CMakeForImGui
-          cmake -DIMGUI_SOURCE_DIR=${{ github.workspace }}/imgui -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Core
+          cmake \
+          -D IMGUI_SOURCE_DIR:PATH=${{ github.workspace }}/imgui \
+          -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build-type }} \
+          -D CMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}/install.in.here \
+          --preset Core
 
-      - name: Reconfigure with WebGPU backend and related examples enabled
+      - name: Reconfigure with WebGPU backend Dawn and WebGPU related examples enabled
+        if: matrix.backend == 'dawn'
+        shell: bash
         run: |
           cd ${{ github.workspace }}/CMakeForImGui
-          cmake -DVCPKG_INSTALL_OPTIONS=--x-feature=wgpu-dawn -DDearImGui_Backend_WebGPU=ON -DIMGUI_IMPL_WEBGPU_BACKEND_DAWN=ON -DDearImGui_Backend_GLFW=ON -DExample_GLFW_WebGPU=ON -DDearImGui_Backend_SDL2=ON -DExample_SDL2_WebGPU=ON -DDearImGui_Backend_SDL3=ON -DExample_SDL3_WebGPU=ON -S . -B build
+          cmake \
+          -D VCPKG_INSTALL_OPTIONS:STRING=--x-feature=wgpu-dawn \
+          -D DearImGui_Backend_WebGPU:BOOL=ON \
+          -D IMGUI_IMPL_WEBGPU_BACKEND_DAWN:BOOL=ON \
+          -D DearImGui_Backend_GLFW:BOOL=ON \
+          -D Example_GLFW_WebGPU:BOOL=ON \
+          -D DearImGui_Backend_SDL2:BOOL=ON \
+          -D Example_SDL2_WebGPU:BOOL=ON \
+          -D DearImGui_Backend_SDL3:BOOL=ON \
+          -D Example_SDL3_WebGPU:BOOL=ON \
+          -S . \
+          -B build
+
+      - name: Reconfigure with WebGPU backend wgpu-native and WebGPU related examples enabled
+        if: matrix.backend == 'wgpu-native'
+        shell: bash
+        run: |
+          cd ${{ github.workspace }}/CMakeForImGui
+          cmake -E make_directory wgpu-native
+
+          case "${{ matrix.os }}" in
+            ubuntu-latest)
+              curl --output-dir ./wgpu-native --remote-name --location https://github.com/gfx-rs/wgpu-native/releases/download/v27.0.2.0/wgpu-linux-x86_64-debug.zip
+              cmake -E chdir wgpu-native cmake -E tar xvf wgpu-linux-x86_64-debug.zip
+              ;;
+            macos-15)
+              curl --output-dir ./wgpu-native --remote-name --location https://github.com/gfx-rs/wgpu-native/releases/download/v27.0.2.0/wgpu-macos-aarch64-debug.zip
+              cmake -E chdir wgpu-native cmake -E tar xvf wgpu-macos-aarch64-debug.zip
+              ;;
+            windows-latest)
+              curl --output-dir ./wgpu-native --remote-name --location https://github.com/gfx-rs/wgpu-native/releases/download/v27.0.2.0/wgpu-windows-x86_64-msvc-debug.zip
+              cmake -E chdir wgpu-native cmake -E tar xvf wgpu-windows-x86_64-msvc-debug.zip
+              ;;
+          esac
+
+          cmake \
+          -D DearImGui_Backend_WebGPU:BOOL=ON \
+          -D IMGUI_IMPL_WEBGPU_BACKEND_WGPU:BOOL=ON \
+          -D WGPU_DIR:PATH="./wgpu-native" \
+          -D DearImGui_Backend_GLFW:BOOL=ON \
+          -D Example_GLFW_WebGPU:BOOL=ON \
+          -D DearImGui_Backend_SDL2:BOOL=ON \
+          -D Example_SDL2_WebGPU:BOOL=ON \
+          -D DearImGui_Backend_SDL3:BOOL=ON \
+          -D Example_SDL3_WebGPU:BOOL=ON \
+          -S . \
+          -B build
 
       - name: Build
         run: |
@@ -122,9 +180,8 @@ jobs:
 
       - name: Upload
         uses: actions/upload-artifact@v4
-
         with:
-          name: build.imgui-master.${{ matrix.os }}.${{ matrix.triplet }}.${{ matrix.build-type }}
+          name: build.imgui-master.WebGPU_Backend_With_${{ matrix.backend }}.${{ matrix.os }}.${{ matrix.triplet }}.${{ matrix.build-type }}
           path: ${{ github.workspace }}/CMakeForImGui/build/package
 
       - run: echo "Job exited by ${{ job.status }}."
