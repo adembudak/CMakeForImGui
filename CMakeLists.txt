@@ -41,7 +41,7 @@ endif()
 option(DearImGui_Backend_Allegro5 "" OFF)
 option(DearImGui_Backend_GLFW "" OFF)
 option(DearImGui_Backend_FreeGLUT "" OFF)
-cmake_dependent_option(DearImGui_Backend_NULL "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19245)" OFF)
+cmake_dependent_option(DearImGui_Backend_NULL "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19240)" OFF)
 option(DearImGui_Backend_SDL2 "" OFF)
 cmake_dependent_option(DearImGui_Backend_SDLRenderer2 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 18420)" OFF)
 cmake_dependent_option(DearImGui_Backend_SDL3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19100)" OFF)
@@ -88,6 +88,8 @@ cmake_dependent_option(Example_GLFW_WebGPU "" OFF "DearImGui_Backend_GLFW AND De
 
 cmake_dependent_option(Example_FreeGLUT_OpenGL2 "" OFF "DearImGui_Backend_FreeGLUT AND DearImGui_Backend_OpenGL2" OFF)
 
+cmake_dependent_option(Example_NULL "" OFF "DearImGui_Backend_NULL OR (${IMGUI_VERSION} VERSION_LESS 19250)" OFF)
+
 cmake_dependent_option(Example_SDL2_OpenGL2 "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_OpenGL2" OFF)
 cmake_dependent_option(Example_SDL2_OpenGL3 "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_OpenGL3" OFF)
 cmake_dependent_option(Example_SDL2_Vulkan "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_Vulkan" OFF)
@@ -114,7 +116,6 @@ cmake_dependent_option(Example_Win32_DirectX12 "" OFF "DearImGui_Backend_Win32 A
 
 cmake_dependent_option(Example_Apple_OpenGL2 "" OFF "DearImGui_Backend_OSX AND DearImGui_Backend_OpenGL2" OFF)
 cmake_dependent_option(Example_Apple_Metal "" OFF "DearImGui_Backend_OSX AND DearImGui_Backend_Metal" OFF)
-option(Example_NULL "" OFF)
 
 set(imgui_backends_list)
 set(imgui_examples_list)
@@ -601,6 +602,14 @@ if(DearImGui_Backend_NULL)
   list(APPEND imgui_backends_list imgui_impl_null)
 endif()
 
+if(Example_NULL)
+  add_executable(example_null)
+  target_sources(example_null PRIVATE ${_imgui_dir}/examples/example_null/main.cpp)
+  target_link_libraries(example_null PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19240>,imgui_impl_null,imgui_core>)
+
+  list(APPEND imgui_examples_list example_null)
+endif()
+
 if(DearImGui_Backend_SDL2)
   if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     find_package(SDL2 CONFIG REQUIRED)
@@ -916,14 +925,6 @@ if(DearImGui_Backend_Win32)
 
     list(APPEND imgui_examples_list example_win32_directx12)
   endif()
-endif()
-
-if(Example_NULL)
-  add_executable(example_null)
-  target_sources(example_null PRIVATE ${_imgui_dir}/examples/example_null/main.cpp)
-  target_link_libraries(example_null PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19245>,imgui_impl_null,imgui_core>)
-
-  list(APPEND imgui_examples_list example_null)
 endif()
 
 if((DearImGui_Backend_DirectX9 OR DearImGui_Backend_DirectX10 OR DearImGui_Backend_DirectX11 OR DearImGui_Backend_DirectX12) AND (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC"))
