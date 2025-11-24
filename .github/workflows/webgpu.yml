@@ -117,18 +117,19 @@ jobs:
         run: |
           cd "${{ github.workspace }}/CMakeForImGui"
           cmake -E make_directory wgpu-native
+          wgpu_native_latest_tag=$(curl -s https://api.github.com/repos/gfx-rs/wgpu-native/releases/latest | jq --raw-output .tag_name)
 
           case "${{ matrix.os }}" in
             ubuntu-latest)
-              curl --output-dir ./wgpu-native --remote-name --location https://github.com/gfx-rs/wgpu-native/releases/download/v27.0.2.0/wgpu-linux-x86_64-debug.zip
+              curl --output-dir ./wgpu-native --remote-name --location https://github.com/gfx-rs/wgpu-native/releases/download/${wgpu_native_latest_tag}/wgpu-linux-x86_64-debug.zip
               cmake -E chdir wgpu-native cmake -E tar xvf wgpu-linux-x86_64-debug.zip
               ;;
             macos-15)
-              curl --output-dir ./wgpu-native --remote-name --location https://github.com/gfx-rs/wgpu-native/releases/download/v27.0.2.0/wgpu-macos-aarch64-debug.zip
+              curl --output-dir ./wgpu-native --remote-name --location https://github.com/gfx-rs/wgpu-native/releases/download/${wgpu_native_latest_tag}/wgpu-macos-aarch64-debug.zip
               cmake -E chdir wgpu-native cmake -E tar xvf wgpu-macos-aarch64-debug.zip
               ;;
             windows-latest)
-              curl --output-dir ./wgpu-native --remote-name --location https://github.com/gfx-rs/wgpu-native/releases/download/v27.0.2.0/wgpu-windows-x86_64-msvc-debug.zip
+              curl --output-dir ./wgpu-native --remote-name --location https://github.com/gfx-rs/wgpu-native/releases/download/${wgpu_native_latest_tag}/wgpu-windows-x86_64-msvc-debug.zip
               cmake -E chdir wgpu-native cmake -E tar xvf wgpu-windows-x86_64-msvc-debug.zip
               ;;
           esac
@@ -181,7 +182,7 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: build.imgui-master.WebGPU_Backend_With_${{ matrix.backend }}.${{ matrix.os }}.${{ matrix.triplet }}.${{ matrix.build-type }}
+          name: build.imgui-master.WebGPU_Backend_with_${{ matrix.backend }}.${{ matrix.os }}.${{ matrix.triplet }}.${{ matrix.build-type }}
           path: ${{ github.workspace }}/CMakeForImGui/build/package
 
       - run: echo "Job exited by ${{ job.status }}."
