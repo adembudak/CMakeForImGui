@@ -37,9 +37,7 @@
     "wgpu-dawn": {
       "description": "WebGPU+WGPU(Dawn)",
       "dependencies": [
-        {
-          "name": "dawn"
-        }
+        "dawn"
       ]
     }
   }
