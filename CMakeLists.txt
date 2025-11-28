@@ -259,7 +259,16 @@ if(DearImGui_Backend_Vulkan)
       set(suffix x64)
     endif()
 
-    find_library(Vulkan_Libraries vulkan-1 PATHS ${VULKAN_RUNTIME_COMPONENTS_DIR} PATH_SUFFIXES ${suffix} NO_CACHE REQUIRED NO_DEFAULT_PATH NO_CMAKE_SYSTEM_PATH NO_CMAKE_FIND_ROOT_PATH)
+    find_library(Vulkan_Libraries vulkan-1
+      PATHS ${VULKAN_RUNTIME_COMPONENTS_DIR}
+      PATH_SUFFIXES ${suffix}
+      DOC "https://vulkan.lunarg.com/sdk/home"
+      NO_CACHE
+      REQUIRED
+      NO_DEFAULT_PATH
+      NO_CMAKE_SYSTEM_PATH
+      NO_CMAKE_FIND_ROOT_PATH)
+
     find_package(VulkanHeaders REQUIRED)
   else()
     find_package(Vulkan REQUIRED)
@@ -430,7 +439,9 @@ Android NDK toolchain is not used
   list(APPEND imgui_backends_list imgui_impl_android)
 
   if(Example_Android_OpenGL3)
-    find_program(GRADLE_COMMAND gradle REQUIRED)
+    find_program(GRADLE_COMMAND gradle
+      DOC "https://gradle.org"
+      REQUIRED)
 
     cmake_path(SET android_example_output_path ${_imgui_dir}/examples/example_android_opengl3/android/app/build/outputs/apk)
     cmake_path(ABSOLUTE_PATH android_example_output_path NORMALIZE)
@@ -933,12 +944,18 @@ if((DearImGui_Backend_DirectX9 OR DearImGui_Backend_DirectX10 OR DearImGui_Backe
   find_path(Windows_SDK_INCLUDE_DIR
     NAMES d3d9.h
     PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots;KitsRoot10]" "C:/Program Files (x86)/Windows Kits/10"
-    PATH_SUFFIXES "Include/${sdk_version}/shared" NO_CACHE REQUIRED)
+    PATH_SUFFIXES "Include/${sdk_version}/shared"
+    DOC "https://github.com/microsoft/WindowsAppSDK"
+    NO_CACHE
+    REQUIRED)
 
   find_path(Windows_SDK_INCLUDE_DIR_1
     NAMES d3d10.h d3d10_1.h d3d11.h d3d12.h d3dcompiler.h
     PATHS "[HKLM/Software/Microsoft/Windows Kits/Installed Roots;KitsRoot10]" "C:/Program Files (x86)/Windows Kits/10"
-    PATH_SUFFIXES "Include/${sdk_version}/um" NO_CACHE REQUIRED)
+    PATH_SUFFIXES "Include/${sdk_version}/um"
+    DOC "https://github.com/microsoft/WindowsAppSDK"
+    NO_CACHE
+    REQUIRED)
 
   set(_arch ${CMAKE_VS_PLATFORM_NAME})
   if("${_arch}" STREQUAL "Win32")
@@ -1230,7 +1247,9 @@ set(GRAPHVIZ_GENERATE_DEPENDERS FALSE)
 ]=])
   endif()
 
-  find_program(DOT_COMMAND dot REQUIRED)
+  find_program(DOT_COMMAND dot
+    DOC "https://graphviz.org/doc/info/command.html"
+    REQUIRED)
 
   add_custom_target(graph
     COMMAND ${CMAKE_COMMAND} --graphviz=targets.dot ${PROJECT_BINARY_DIR}
