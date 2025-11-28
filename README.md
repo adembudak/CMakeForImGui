@@ -8,7 +8,7 @@ This work proposed for the Dear ImGui upstream: https://github.com/ocornut/imgui
 cmake -D IMGUI_SOURCE_DIR=path.to.imgui -S . -B build
 ```
 
-Setting `IMGUI_SOURCE_DIR` variable on configuration step is mandatory. An example usage might look like this:
+Setting `IMGUI_SOURCE_DIR` variable on configuration step is mandatory. An example usage might be like this:
 
 ```cmake
 cmake -G 'Ninja Multi-Config' -D IMGUI_SOURCE_DIR=imgui -S . -B build
@@ -16,14 +16,14 @@ cmake -D IMGUI_ENABLE_FREETYPE=ON -D DearImGui_Backend_SDL2=ON -D DearImGui_Back
 cmake --build build --config Release
 cmake --install build --config Release
 ```
-The commands above assume the dependencies of the backend are installed on host system. One can visit the project site of used backend and get the source and then follow the build instructions. Another option is using a package
+The commands above assume the dependencies of the backend are installed on the host system. One can visit the project site of used backend and get the source and then follow the build instructions. Another option is using a package
 manager. There are several ways to manage dependencies of and build C++ software. The [vcpkg](https://vcpkg.io/en) used on this repository.
 
 ```cmake
 vcpkg install
 cmake -G 'Ninja Multi-Config' -D VCPKG_MANIFEST_MODE=ON -D IMGUI_SOURCE_DIR=imgui -S . -B build --toolchain $VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
 ```
-Note that this will not install some platform dependencies like DirectX libraries on Windows, one need to install Microsoft SDK for it or Metal framework on macOS, Xcode needs to be installed.
+Note that this will not install some platform dependencies like DirectX libraries on Windows, Windows App SDK needs to installed for it or Metal framework on macOS, Xcode needs to be installed.
 
 CMake presets file can also be used:
 ```cmake
@@ -60,15 +60,15 @@ Following backend options are available:
 | DearImGui_Backend_OSX            | `ImGui::Backend_OSX`          |
 | DearImGui_Backend_Metal          | `ImGui::Backend_Metal`        |
 
-All backend options are `OFF` by default and all the configuration macros on `imconfig.h` can be passed as CMake command like with `-D` variable.
+All backend options are `OFF` by default and all the configuration macros on `imconfig.h` can be passed as CMake command line with `-D` variable.
 
-Example programs set as dependent options corresponding to their used backends, like:
+Example programs set as dependent options corresponding to their used backends:
 ```cmake
 cmake_dependent_option(Example_SDL2_OpenGL3 "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_OpenGL3" OFF)
 ```
-The `Example_SDL2_OpenGL3` option will be available only corresponding backends are `ON`. The same is true for all the other examples and they're `OFF` by default.
+The `Example_SDL2_OpenGL3` option will be available only when used backends are `ON`. The same is true for all the other examples and they're `OFF` by default.
 
-Libraries and examples can be installed by setting `Install` and `Install_examples` options `ON`, respectively. An `Uninstall` custom target is also provided to remove the artifacts where they are installed.
+Libraries and examples can be installed by setting `Install` and `Install_examples` options `ON`, respectively. An `uninstall` custom target is also provided to remove the artifacts where they are installed.
 
 ## Usage
 
@@ -88,7 +88,7 @@ The build script can be used to generate a **pkg-config** file:
 ```cmake
 cmake -D Pkg-config=ON -S . -B build
 ```
-This generates a `dearimgui.pc` file in build directory which can be installed and used, like:
+This generates a `dearimgui.pc` file in build directory which can be installed and used:
 ```bash
 c++ -o out main.cpp $(pkg-config --cflags --libs dearimgui)
 ```
@@ -98,6 +98,7 @@ Some alternative designs are also considered:
 - On [single-target](https://github.com/adembudak/CMakeForImGui/tree/single-target) branch all the targets are (ImGui itself and backends) linked with a single `Unofficial::DearImGui::imgui` target rather than a target per backend.
 - On [pre.v1.80](https://github.com/adembudak/CMakeForImGui/tree/pre.v1.80) it's tried to add support Dear ImGui versions before v1.80.
 - On [thirdparties-as-components](https://github.com/adembudak/CMakeForImGui/tree/thirdparties-as-components) branch some thirdparty projects can be specified as `COMPONENTS` option of `find_package()`.
+
 These branches differentiated too much from the main at this point.
 - On [CMakeForImGuiThirdParties](https://github.com/adembudak/CMakeForImGuiThirdParties) repository it's shown how thirdparty ImGui software benefit from this work.
 
