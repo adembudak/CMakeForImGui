@@ -357,6 +357,18 @@
       }
     }
   ],
+  "packagePresets": [
+    {
+      "name": "ZIP",
+      "configurePreset": "Default",
+      "generators": [
+        "ZIP"
+      ],
+      "output": {
+	 "verbose": true
+      }
+    }
+  ],
   "workflowPresets": [
     {
       "name": "Android",
