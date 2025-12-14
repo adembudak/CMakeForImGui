@@ -96,14 +96,13 @@
           "value": ""
         }
       }
-   },
-   {
+    },
+    {
       "name": "backends",
       "hidden": true,
       "inherits": [
-         "webgpu_backend_related_cache_variables"
+        "webgpu_backend_related_cache_variables"
       ],
-
       "cacheVariables": {
         "DearImGui_Backend_Allegro5": "ON",
         "DearImGui_Backend_FreeGLUT": "ON",
@@ -230,7 +229,6 @@
         "DearImGui_Backend_GLFW": "ON",
         "DearImGui_Backend_WebGPU": "ON",
         "DearImGui_Backend_OpenGL3": "ON",
-
         "Example_GLFW_WebGPU": "ON",
         "Example_GLFW_OpenGL3": "ON",
         "Example_SDL2_OpenGL3": "ON",
@@ -365,7 +363,7 @@
         "ZIP"
       ],
       "output": {
-	 "verbose": true
+        "verbose": true
       }
     }
   ],
