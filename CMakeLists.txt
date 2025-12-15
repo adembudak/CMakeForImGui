@@ -19,7 +19,7 @@ endif()
 
 set(IMGUI_SOURCE_DIR "" CACHE PATH "Path to Dear ImGui source tree")
 if(NOT IMGUI_SOURCE_DIR)
-  message(FATAL_ERROR "set IMGUI_SOURCE_DIR to proceed:\ne.g. cmake -DIMGUI_SOURCE_DIR=path.to.imgui ...")
+  message(FATAL_ERROR "IMGUI_SOURCE_DIR variable must be set to point to Dear ImGui source tree")
 endif()
 
 cmake_path(SET _imgui_dir ${IMGUI_SOURCE_DIR})
@@ -249,7 +249,11 @@ if(DearImGui_Backend_Vulkan)
     list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES .dll)
 
     if(NOT VULKAN_RUNTIME_COMPONENTS_DIR)
-      message(FATAL_ERROR "set VULKAN_RUNTIME_COMPONENTS_DIR to proceed:\ne.g. cmake -DVULKAN_RUNTIME_COMPONENTS_DIR=VulkanRT-X64-x.y.zzz-Components...")
+      message(FATAL_ERROR
+[=[
+VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-X64-x.y.zzz-Components folder
+  https://vulkan.lunarg.com/sdk/home
+]=])
     endif()
 
     if(CMAKE_SIZEOF_VOID_P EQUAL 4)
@@ -386,7 +390,7 @@ if(DearImGui_Backend_Android)
     message(FATAL_ERROR
 [=[
 Android NDK toolchain is not used
-  Try to utilize Android toolchain file when running cmake: --toolchain $ANDROID_NDK/build/cmake/android.toolchain.cmake
+  Try to pass Android toolchain file when running cmake: --toolchain $ANDROID_NDK/build/cmake/android.toolchain.cmake
   https://developer.android.com/ndk/guides/cmake#the_new_toolchain_file
 ]=])
   endif()
@@ -483,7 +487,7 @@ if(DearImGui_Backend_Allegro5)
 endif()
 
 if(DearImGui_Backend_GLFW)
-  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten") # Using Emscripten provided --use-port=contrib.glfw3 option instead. $ em++ --show-ports
+  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten") # Emscripten uses provided --use-port=contrib.glfw3 option instead. $ em++ --show-ports
     find_package(glfw3 CONFIG REQUIRED)
   endif()
 
@@ -1223,7 +1227,7 @@ if(Uninstall)
     CONTENT
 [=[
 if(NOT EXISTS @PROJECT_BINARY_DIR@/install_manifest.txt)
-  message(FATAL_ERROR "Couldn't find @PROJECT_BINARY_DIR@/install_manifest.txt")
+  message(FATAL_ERROR "@PROJECT_BINARY_DIR@/install_manifest.txt file not found")
 endif()
 
 file(STRINGS @PROJECT_BINARY_DIR@/install_manifest.txt files_to_uninstall)
