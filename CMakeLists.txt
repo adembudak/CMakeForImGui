@@ -197,7 +197,7 @@ target_sources(binary_to_compressed_c PRIVATE ${_imgui_dir}/misc/fonts/binary_to
 target_compile_features(binary_to_compressed_c PRIVATE cxx_std_11)
 
 if(DearImGui_Backend_OpenGL2)
-  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
   else()
     find_package(OpenGL 2 QUIET REQUIRED)
   endif()
@@ -211,14 +211,14 @@ if(DearImGui_Backend_OpenGL2)
     FILES ${_imgui_dir}/backends/imgui_impl_opengl2.h)
   target_link_libraries(imgui_impl_opengl2
     PUBLIC imgui_core
-    PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU,Clang>>,opengl32,OpenGL::GL>)
+    PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:Clang,GNU>>,opengl32,OpenGL::GL>)
 
   list(APPEND imgui_backends_list imgui_impl_opengl2)
   list(APPEND pkg_config_requires_list opengl)
 endif()
 
 if(DearImGui_Backend_OpenGL3)
-  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
   else()
     include(FindOpenGL)
   endif()
@@ -236,7 +236,7 @@ if(DearImGui_Backend_OpenGL3)
     FILES ${_imgui_dir}/backends/imgui_impl_opengl3.h)
   target_link_libraries(imgui_impl_opengl3
     PUBLIC imgui_core
-    PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU,Clang>>,opengl32,$<IF:$<TARGET_EXISTS:imgui_impl_android>,EGL,OpenGL::GL>>
+    PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:Clang,GNU>>,opengl32,$<IF:$<TARGET_EXISTS:imgui_impl_android>,EGL,OpenGL::GL>>
     PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},18400>:GLEW::GLEW>)
   target_compile_definitions(imgui_impl_opengl3 PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},18400>:IMGUI_IMPL_OPENGL_LOADER_GLEW>)
 
@@ -245,7 +245,7 @@ if(DearImGui_Backend_OpenGL3)
 endif()
 
 if(DearImGui_Backend_Vulkan)
-  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES .dll)
 
     if(NOT VULKAN_RUNTIME_COMPONENTS_DIR)
@@ -287,7 +287,7 @@ VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-X64-x.y.zzz-Comp
     FILES ${_imgui_dir}/backends/imgui_impl_vulkan.h)
   target_link_libraries(imgui_impl_vulkan
     PUBLIC imgui_core
-    PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU,Clang>>,Vulkan::Headers ${Vulkan_Libraries},Vulkan::Vulkan>)
+    PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:Clang,GNU>>,Vulkan::Headers ${Vulkan_Libraries},Vulkan::Vulkan>)
 
   list(APPEND imgui_backends_list imgui_impl_vulkan)
   list(APPEND pkg_config_requires_list vulkan)
@@ -889,7 +889,7 @@ if(DearImGui_Backend_Win32)
     FILES ${_imgui_dir}/backends/imgui_impl_win32.h)
   target_link_libraries(imgui_impl_win32
     PUBLIC imgui_core
-    PUBLIC $<$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:GNU,Clang>>:dwmapi>)
+    PUBLIC $<$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:Clang,GNU>>:dwmapi>)
 
   list(APPEND imgui_backends_list imgui_impl_win32)
 
@@ -1000,7 +1000,7 @@ if(DearImGui_Backend_DirectX9)
     target_link_directories(imgui_impl_dx9 PRIVATE ${Windows_SDK_LIB_DIR})
     target_link_libraries(imgui_impl_dx9 PUBLIC d3d9.lib)
     target_sources(imgui_impl_dx9 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/d3d9.h)
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang") # cross compiling with mingw or msys2
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU") # cross compiling with MinGW or MSYS2
     target_link_libraries(imgui_impl_dx9 PUBLIC d3d9.lib)
   endif()
 
@@ -1024,7 +1024,7 @@ if(DearImGui_Backend_DirectX10)
       PRIVATE FILE_SET HEADERS
       BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1}
       FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d10_1.h ${Windows_SDK_INCLUDE_DIR_1}/d3d10.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     target_link_libraries(imgui_impl_dx10 PUBLIC d3d10.lib d3dcompiler.lib)
   endif()
 
@@ -1048,7 +1048,7 @@ if(DearImGui_Backend_DirectX11)
       PRIVATE FILE_SET HEADERS
       BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1}
       FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d11.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     target_link_libraries(imgui_impl_dx11 PUBLIC d3d11.lib d3dcompiler.lib)
   endif()
 
@@ -1075,7 +1075,7 @@ if(DearImGui_Backend_DirectX12)
       PRIVATE FILE_SET HEADERS
       BASE_DIRS ${Windows_SDK_INCLUDE_DIR}
       FILES ${Windows_SDK_INCLUDE_DIR}/dxgi1_4.h)
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     target_link_libraries(imgui_impl_dx12 PUBLIC d3d12.lib dxgi.lib d3dcompiler.lib)
   endif()
 
