@@ -91,6 +91,7 @@
       "cacheVariables": {
         "IMGUI_IMPL_WEBGPU_BACKEND_DAWN": "ON",
         "IMGUI_IMPL_WEBGPU_BACKEND_WGPU": "OFF",
+        "IMGUI_IMPL_WEBGPU_BACKEND_WGVK": "OFF",
         "WGPU_DIR": {
           "type": "PATH",
           "value": ""

@@ -312,31 +312,28 @@ if(DearImGui_Backend_WebGPU)
 
   if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     set(IMGUI_IMPL_WEBGPU_BACKEND_DAWN "" CACHE BOOL "")
+
     set(IMGUI_IMPL_WEBGPU_BACKEND_WGPU "" CACHE BOOL "")
     set(WGPU_DIR "" CACHE PATH "Path to the folder containing wgpu-native: https://github.com/gfx-rs/wgpu-native/releases")
 
-    if((IMGUI_IMPL_WEBGPU_BACKEND_DAWN AND IMGUI_IMPL_WEBGPU_BACKEND_WGPU) OR (NOT IMGUI_IMPL_WEBGPU_BACKEND_DAWN AND NOT IMGUI_IMPL_WEBGPU_BACKEND_WGPU)) # selected both or none?
-      message(FATAL_ERROR "One and only one of the WebGPU backend option: Dawn or WGPU, must be selected: IMGUI_IMPL_WEBGPU_BACKEND_DAWN or IMGUI_IMPL_WEBGPU_BACKEND_WGPU")
+    if(${IMGUI_VERSION} VERSION_GREATER 19260)
+      set(IMGUI_IMPL_WEBGPU_BACKEND_WGVK "" CACHE BOOL "")
     endif()
 
     if(IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
-      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
-
       find_package(Threads REQUIRED)
       find_package(Dawn CONFIG REQUIRED)
 
       target_compile_features(imgui_impl_wgpu INTERFACE cxx_std_17)
-
       target_link_libraries(imgui_impl_wgpu
         PUBLIC dawn::webgpu_dawn
         PUBLIC Threads::Threads)
+      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
 
     elseif(IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
       if(NOT WGPU_DIR)
         message(FATAL_ERROR "WebGPU backend WGPU selected but WGPU_DIR is not set")
       endif()
-
-      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
 
       find_path(WGPU_INCLUDE_DIR
         NAMES webgpu/wgpu.h webgpu/webgpu.h
@@ -347,12 +344,7 @@ if(DearImGui_Backend_WebGPU)
         NO_CACHE
         REQUIRED)
 
-      target_sources(imgui_impl_wgpu
-        PRIVATE FILE_SET HEADERS
-        BASE_DIRS ${WGPU_INCLUDE_DIR}
-        FILES ${WGPU_INCLUDE_DIR}/webgpu/webgpu.h)
-
-      list(PREPEND CMAKE_FIND_LIBRARY_SUFFIXES .a) # just prefer static libraries to avoid dealing with RPATH for now
+      list(PREPEND CMAKE_FIND_LIBRARY_SUFFIXES .a)
       find_library(WGPU_LIBRARIES wgpu_native
         PATHS ${WGPU_DIR}
         PATH_SUFFIXES lib
@@ -361,7 +353,33 @@ if(DearImGui_Backend_WebGPU)
         NO_CACHE
         REQUIRED)
 
+      target_sources(imgui_impl_wgpu
+        PRIVATE FILE_SET HEADERS
+        BASE_DIRS ${WGPU_INCLUDE_DIR}
+        FILES ${WGPU_INCLUDE_DIR}/webgpu/webgpu.h)
       target_link_libraries(imgui_impl_wgpu PUBLIC ${WGPU_LIBRARIES})
+      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
+
+    elseif(IMGUI_IMPL_WEBGPU_BACKEND_WGVK)
+      find_path(WGVK_INCLUDE_DIR
+        NAMES webgpu/webgpu.h
+        PATH_SUFFIXES include
+        DOC "https://github.com/manuel5975p/WGVK"
+        NO_CACHE
+        REQUIRED)
+
+      find_library(WGVK_LIBRARIES wgvk
+        PATH_SUFFIXES lib
+        DOC "https://github.com/manuel5975p/WGVK"
+        NO_CACHE
+        REQUIRED)
+
+      target_sources(imgui_impl_wgpu
+        PRIVATE FILE_SET HEADERS
+        BASE_DIRS ${WGVK_INCLUDE_DIR}
+        FILES ${WGVK_INCLUDE_DIR}/webgpu/webgpu.h)
+      target_link_libraries(imgui_impl_wgpu PUBLIC ${WGVK_LIBRARIES})
+      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_WGVK)
     endif()
   endif()
 
@@ -1287,7 +1305,7 @@ if(PrintConfigurationSummary)
     Example_Apple_Metal Example_Apple_OpenGL2
     BUILD_SHARED_LIBS Pkg-config Install Install_examples Uninstall visualize_targets
     IMGUI_USER_CONFIG IMGUI_USER_H_FILENAME IMGUI_STB_TRUETYPE_FILENAME IMGUI_STB_RECT_PACK_FILENAME IMGUI_STB_SPRINTF_FILENAME
-    IMGUI_IMPL_WEBGPU_BACKEND_DAWN IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
+    IMGUI_IMPL_WEBGPU_BACKEND_DAWN IMGUI_IMPL_WEBGPU_BACKEND_WGPU IMGUI_IMPL_WEBGPU_BACKEND_WGVK)
   list(SORT options CASE INSENSITIVE)
 
   message(STATUS "Configuration summary:\n")
