@@ -335,6 +335,9 @@ if(DearImGui_Backend_WebGPU)
         message(FATAL_ERROR "WebGPU backend WGPU selected but WGPU_DIR is not set")
       endif()
 
+     file(STRINGS ${WGPU_DIR}/wgpu-native-meta/wgpu-native-git-tag wgpu-native_version)
+     message(STATUS "wgpu-native version ${wgpu-native_version}")
+
       find_path(WGPU_INCLUDE_DIR
         NAMES webgpu/wgpu.h webgpu/webgpu.h
         PATHS ${WGPU_DIR}
