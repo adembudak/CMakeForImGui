@@ -235,9 +235,13 @@ if(DearImGui_Backend_OpenGL2)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_opengl2.h)
-  target_link_libraries(imgui_impl_opengl2
-    PUBLIC imgui_core
-    PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:Clang,GNU>>,opengl32,OpenGL::GL>)
+
+  target_link_libraries(imgui_impl_opengl2 PUBLIC imgui_core)
+  if(WIN32 AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
+    target_link_libraries(imgui_impl_opengl2 PUBLIC opengl32)
+  else()
+    target_link_libraries(imgui_impl_opengl2 PUBLIC OpenGL::GL)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_opengl2)
   list(APPEND pkg_config_requires_list opengl)
@@ -249,10 +253,6 @@ if(DearImGui_Backend_OpenGL3)
     include(FindOpenGL)
   endif()
 
-  if(${IMGUI_VERSION} VERSION_LESS 18400)
-    find_package(GLEW REQUIRED)
-  endif()
-
   add_library(imgui_impl_opengl3)
   target_sources(imgui_impl_opengl3
     PRIVATE ${_imgui_dir}/backends/imgui_impl_opengl3.cpp
@@ -260,11 +260,24 @@ if(DearImGui_Backend_OpenGL3)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_opengl3.h)
-  target_link_libraries(imgui_impl_opengl3
-    PUBLIC imgui_core
-    PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:Clang,GNU>>,opengl32,$<IF:$<TARGET_EXISTS:imgui_impl_android>,EGL,OpenGL::GL>>
-    PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},18400>:GLEW::GLEW>)
-  target_compile_definitions(imgui_impl_opengl3 PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},18400>:IMGUI_IMPL_OPENGL_LOADER_GLEW>)
+  target_link_libraries(imgui_impl_opengl3 PUBLIC imgui_core)
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
+    target_link_libraries(imgui_impl_opengl3 PUBLIC opengl32)
+  else()
+    if(TARGET imgui_impl_android)
+      target_link_libraries(imgui_impl_opengl3 PUBLIC EGL)
+    else()
+      target_link_libraries(imgui_impl_opengl3 PUBLIC OpenGL::GL)
+    endif()
+  endif()
+
+  if(${IMGUI_VERSION} VERSION_LESS "18400")
+    find_package(GLEW REQUIRED)
+
+    target_link_libraries(imgui_impl_opengl3 PUBLIC GLEW::GLEW)
+    target_compile_definitions(imgui_impl_opengl3 PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_opengl3)
   list(APPEND pkg_config_requires_list opengl)
@@ -311,9 +324,13 @@ VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-X64-x.y.zzz-Comp
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_vulkan.h)
-  target_link_libraries(imgui_impl_vulkan
-    PUBLIC imgui_core
-    PUBLIC $<IF:$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:Clang,GNU>>,Vulkan::Headers ${Vulkan_Libraries},Vulkan::Vulkan>)
+  target_link_libraries(imgui_impl_vulkan PUBLIC imgui_core)
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
+    target_link_libraries(imgui_impl_vulkan PUBLIC Vulkan::Headers ${Vulkan_Libraries})
+  else()
+    target_link_libraries(imgui_impl_vulkan PUBLIC Vulkan::Vulkan)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_vulkan)
   list(APPEND pkg_config_requires_list vulkan)
@@ -545,9 +562,11 @@ if(DearImGui_Backend_GLFW)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_glfw.h)
-  target_link_libraries(imgui_impl_glfw
-    PUBLIC imgui_core
-    PUBLIC $<$<NOT:$<PLATFORM_ID:Emscripten>>:glfw>)
+  target_link_libraries(imgui_impl_glfw PUBLIC imgui_core)
+
+  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    target_link_libraries(imgui_impl_glfw PUBLIC glfw)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_glfw)
   list(APPEND pkg_config_requires_list glfw3)
@@ -635,9 +654,12 @@ if(DearImGui_Backend_FreeGLUT)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_glut.h)
-  target_link_libraries(imgui_impl_glut
-    PUBLIC imgui_core
-    PUBLIC $<IF:$<TARGET_EXISTS:FreeGLUT::freeglut>,FreeGLUT::freeglut,FreeGLUT::freeglut_static>)
+  target_link_libraries(imgui_impl_glut PUBLIC imgui_core)
+  if(TARGET FreeGLUT::freeglut)
+    target_link_libraries(imgui_impl_glut PUBLIC FreeGLUT::freeglut)
+  else()
+    target_link_libraries(imgui_impl_glut PUBLIC FreeGLUT::freeglut_static)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_glut)
   list(APPEND pkg_config_requires_list glut)
@@ -684,11 +706,21 @@ if(DearImGui_Backend_SDL2)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/backends/imgui_impl_sdl2.h,${_imgui_dir}/backends/imgui_impl_sdl.h>)
-  target_link_libraries(imgui_impl_sdl2
-    PUBLIC imgui_core
-    PUBLIC $<$<NOT:$<PLATFORM_ID:Emscripten>>:$<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>>)
-  target_compile_options(imgui_impl_sdl2 PUBLIC $<$<PLATFORM_ID:Emscripten>:--use-port=sdl2>)
-  target_link_options(imgui_impl_sdl2 PUBLIC $<$<PLATFORM_ID:Emscripten>:--use-port=sdl2>)
+
+  target_link_libraries(imgui_impl_sdl2 PUBLIC imgui_core)
+
+  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    if(TARGET SDL2::SDL2)
+      target_link_libraries(imgui_impl_sdl2 PUBLIC SDL2::SDL2)
+    else()
+      target_link_libraries(imgui_impl_sdl2 PUBLIC SDL2::SDL2-static)
+    endif()
+  endif()
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    target_compile_options(imgui_impl_sdl2 PUBLIC --use-port=sdl2)
+    target_link_options(imgui_impl_sdl2 PUBLIC --use-port=sdl2)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_sdl2)
   list(APPEND pkg_config_requires_list sdl2)
@@ -781,9 +813,12 @@ if(DearImGui_Backend_SDLRenderer2)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18950>,${_imgui_dir}/backends/imgui_impl_sdlrenderer2.h,${_imgui_dir}/backends/imgui_impl_sdlrenderer.h>)
-  target_link_libraries(imgui_impl_sdlrenderer2
-    PUBLIC imgui_core
-    PUBLIC $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>)
+  target_link_libraries(imgui_impl_sdlrenderer2 PUBLIC imgui_core)
+  if(TARGET SDL2::SDL2)
+    target_link_libraries(imgui_impl_sdlrenderer2 PUBLIC SDL2::SDL2)
+  else()
+    target_link_libraries(imgui_impl_sdlrenderer2 PUBLIC SDL2::SDL2-static)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_sdlrenderer2)
   list(APPEND pkg_config_requires_list sdl2)
@@ -811,12 +846,20 @@ if(DearImGui_Backend_SDL3)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_sdl3.h)
-  target_link_libraries(imgui_impl_sdl3
-    PUBLIC imgui_core
-    PUBLIC $<$<NOT:$<PLATFORM_ID:Emscripten>>:SDL3::SDL3>)
-  target_compile_options(imgui_impl_sdl3 PUBLIC $<$<PLATFORM_ID:Emscripten>:--use-port=sdl3>)
-  target_link_options(imgui_impl_sdl3 PUBLIC $<$<PLATFORM_ID:Emscripten>:--use-port=sdl3>)
-  target_compile_definitions(imgui_impl_sdl3 PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},19130>:SDL_ENABLE_OLD_NAMES>)
+  target_link_libraries(imgui_impl_sdl3 PUBLIC imgui_core)
+
+  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    target_link_libraries(imgui_impl_sdl3 PUBLIC SDL3::SDL3)
+  endif()
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    target_compile_options(imgui_impl_sdl3 PUBLIC --use-port=sdl3)
+    target_link_options(imgui_impl_sdl3 PUBLIC --use-port=sdl3)
+  endif()
+
+  if(${IMGUI_VERSION} VERSION_LESS 19130)
+    target_compile_definitions(imgui_impl_sdl3 PUBLIC SDL_ENABLE_OLD_NAMES)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_sdl3)
   list(APPEND pkg_config_requires_list sdl3)
