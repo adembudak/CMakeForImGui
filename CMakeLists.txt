@@ -150,7 +150,10 @@ target_sources(imgui_core
   FILES
     ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
 
-target_link_libraries(imgui_core PRIVATE "$<$<AND:$<PLATFORM_ID:Darwin>,$<BOOL:${IMGUI_ENABLE_OSX_DEFAULT_CLIPBOARD_FUNCTIONS}>>:-framework ApplicationServices>")
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND IMGUI_ENABLE_OSX_DEFAULT_CLIPBOARD_FUNCTIONS)
+  target_link_libraries(imgui_core PRIVATE "-framework ApplicationServices")
+endif()
+
 target_compile_features(imgui_core PUBLIC cxx_std_11)
 
 set(IMGUI_USER_CONFIG "" CACHE FILEPATH "File path to user specified configuration file")
