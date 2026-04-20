@@ -204,7 +204,7 @@ if(IMGUI_ENABLE_FREETYPE)
   target_link_libraries(imgui_core PUBLIC Freetype::Freetype)
 
   if(IMGUI_ENABLE_FREETYPE_LUNASVG)
-    if(${IMGUI_VERSION} VERSION_LESS 19200)
+    if(IMGUI_VERSION VERSION_LESS 19200)
       find_package(lunasvg 2.4.3 EXACT CONFIG REQUIRED)
     else()
       find_package(lunasvg CONFIG REQUIRED)
@@ -272,7 +272,7 @@ if(DearImGui_Backend_OpenGL3)
     endif()
   endif()
 
-  if(${IMGUI_VERSION} VERSION_LESS "18400")
+  if(IMGUI_VERSION VERSION_LESS 18400)
     find_package(GLEW REQUIRED)
 
     target_link_libraries(imgui_impl_opengl3 PUBLIC GLEW::GLEW)
@@ -359,7 +359,7 @@ if(DearImGui_Backend_WebGPU)
     set(IMGUI_IMPL_WEBGPU_BACKEND_WGPU "" CACHE BOOL "")
     set(WGPU_DIR "" CACHE PATH "Path to the folder containing wgpu-native: https://github.com/gfx-rs/wgpu-native/releases")
 
-    if(${IMGUI_VERSION} VERSION_GREATER 19260)
+    if(IMGUI_VERSION VERSION_GREATER 19260)
       set(IMGUI_IMPL_WEBGPU_BACKEND_WGVK "" CACHE BOOL "")
     endif()
 
@@ -633,7 +633,7 @@ if(DearImGui_Backend_GLFW)
 
       set_target_properties(example_glfw_wgpu PROPERTIES SUFFIX ".html")
 
-      if(${IMGUI_VERSION} VERSION_LESS_EQUAL 19240)
+      if(IMGUI_VERSION VERSION_LESS_EQUAL 19240)
         set_target_properties(example_glfw_wgpu PROPERTIES OUTPUT_NAME index)
         add_custom_command(TARGET example_glfw_wgpu
           POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${_imgui_dir}/examples/$<IF:$<VERSION_GREATER:${IMGUI_VERSION},19050>,example_glfw_wgpu,example_emscripten_wgpu>/web/index.html $<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.html)
@@ -857,7 +857,7 @@ if(DearImGui_Backend_SDL3)
     target_link_options(imgui_impl_sdl3 PUBLIC --use-port=sdl3)
   endif()
 
-  if(${IMGUI_VERSION} VERSION_LESS 19130)
+  if(IMGUI_VERSION VERSION_LESS 19130)
     target_compile_definitions(imgui_impl_sdl3 PUBLIC SDL_ENABLE_OLD_NAMES)
   endif()
 
