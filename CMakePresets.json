@@ -244,7 +244,7 @@
     },
 
     {
-      "name": "Emscripten",
+      "name": "WebGPU-Emscripten",
       "binaryDir": "build",
       "generator": "Ninja Multi-Config",
       "inherits": [
@@ -353,8 +353,14 @@
       "cleanFirst": true
     },
     {
-      "name": "Emscripten",
-      "configurePreset": "Emscripten",
+      "name": "WebGPU-Dawn",
+      "configurePreset": "WebGPU-Dawn",
+      "inheritConfigureEnvironment": true,
+      "cleanFirst": true
+    },
+    {
+      "name": "WebGPU-Emscripten",
+      "configurePreset": "WebGPU-Emscripten",
       "inheritConfigureEnvironment": true,
       "cleanFirst": true
     },
@@ -451,15 +457,29 @@
       ]
     },
     {
-      "name": "Emscripten",
+      "name": "WebGPU-Dawn",
       "steps": [
         {
           "type": "configure",
-          "name": "Emscripten"
+          "name": "WebGPU-Dawn"
         },
         {
           "type": "build",
-          "name": "Emscripten"
+          "name": "WebGPU-Dawn"
+        }
+      ]
+    },
+
+    {
+      "name": "WebGPU-Emscripten",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "WebGPU-Emscripten"
+        },
+        {
+          "type": "build",
+          "name": "WebGPU-Emscripten"
         }
       ]
     },
