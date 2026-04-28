@@ -214,6 +214,35 @@
         "examples"
       ]
     },
+{
+      "name": "WebGPU-Dawn",
+      "binaryDir": "build",
+      "generator": "Ninja Multi-Config",
+      "inherits": [
+        "assume_imgui_is_there",
+        "imconfig_h",
+        "build_requirements",
+	"vcpkg",
+        "tooling"
+      ],
+      "cacheVariables": {
+        "VCPKG_INSTALL_OPTIONS": "--x-feature=wgpu-dawn",
+        "IMGUI_IMPL_WEBGPU_BACKEND_DAWN": "ON",
+        "DearImGui_Backend_SDL2": "ON",
+        "DearImGui_Backend_SDL3": "ON",
+        "DearImGui_Backend_GLFW": "ON",
+        "DearImGui_Backend_WebGPU": "ON",
+        "DearImGui_Backend_OpenGL3": "ON",
+        "Example_GLFW_WebGPU": "ON",
+        "Example_GLFW_OpenGL3": "ON",
+        "Example_SDL2_OpenGL3": "ON",
+        "Example_SDL2_WebGPU": "ON",
+        "Example_SDL3_OpenGL3": "ON",
+        "Example_SDL3_WebGPU": "ON"
+      },
+      "$comment": "Building Dawn will take some time"
+    },
+
     {
       "name": "Emscripten",
       "binaryDir": "build",
