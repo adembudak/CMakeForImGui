@@ -45,11 +45,14 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install --assume-yes --fix-missing libxinerama-dev libxcursor-dev mesa-common-dev xorg-dev libglu1-mesa-dev pkg-config libltdl-dev libwayland-dev libxkbcommon-dev wayland-protocols extra-cmake-modules libx11-xcb-dev
+          sudo apt-get install --assume-yes --fix-missing libxinerama-dev libxcursor-dev mesa-common-dev xorg-dev libglu1-mesa-dev pkg-config libltdl-dev libwayland-dev libxkbcommon-dev wayland-protocols extra-cmake-modules libx11-xcb-dev autoconf autoconf-archive automake libtool
 
       - name: Install required packages on macOS
         if: matrix.os == 'macos-15'
-        run: brew install --cask xquartz
+        run: |
+          brew update
+          brew install --cask xquartz
+          brew install autoconf autoconf-archive automake libtool
 
       - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v2
