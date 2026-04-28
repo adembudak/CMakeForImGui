@@ -3,13 +3,6 @@
   "builtin-baseline": "c3867e714dd3a51c272826eea77267876517ed99",
   "dependencies": [
     "allegro5",
-    {
-      "name": "dawn",
-      "features": [
-        "vulkan",
-        "tint"
-      ]
-    },
     "freeglut",
     "freetype",
     "glew",
