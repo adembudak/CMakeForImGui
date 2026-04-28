@@ -1,5 +1,5 @@
 name: GitHub Actions
-run-name: Emscripten
+run-name: WebGPU-Emscripten
 
 on:
   push:
@@ -83,8 +83,8 @@ jobs:
       - name: Configure and build on Ubuntu
         run: |
           cd ${{ github.workspace }}/CMakeForImGui
-          cmake -DIMGUI_SOURCE_DIR=${{ github.workspace }}/imgui -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset Emscripten
-          cmake --build --preset Emscripten
+          cmake -DIMGUI_SOURCE_DIR=${{ github.workspace }}/imgui -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install.in.here --preset WebGPU-Emscripten
+          cmake --build --preset WebGPU-Emscripten
 
       - name: Install
         run: >
