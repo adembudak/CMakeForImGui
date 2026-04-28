@@ -20,6 +20,7 @@
     {
       "name": "sdl2",
       "features": [
+        "vulkan",
         {
           "name": "wayland",
           "platform": "linux"
@@ -30,7 +31,12 @@
         }
       ]
     },
-    "sdl3",
+    {
+      "name": "sdl3",
+      "features": [
+        "vulkan"
+      ]
+    },
     "vulkan"
   ],
   "features": {
