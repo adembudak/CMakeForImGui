@@ -980,9 +980,11 @@ if(DearImGui_Backend_Win32)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_win32.h)
-  target_link_libraries(imgui_impl_win32
-    PUBLIC imgui_core
-    PUBLIC $<$<AND:$<PLATFORM_ID:Windows>,$<CXX_COMPILER_ID:Clang,GNU>>:dwmapi>)
+  target_link_libraries(imgui_impl_win32 PUBLIC imgui_core)
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+    target_link_libraries(imgui_impl_win32 PUBLIC dwmapi)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_win32)
 
@@ -1186,7 +1188,10 @@ if(DearImGui_Backend_Metal)
   target_link_libraries(imgui_impl_metal
     PUBLIC imgui_core
     PUBLIC "-framework Metal" INTERFACE "-framework MetalKit")
-  target_compile_options(imgui_impl_metal PUBLIC $<$<VERSION_LESS:${IMGUI_VERSION},18940>:-fobjc-arc>)
+
+  if(IMGUI_VERSION VERSION_LESS 18940)
+    target_compile_options(imgui_impl_metal PUBLIC -fobjc-arc)
+  endif()
 
   list(APPEND imgui_backends_list imgui_impl_metal)
 endif()
