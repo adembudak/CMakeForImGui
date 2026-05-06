@@ -67,7 +67,7 @@ jobs:
           cmake-version: '4.0.0'
 
       - name: Check out ImGui repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: ocornut/imgui
           show-progress: false
@@ -75,7 +75,7 @@ jobs:
           path: imgui
 
       - name: Check out CMakeForImGui
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           show-progress: false
           path: CMakeForImGui
@@ -107,7 +107,7 @@ jobs:
           --config ${{ matrix.build-type }}
 
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
 
         with:
           name: build.imgui-${{ matrix.tag }}.${{ matrix.os }}.${{ matrix.build-type }}

@@ -84,7 +84,7 @@ jobs:
           cmake-version: '4.0.0'
 
       - name: Check out ImGui repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: ocornut/imgui
           show-progress: false
@@ -92,7 +92,7 @@ jobs:
           path: imgui
 
       - name: Check out CMakeForImGui
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           show-progress: false
           path: CMakeForImGui
@@ -102,7 +102,7 @@ jobs:
         run: echo "VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT" >> $GITHUB_ENV
 
       - name: Setup vcpkg
-        uses: johnwason/vcpkg-action@v7
+        uses: johnwason/vcpkg-action@v8
         id: vcpkg
         with:
           manifest-dir: ${{ github.workspace }}/CMakeForImGui
@@ -159,7 +159,7 @@ jobs:
           --config ${{ matrix.build-type }}
 
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
 
         with:
           name: build.imgui-${{ matrix.tag }}.${{ matrix.os }}.${{ matrix.triplet }}.${{ matrix.build-type }}
