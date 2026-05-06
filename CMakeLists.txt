@@ -193,7 +193,7 @@ if(IMGUI_STB_SPRINTF_FILENAME)
 endif()
 
 if(IMGUI_ENABLE_FREETYPE)
-  find_package(freetype CONFIG REQUIRED)
+  find_package(Freetype CONFIG REQUIRED)
 
   target_sources(imgui_core
     PRIVATE ${_imgui_dir}/misc/freetype/imgui_freetype.cpp
