@@ -1318,11 +1318,12 @@ if(Install)
 
   install(FILES ${PROJECT_BINARY_DIR}/DearImGuiConfig.cmake ${PROJECT_BINARY_DIR}/DearImGuiConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui)
 
-  # if(${CMAKE_VERSION} VERSION_GREATER_EQUAL 4.3)
-  #  install(PACKAGE_INFO DearImGui EXPORT imgui_export)
-  #  set(CMAKE_EXPERIMENTAL_GENERATE_SBOM "ca494ed3-b261-4205-a01f-603c95e4cae0")
-  #  install(SBOM DearImGui EXPORT imgui_export)
-  # endif()
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.3)
+    install(PACKAGE_INFO DearImGui
+      EXPORT imgui_export
+      VERSION ${IMGUI_VERSION}
+      HOMEPAGE_URL https://github.com/ocornut/imgui)
+  endif()
 endif()
 
 if(Uninstall)
