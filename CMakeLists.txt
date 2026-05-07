@@ -1318,12 +1318,14 @@ if(Install)
 
   install(FILES ${PROJECT_BINARY_DIR}/DearImGuiConfig.cmake ${PROJECT_BINARY_DIR}/DearImGuiConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui)
 
+  #[[
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.3)
     install(PACKAGE_INFO DearImGui
       EXPORT imgui_export
       VERSION ${IMGUI_VERSION}
       HOMEPAGE_URL https://github.com/ocornut/imgui)
   endif()
+  ]]#
 endif()
 
 if(Uninstall)
