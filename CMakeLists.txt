@@ -119,7 +119,9 @@ cmake_dependent_option(Example_Apple_Metal "" OFF "DearImGui_Backend_OSX AND Dea
 
 set(imgui_backends_list)
 set(imgui_examples_list)
+
 set(pkg_config_requires_list)
+set(pkg_config_requires_private_list)
 
 add_library(imgui_core)
 target_sources(imgui_core
@@ -201,7 +203,7 @@ if(IMGUI_ENABLE_FREETYPE)
     BASE_DIRS ${_imgui_dir}/misc/freetype
     TYPE HEADERS
     FILES ${_imgui_dir}/misc/freetype/imgui_freetype.h)
-  target_link_libraries(imgui_core PUBLIC Freetype::Freetype)
+  target_link_libraries(imgui_core PRIVATE Freetype::Freetype)
 
   if(IMGUI_ENABLE_FREETYPE_LUNASVG)
     if(IMGUI_VERSION VERSION_LESS 19200)
@@ -209,13 +211,17 @@ if(IMGUI_ENABLE_FREETYPE)
     else()
       find_package(lunasvg CONFIG REQUIRED)
     endif()
-    target_link_libraries(imgui_core PUBLIC lunasvg::lunasvg)
+    target_link_libraries(imgui_core PRIVATE lunasvg::lunasvg)
   elseif(IMGUI_ENABLE_FREETYPE_PLUTOSVG)
     find_package(plutosvg CONFIG REQUIRED)
-    target_link_libraries(imgui_core PUBLIC plutosvg::plutosvg)
+    target_link_libraries(imgui_core PRIVATE plutosvg::plutosvg)
   endif()
 
-  list(APPEND pkg_config_requires_list freetype2)
+  list(APPEND pkg_config_requires_private_list freetype2)
+  if(IMGUI_ENABLE_FREETYPE_LUNASVG OR IMGUI_ENABLE_FREETYPE_PLUTOSVG)
+     list(REMOVE_ITEM pkg_config_requires_private_list freetype2)
+     list(APPEND pkg_config_requires_private_list "freetype2 >= 2.12")
+  endif()
 endif()
 
 add_executable(binary_to_compressed_c)
@@ -1253,6 +1259,7 @@ Version: @PROJECT_VERSION@
 URL: @PROJECT_HOMEPAGE_URL@
 
 Requires: @pkg_config_requires_string@
+Requires.private: @pkg_config_requires_private_list@
 Conflicts:
 Libs: -L${libdir} -limgui_core @pkg_config_imgui_backends_string@
 Libs.private:
