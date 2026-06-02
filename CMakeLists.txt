@@ -212,15 +212,18 @@ if(IMGUI_ENABLE_FREETYPE)
       find_package(lunasvg CONFIG REQUIRED)
     endif()
     target_link_libraries(imgui_core PRIVATE lunasvg::lunasvg)
+
+    list(APPEND pkg_config_requires_private_list lunasvg)
   elseif(IMGUI_ENABLE_FREETYPE_PLUTOSVG)
     find_package(plutosvg CONFIG REQUIRED)
     target_link_libraries(imgui_core PRIVATE plutosvg::plutosvg)
+
+    list(APPEND pkg_config_requires_private_list plutosvg)
   endif()
 
   list(APPEND pkg_config_requires_private_list freetype2)
   if(IMGUI_ENABLE_FREETYPE_LUNASVG OR IMGUI_ENABLE_FREETYPE_PLUTOSVG)
-     list(REMOVE_ITEM pkg_config_requires_private_list freetype2)
-     list(APPEND pkg_config_requires_private_list "freetype2 >= 2.12")
+    list(TRANSFORM pkg_config_requires_private_list REPLACE "freetype2" "freetype2 >= 2.12")
   endif()
 endif()
 
@@ -1240,6 +1243,11 @@ if(Pkg-config)
     string(JOIN " " pkg_config_requires_string ${pkg_config_requires_list})
   endif()
 
+  if(pkg_config_requires_private_list)
+    list(SORT pkg_config_requires_private_list)
+    string(JOIN " " pkg_config_requires_private_string ${pkg_config_requires_private_list})
+  endif()
+
   if(imgui_backends_list)
     set(pkg_config_imgui_backends_list ${imgui_backends_list})
     list(TRANSFORM pkg_config_imgui_backends_list PREPEND "-l")
@@ -1259,7 +1267,7 @@ Version: @PROJECT_VERSION@
 URL: @PROJECT_HOMEPAGE_URL@
 
 Requires: @pkg_config_requires_string@
-Requires.private: @pkg_config_requires_private_list@
+Requires.private: @pkg_config_requires_private_string@
 Conflicts:
 Libs: -L${libdir} -limgui_core @pkg_config_imgui_backends_string@
 Libs.private:
