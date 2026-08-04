@@ -237,22 +237,22 @@ if(DearImGui_Backend_OpenGL2)
     find_package(OpenGL 2 QUIET REQUIRED)
   endif()
 
-  add_library(imgui_impl_opengl2)
-  target_sources(imgui_impl_opengl2
+  add_library(Impl_OpenGL2)
+  target_sources(Impl_OpenGL2
     PRIVATE ${_imgui_dir}/backends/imgui_impl_opengl2.cpp
     PUBLIC FILE_SET imgui_impl_opengl2_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_opengl2.h)
 
-  target_link_libraries(imgui_impl_opengl2 PUBLIC Core)
+  target_link_libraries(Impl_OpenGL2 PUBLIC Core)
   if(WIN32 AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
-    target_link_libraries(imgui_impl_opengl2 PUBLIC opengl32)
+    target_link_libraries(Impl_OpenGL2 PUBLIC opengl32)
   else()
-    target_link_libraries(imgui_impl_opengl2 PUBLIC OpenGL::GL)
+    target_link_libraries(Impl_OpenGL2 PUBLIC OpenGL::GL)
   endif()
 
-  list(APPEND imgui_backends_list imgui_impl_opengl2)
+  list(APPEND imgui_backends_list Impl_OpenGL2)
   list(APPEND pkg_config_requires_list opengl)
 endif()
 
@@ -597,7 +597,7 @@ if(DearImGui_Backend_GLFW)
   if(Example_GLFW_OpenGL2)
     add_executable(example_glfw_opengl2)
     target_sources(example_glfw_opengl2 PRIVATE ${_imgui_dir}/examples/example_glfw_opengl2/main.cpp)
-    target_link_libraries(example_glfw_opengl2 PRIVATE imgui_impl_glfw imgui_impl_opengl2)
+    target_link_libraries(example_glfw_opengl2 PRIVATE imgui_impl_glfw Impl_OpenGL2)
 
     list(APPEND imgui_examples_list example_glfw_opengl2)
   endif()
@@ -676,7 +676,7 @@ if(DearImGui_Backend_FreeGLUT)
   if(Example_FreeGLUT_OpenGL2)
     add_executable(example_glut_opengl2)
     target_sources(example_glut_opengl2 PRIVATE ${_imgui_dir}/examples/example_glut_opengl2/main.cpp)
-    target_link_libraries(example_glut_opengl2 PRIVATE imgui_impl_glut imgui_impl_opengl2)
+    target_link_libraries(example_glut_opengl2 PRIVATE imgui_impl_glut Impl_OpenGL2)
 
     list(APPEND imgui_examples_list example_glut_opengl2)
   endif()
@@ -738,7 +738,7 @@ if(DearImGui_Backend_SDL2)
     add_executable(example_sdl2_opengl2)
     target_sources(example_sdl2_opengl2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_opengl2/main.cpp,${_imgui_dir}/examples/example_sdl_opengl2/main.cpp>)
     target_link_libraries(example_sdl2_opengl2
-      PRIVATE imgui_impl_sdl2 imgui_impl_opengl2
+      PRIVATE imgui_impl_sdl2 Impl_OpenGL2
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
 
     list(APPEND imgui_examples_list example_sdl2_opengl2)
@@ -1219,7 +1219,7 @@ if(DearImGui_Backend_OSX)
   if(Example_Apple_OpenGL2)
     add_executable(example_apple_opengl2 MACOSX_BUNDLE)
     target_sources(example_apple_opengl2 PRIVATE ${_imgui_dir}/examples/example_apple_opengl2/main.mm)
-    target_link_libraries(example_apple_opengl2 PRIVATE imgui_impl_osx imgui_impl_opengl2)
+    target_link_libraries(example_apple_opengl2 PRIVATE imgui_impl_osx Impl_OpenGL2)
 
     list(APPEND imgui_examples_list example_apple_opengl2)
   endif()
