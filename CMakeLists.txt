@@ -1278,8 +1278,10 @@ if(Install)
 
   install(DIRECTORY ${_imgui_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(FILES ${_imgui_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
-  install(EXPORT imgui_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE ImGui:: FILE DearImGuiTargets.cmake)
-  install(TARGETS Core EXPORT imgui_export FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
+
+  install(EXPORT imgui-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE ImGui:: FILE DearImGuiTargets.cmake)
+  install(TARGETS Core EXPORT imgui-targets FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
+
 
   install(DIRECTORY $<$<VERSION_GREATER:${IMGUI_VERSION},18100>:${_imgui_dir}/misc/debuggers> DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(TARGETS binary_to_compressed_c DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/fonts)
@@ -1290,7 +1292,7 @@ if(Install)
     get_target_property(file_set ${backend} HEADER_SETS)
     list(REMOVE_ITEM file_set HEADERS)
 
-    install(TARGETS ${name} EXPORT imgui_export FILE_SET ${file_set})
+    install(TARGETS ${name} EXPORT imgui-targets FILE_SET ${file_set})
   endforeach()
 
   if(Install_examples)
