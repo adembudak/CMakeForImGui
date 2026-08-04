@@ -78,7 +78,7 @@ All the include paths are kept as is. [This repo](https://github.com/adembudak/C
 # project setup
 # ...
 
-find_package(DearImGui CONFIG REQUIRED)
+find_package(ImGui CONFIG REQUIRED)
 # ...
 target_link_libraries(tgt PUBLIC ImGui::Backend_SDL2 ImGui::Backend_OpenGL3)
 ```
@@ -88,9 +88,9 @@ The build script can be used to generate a **pkg-config** file:
 ```cmake
 cmake -D Pkg-config=ON -S . -B build
 ```
-This generates a `dearimgui.pc` file in build directory which can be installed and used:
+This generates a `imgui.pc` file in build directory which can be installed and used:
 ```bash
-c++ -o out main.cpp $(pkg-config --cflags --libs dearimgui)
+c++ -o out main.cpp $(pkg-config --cflags --libs imgui)
 ```
 ## Alternative approaches
 
