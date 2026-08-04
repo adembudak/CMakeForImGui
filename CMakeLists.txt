@@ -123,8 +123,8 @@ set(imgui_examples_list)
 set(pkg_config_requires_list)
 set(pkg_config_requires_private_list)
 
-add_library(imgui_core)
-target_sources(imgui_core
+add_library(Core)
+target_sources(Core
   PRIVATE
     ${_imgui_dir}/imgui.cpp
     ${_imgui_dir}/imgui_draw.cpp
@@ -153,10 +153,10 @@ target_sources(imgui_core
     ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND IMGUI_ENABLE_OSX_DEFAULT_CLIPBOARD_FUNCTIONS)
-  target_link_libraries(imgui_core PRIVATE "-framework ApplicationServices")
+  target_link_libraries(Core PRIVATE "-framework ApplicationServices")
 endif()
 
-target_compile_features(imgui_core PUBLIC cxx_std_11)
+target_compile_features(Core PUBLIC cxx_std_11)
 
 set(IMGUI_USER_CONFIG "" CACHE FILEPATH "File path to user specified configuration file")
 set(IMGUI_USER_H_FILENAME "" CACHE FILEPATH "")
@@ -167,43 +167,43 @@ set(IMGUI_STB_SPRINTF_FILENAME "" CACHE FILEPATH "")
 if(IMGUI_USER_CONFIG)
   cmake_path(SET IMGUI_USER_CONFIG ${IMGUI_USER_CONFIG})
   cmake_path(ABSOLUTE_PATH IMGUI_USER_CONFIG NORMALIZE)
-  target_compile_definitions(imgui_core PUBLIC IMGUI_USER_CONFIG="${IMGUI_USER_CONFIG}")
+  target_compile_definitions(Core PUBLIC IMGUI_USER_CONFIG="${IMGUI_USER_CONFIG}")
 endif()
 
 if(IMGUI_USER_H_FILENAME)
   cmake_path(SET IMGUI_USER_H_FILENAME ${IMGUI_USER_H_FILENAME})
   cmake_path(ABSOLUTE_PATH IMGUI_USER_H_FILENAME NORMALIZE)
-  target_compile_definitions(imgui_core PRIVATE IMGUI_INCLUDE_IMGUI_USER_H IMGUI_USER_H_FILENAME="${IMGUI_USER_H_FILENAME}")
+  target_compile_definitions(Core PRIVATE IMGUI_INCLUDE_IMGUI_USER_H IMGUI_USER_H_FILENAME="${IMGUI_USER_H_FILENAME}")
 endif()
 
 if(IMGUI_STB_TRUETYPE_FILENAME)
   cmake_path(SET IMGUI_STB_TRUETYPE_FILENAME ${IMGUI_STB_TRUETYPE_FILENAME})
   cmake_path(ABSOLUTE_PATH IMGUI_STB_TRUETYPE_FILENAME NORMALIZE)
-  target_compile_definitions(imgui_core PRIVATE IMGUI_STB_TRUETYPE_FILENAME="${IMGUI_STB_TRUETYPE_FILENAME}")
+  target_compile_definitions(Core PRIVATE IMGUI_STB_TRUETYPE_FILENAME="${IMGUI_STB_TRUETYPE_FILENAME}")
 endif()
 
 if(IMGUI_STB_RECT_PACK_FILENAME)
   cmake_path(SET IMGUI_STB_RECT_PACK_FILENAME ${IMGUI_STB_RECT_PACK_FILENAME})
   cmake_path(ABSOLUTE_PATH IMGUI_STB_RECT_PACK_FILENAME NORMALIZE)
-  target_compile_definitions(imgui_core PRIVATE IMGUI_STB_RECT_PACK_FILENAME="${IMGUI_STB_RECT_PACK_FILENAME}")
+  target_compile_definitions(Core PRIVATE IMGUI_STB_RECT_PACK_FILENAME="${IMGUI_STB_RECT_PACK_FILENAME}")
 endif()
 
 if(IMGUI_STB_SPRINTF_FILENAME)
   cmake_path(SET IMGUI_STB_SPRINTF_FILENAME ${IMGUI_STB_SPRINTF_FILENAME})
   cmake_path(ABSOLUTE_PATH IMGUI_STB_SPRINTF_FILENAME NORMALIZE)
-  target_compile_definitions(imgui_core PRIVATE IMGUI_STB_SPRINTF_FILENAME="${IMGUI_STB_SPRINTF_FILENAME}")
+  target_compile_definitions(Core PRIVATE IMGUI_STB_SPRINTF_FILENAME="${IMGUI_STB_SPRINTF_FILENAME}")
 endif()
 
 if(IMGUI_ENABLE_FREETYPE)
   find_package(Freetype CONFIG REQUIRED)
 
-  target_sources(imgui_core
+  target_sources(Core
     PRIVATE ${_imgui_dir}/misc/freetype/imgui_freetype.cpp
     PUBLIC FILE_SET imgui_misc_freetype_set
     BASE_DIRS ${_imgui_dir}/misc/freetype
     TYPE HEADERS
     FILES ${_imgui_dir}/misc/freetype/imgui_freetype.h)
-  target_link_libraries(imgui_core PRIVATE Freetype::Freetype)
+  target_link_libraries(Core PRIVATE Freetype::Freetype)
 
   if(IMGUI_ENABLE_FREETYPE_LUNASVG)
     if(IMGUI_VERSION VERSION_LESS 19200)
@@ -211,12 +211,12 @@ if(IMGUI_ENABLE_FREETYPE)
     else()
       find_package(lunasvg CONFIG REQUIRED)
     endif()
-    target_link_libraries(imgui_core PRIVATE lunasvg::lunasvg)
+    target_link_libraries(Core PRIVATE lunasvg::lunasvg)
 
     list(APPEND pkg_config_requires_private_list lunasvg)
   elseif(IMGUI_ENABLE_FREETYPE_PLUTOSVG)
     find_package(plutosvg CONFIG REQUIRED)
-    target_link_libraries(imgui_core PRIVATE plutosvg::plutosvg)
+    target_link_libraries(Core PRIVATE plutosvg::plutosvg)
 
     list(APPEND pkg_config_requires_private_list plutosvg)
   endif()
@@ -245,7 +245,7 @@ if(DearImGui_Backend_OpenGL2)
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_opengl2.h)
 
-  target_link_libraries(imgui_impl_opengl2 PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_opengl2 PUBLIC Core)
   if(WIN32 AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
     target_link_libraries(imgui_impl_opengl2 PUBLIC opengl32)
   else()
@@ -269,7 +269,7 @@ if(DearImGui_Backend_OpenGL3)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_opengl3.h)
-  target_link_libraries(imgui_impl_opengl3 PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_opengl3 PUBLIC Core)
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
     target_link_libraries(imgui_impl_opengl3 PUBLIC opengl32)
@@ -331,7 +331,7 @@ VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-X64-x.y.zzz-Comp
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_vulkan.h)
-  target_link_libraries(imgui_impl_vulkan PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_vulkan PUBLIC Core)
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
     target_link_libraries(imgui_impl_vulkan PUBLIC Vulkan::Headers ${Vulkan_Libraries})
@@ -351,7 +351,7 @@ if(DearImGui_Backend_WebGPU)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_wgpu.h)
-  target_link_libraries(imgui_impl_wgpu PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_wgpu PUBLIC Core)
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     enable_language(OBJCXX)
@@ -510,7 +510,7 @@ Android NDK toolchain is not used
     FILES ${Android_NDK_INCLUDE_DIR}/android/native_window.h ${Android_NDK_INCLUDE_DIR}/android/input.h ${Android_NDK_INCLUDE_DIR}/android/keycodes.h ${Android_NDK_INCLUDE_DIR}/android/log.h)
   target_link_directories(imgui_impl_android PUBLIC ${Android_NDK_LIB_DIR})
   target_link_libraries(imgui_impl_android
-    PUBLIC imgui_core
+    PUBLIC Core
     PUBLIC log android)
 
   list(APPEND imgui_backends_list imgui_impl_android)
@@ -542,7 +542,7 @@ if(DearImGui_Backend_Allegro5)
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_allegro5.h)
   target_link_libraries(imgui_impl_allegro5
-    PUBLIC imgui_core
+    PUBLIC Core
     PUBLIC Allegro::allegro Allegro::allegro_primitives INTERFACE Allegro::allegro_main)
 
   list(APPEND imgui_backends_list imgui_impl_allegro5)
@@ -571,7 +571,7 @@ if(DearImGui_Backend_GLFW)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_glfw.h)
-  target_link_libraries(imgui_impl_glfw PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_glfw PUBLIC Core)
 
   if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     target_link_libraries(imgui_impl_glfw PUBLIC glfw)
@@ -663,7 +663,7 @@ if(DearImGui_Backend_FreeGLUT)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_glut.h)
-  target_link_libraries(imgui_impl_glut PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_glut PUBLIC Core)
   if(TARGET FreeGLUT::freeglut)
     target_link_libraries(imgui_impl_glut PUBLIC FreeGLUT::freeglut)
   else()
@@ -690,7 +690,7 @@ if(DearImGui_Backend_NULL)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_null.h)
-  target_link_libraries(imgui_impl_null PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_null PUBLIC Core)
 
   list(APPEND imgui_backends_list imgui_impl_null)
 endif()
@@ -698,7 +698,7 @@ endif()
 if(Example_NULL)
   add_executable(example_null)
   target_sources(example_null PRIVATE ${_imgui_dir}/examples/example_null/main.cpp)
-  target_link_libraries(example_null PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19240>,imgui_impl_null,imgui_core>)
+  target_link_libraries(example_null PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19240>,imgui_impl_null,Core>)
 
   list(APPEND imgui_examples_list example_null)
 endif()
@@ -716,7 +716,7 @@ if(DearImGui_Backend_SDL2)
     TYPE HEADERS
     FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/backends/imgui_impl_sdl2.h,${_imgui_dir}/backends/imgui_impl_sdl.h>)
 
-  target_link_libraries(imgui_impl_sdl2 PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_sdl2 PUBLIC Core)
 
   if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     if(TARGET SDL2::SDL2)
@@ -822,7 +822,7 @@ if(DearImGui_Backend_SDLRenderer2)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18950>,${_imgui_dir}/backends/imgui_impl_sdlrenderer2.h,${_imgui_dir}/backends/imgui_impl_sdlrenderer.h>)
-  target_link_libraries(imgui_impl_sdlrenderer2 PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_sdlrenderer2 PUBLIC Core)
   if(TARGET SDL2::SDL2)
     target_link_libraries(imgui_impl_sdlrenderer2 PUBLIC SDL2::SDL2)
   else()
@@ -855,7 +855,7 @@ if(DearImGui_Backend_SDL3)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_sdl3.h)
-  target_link_libraries(imgui_impl_sdl3 PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_sdl3 PUBLIC Core)
 
   if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     target_link_libraries(imgui_impl_sdl3 PUBLIC SDL3::SDL3)
@@ -936,7 +936,7 @@ if(DearImGui_Backend_SDLGPU3)
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_sdlgpu3.h ${_imgui_dir}/backends/imgui_impl_sdlgpu3_shaders.h)
   target_link_libraries(imgui_impl_sdlgpu3
-    PUBLIC imgui_core
+    PUBLIC Core
     PUBLIC SDL3::SDL3)
 
   list(APPEND imgui_backends_list imgui_impl_sdlgpu3)
@@ -986,7 +986,7 @@ if(DearImGui_Backend_Win32)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_win32.h)
-  target_link_libraries(imgui_impl_win32 PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_win32 PUBLIC Core)
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     target_link_libraries(imgui_impl_win32 PUBLIC dwmapi)
@@ -1095,7 +1095,7 @@ if(DearImGui_Backend_DirectX9)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_dx9.h)
-  target_link_libraries(imgui_impl_dx9 PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_dx9 PUBLIC Core)
 
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_link_directories(imgui_impl_dx9 PRIVATE ${Windows_SDK_LIB_DIR})
@@ -1116,7 +1116,7 @@ if(DearImGui_Backend_DirectX10)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_dx10.h)
-  target_link_libraries(imgui_impl_dx10 PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_dx10 PUBLIC Core)
 
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_link_directories(imgui_impl_dx10 PRIVATE ${Windows_SDK_LIB_DIR})
@@ -1140,7 +1140,7 @@ if(DearImGui_Backend_DirectX11)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_dx11.h)
-  target_link_libraries(imgui_impl_dx11 PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_dx11 PUBLIC Core)
 
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_link_directories(imgui_impl_dx11 PRIVATE ${Windows_SDK_LIB_DIR})
@@ -1164,7 +1164,7 @@ if(DearImGui_Backend_DirectX12)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_dx12.h)
-  target_link_libraries(imgui_impl_dx12 PUBLIC imgui_core)
+  target_link_libraries(imgui_impl_dx12 PUBLIC Core)
 
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_link_directories(imgui_impl_dx12 PRIVATE ${Windows_SDK_LIB_DIR})
@@ -1192,7 +1192,7 @@ if(DearImGui_Backend_Metal)
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_metal.h)
   target_link_libraries(imgui_impl_metal
-    PUBLIC imgui_core
+    PUBLIC Core
     PUBLIC "-framework Metal" INTERFACE "-framework MetalKit")
 
   if(IMGUI_VERSION VERSION_LESS 18940)
@@ -1211,7 +1211,7 @@ if(DearImGui_Backend_OSX)
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_osx.h)
   target_link_libraries(imgui_impl_osx
-    PUBLIC imgui_core
+    PUBLIC Core
     PUBLIC "-framework AppKit" "-framework Carbon" "-framework GameController")
 
   list(APPEND imgui_backends_list imgui_impl_osx)
@@ -1266,7 +1266,7 @@ URL: @PROJECT_HOMEPAGE_URL@
 Requires: @pkg_config_requires_string@
 Requires.private: @pkg_config_requires_private_string@
 Conflicts:
-Libs: -L${libdir} -limgui_core @pkg_config_imgui_backends_string@
+Libs: -L${libdir} -lCore @pkg_config_imgui_backends_string@
 Libs.private:
 Cflags: -I${includedir}
 ]=] @ONLY)
@@ -1279,7 +1279,7 @@ if(Install)
   install(DIRECTORY ${_imgui_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(FILES ${_imgui_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(EXPORT imgui_export DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE ImGui:: FILE DearImGuiTargets.cmake)
-  install(TARGETS imgui_core EXPORT imgui_export FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
+  install(TARGETS Core EXPORT imgui_export FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
 
   install(DIRECTORY $<$<VERSION_GREATER:${IMGUI_VERSION},18100>:${_imgui_dir}/misc/debuggers> DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(TARGETS binary_to_compressed_c DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/fonts)
