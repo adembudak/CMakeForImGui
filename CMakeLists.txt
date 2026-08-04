@@ -67,7 +67,7 @@ endif()
 
 option(BUILD_SHARED_LIBS "" OFF)
 
-option(Pkg-config "Generate dearimgui.pc file" OFF)
+option(Pkg-config "Generate imgui.pc file" OFF)
 
 option(Install "Install Dear ImGui" ON)
 option(Uninstall "A custom target 'uninstall' is generated to undo the latest install step" ON)
@@ -1251,7 +1251,7 @@ if(Pkg-config)
     string(JOIN " " pkg_config_imgui_backends_string ${pkg_config_imgui_backends_list})
   endif()
 
-  file(CONFIGURE OUTPUT ${PROJECT_BINARY_DIR}/dearimgui.pc CONTENT
+  file(CONFIGURE OUTPUT ${PROJECT_BINARY_DIR}/imgui.pc CONTENT
 [=[
 prefix=@CMAKE_INSTALL_PREFIX@
 exec_prefix=${prefix}
@@ -1326,7 +1326,7 @@ if(Install)
   endif()
 
   if(Pkg-config)
-    install(FILES ${PROJECT_BINARY_DIR}/dearimgui.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+    install(FILES ${PROJECT_BINARY_DIR}/imgui.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
   endif()
 
   configure_package_config_file(ImGuiConfig.cmake.in ${PROJECT_BINARY_DIR}/ImGuiConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui)
