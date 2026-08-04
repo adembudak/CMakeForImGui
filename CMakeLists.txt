@@ -1282,7 +1282,9 @@ if(Install)
   install(EXPORT imgui-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui NAMESPACE ImGui:: FILE ImGuiTargets.cmake)
   install(TARGETS Core EXPORT imgui-targets FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
 
-  install(PACKAGE_INFO ImGui EXPORT imgui-targets NO_PROJECT_METADATA VERSION ${IMGUI_VERSION} HOMEPAGE_URL https://github.com/ocornut/imgui)
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.3)
+    install(PACKAGE_INFO ImGui EXPORT imgui-targets NO_PROJECT_METADATA VERSION ${IMGUI_VERSION} HOMEPAGE_URL https://github.com/ocornut/imgui)
+  endif()
 
   install(DIRECTORY $<$<VERSION_GREATER:${IMGUI_VERSION},18100>:${_imgui_dir}/misc/debuggers> DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(TARGETS binary_to_compressed_c DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/fonts)
@@ -1333,8 +1335,6 @@ if(Install)
   write_basic_package_version_file(${PROJECT_BINARY_DIR}/ImGuiConfigVersion.cmake VERSION ${IMGUI_VERSION} COMPATIBILITY ExactVersion)
   install(FILES ${PROJECT_BINARY_DIR}/ImGuiConfig.cmake ${PROJECT_BINARY_DIR}/ImGuiConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui)
 
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.3)
-  endif()
 endif()
 
 if(Uninstall)
