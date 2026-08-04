@@ -262,31 +262,31 @@ if(DearImGui_Backend_OpenGL3)
     include(FindOpenGL)
   endif()
 
-  add_library(imgui_impl_opengl3)
-  target_sources(imgui_impl_opengl3
+  add_library(Impl_OpenGL3)
+  target_sources(Impl_OpenGL3
     PRIVATE ${_imgui_dir}/backends/imgui_impl_opengl3.cpp
     PUBLIC FILE_SET imgui_impl_opengl3_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_opengl3.h)
-  target_link_libraries(imgui_impl_opengl3 PUBLIC Core)
+  target_link_libraries(Impl_OpenGL3 PUBLIC Core)
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
-    target_link_libraries(imgui_impl_opengl3 PUBLIC opengl32)
+    target_link_libraries(Impl_OpenGL3 PUBLIC opengl32)
   elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
-    target_link_libraries(imgui_impl_opengl3 PUBLIC EGL)
+    target_link_libraries(Impl_OpenGL3 PUBLIC EGL)
   else()
-    target_link_libraries(imgui_impl_opengl3 PUBLIC OpenGL::GL)
+    target_link_libraries(Impl_OpenGL3 PUBLIC OpenGL::GL)
   endif()
 
   if(IMGUI_VERSION VERSION_LESS 18400)
     find_package(GLEW REQUIRED)
 
-    target_link_libraries(imgui_impl_opengl3 PUBLIC GLEW::GLEW)
-    target_compile_definitions(imgui_impl_opengl3 PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
+    target_link_libraries(Impl_OpenGL3 PUBLIC GLEW::GLEW)
+    target_compile_definitions(Impl_OpenGL3 PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
   endif()
 
-  list(APPEND imgui_backends_list imgui_impl_opengl3)
+  list(APPEND imgui_backends_list Impl_OpenGL3)
   list(APPEND pkg_config_requires_list opengl)
 endif()
 
@@ -585,7 +585,7 @@ if(DearImGui_Backend_GLFW)
     target_sources(example_glfw_opengl3 PRIVATE ${_imgui_dir}/examples/example_glfw_opengl3/main.cpp)
     target_compile_options(example_glfw_opengl3 PRIVATE $<$<PLATFORM_ID:Emscripten>:--use-port=contrib.glfw3>)
     target_link_options(example_glfw_opengl3 PRIVATE $<$<PLATFORM_ID:Emscripten>:--use-port=contrib.glfw3>)
-    target_link_libraries(example_glfw_opengl3 PRIVATE imgui_impl_glfw imgui_impl_opengl3)
+    target_link_libraries(example_glfw_opengl3 PRIVATE imgui_impl_glfw Impl_OpenGL3)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       set_target_properties(example_glfw_opengl3 PROPERTIES SUFFIX ".html")
@@ -748,7 +748,7 @@ if(DearImGui_Backend_SDL2)
     add_executable(example_sdl2_opengl3)
     target_sources(example_sdl2_opengl3 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_opengl3/main.cpp,${_imgui_dir}/examples/example_sdl_opengl3/main.cpp>)
     target_link_libraries(example_sdl2_opengl3
-      PRIVATE imgui_impl_sdl2 imgui_impl_opengl3
+      PRIVATE imgui_impl_sdl2 Impl_OpenGL3
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
@@ -876,7 +876,7 @@ if(DearImGui_Backend_SDL3)
   if(Example_SDL3_OpenGL3)
     add_executable(example_sdl3_opengl3)
     target_sources(example_sdl3_opengl3 PRIVATE ${_imgui_dir}/examples/example_sdl3_opengl3/main.cpp)
-    target_link_libraries(example_sdl3_opengl3 PRIVATE imgui_impl_sdl3 imgui_impl_opengl3)
+    target_link_libraries(example_sdl3_opengl3 PRIVATE imgui_impl_sdl3 Impl_OpenGL3)
     target_compile_definitions(example_sdl3_opengl3 PRIVATE $<$<VERSION_LESS:${IMGUI_VERSION},19130>:SDL_INIT_TIMER=0x00000001u>)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
@@ -997,7 +997,7 @@ if(DearImGui_Backend_Win32)
   if(Example_Win32_OpenGL3)
     add_executable(example_win32_opengl3)
     target_sources(example_win32_opengl3 PRIVATE ${_imgui_dir}/examples/example_win32_opengl3/main.cpp)
-    target_link_libraries(example_win32_opengl3 PRIVATE imgui_impl_win32 imgui_impl_opengl3)
+    target_link_libraries(example_win32_opengl3 PRIVATE imgui_impl_win32 Impl_OpenGL3)
 
     list(APPEND imgui_examples_list example_win32_opengl3)
   endif()

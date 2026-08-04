@@ -46,10 +46,6 @@ if(TARGET ImGui::imgui_impl_sdlgpu3 AND NOT TARGET ImGui::Backend_SDLGPU3)
   add_library(ImGui::Backend_SDLGPU3 ALIAS ImGui::imgui_impl_sdlgpu3)
 endif()
 
-if(TARGET ImGui::imgui_impl_opengl3 AND NOT TARGET ImGui::Backend_OpenGL3)
-  add_library(ImGui::Backend_OpenGL3 ALIAS ImGui::imgui_impl_opengl3)
-endif()
-
 if(TARGET ImGui::imgui_impl_vulkan AND NOT TARGET ImGui::Backend_Vulkan)
   add_library(ImGui::Backend_Vulkan ALIAS ImGui::imgui_impl_vulkan)
 endif()
@@ -130,7 +126,7 @@ if(TARGET ImGui::Impl_OpenGL2)
   find_dependency(OpenGL 2 ${quiet} ${required})
 endif()
 
-if(TARGET ImGui::Backend_OpenGL3)
+if(TARGET ImGui::Impl_OpenGL3)
   find_dependency(OpenGL 3 ${quiet} ${required})
 endif()
 
