@@ -1279,12 +1279,14 @@ if(Install)
   install(DIRECTORY ${_imgui_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(FILES ${_imgui_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
 
-  install(EXPORT imgui-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui NAMESPACE ImGui:: FILE DearImGuiTargets.cmake)
+  install(EXPORT imgui-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui NAMESPACE ImGui:: FILE ImGuiTargets.cmake)
   install(TARGETS Core EXPORT imgui-targets FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
 
+  install(PACKAGE_INFO ImGui EXPORT imgui-targets NO_PROJECT_METADATA VERSION ${IMGUI_VERSION} HOMEPAGE_URL https://github.com/ocornut/imgui)
 
   install(DIRECTORY $<$<VERSION_GREATER:${IMGUI_VERSION},18100>:${_imgui_dir}/misc/debuggers> DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(TARGETS binary_to_compressed_c DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/fonts)
+
   install(DIRECTORY ${_imgui_dir}/misc/fonts DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui FILES_MATCHING PATTERN "*.ttf")
 
   foreach(backend IN LISTS imgui_backends_list)
@@ -1327,19 +1329,12 @@ if(Install)
     install(FILES ${PROJECT_BINARY_DIR}/dearimgui.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
   endif()
 
-  configure_package_config_file(DearImGuiConfig.cmake.in ${PROJECT_BINARY_DIR}/DearImGuiConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui)
-  write_basic_package_version_file(${PROJECT_BINARY_DIR}/DearImGuiConfigVersion.cmake VERSION ${IMGUI_VERSION} COMPATIBILITY ExactVersion)
+  configure_package_config_file(ImGuiConfig.cmake.in ${PROJECT_BINARY_DIR}/ImGuiConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui)
+  write_basic_package_version_file(${PROJECT_BINARY_DIR}/ImGuiConfigVersion.cmake VERSION ${IMGUI_VERSION} COMPATIBILITY ExactVersion)
+  install(FILES ${PROJECT_BINARY_DIR}/ImGuiConfig.cmake ${PROJECT_BINARY_DIR}/ImGuiConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui)
 
-  install(FILES ${PROJECT_BINARY_DIR}/DearImGuiConfig.cmake ${PROJECT_BINARY_DIR}/DearImGuiConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DearImGui)
-
-  #[[
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.3)
-    install(PACKAGE_INFO DearImGui
-      EXPORT imgui_export
-      VERSION ${IMGUI_VERSION}
-      HOMEPAGE_URL https://github.com/ocornut/imgui)
   endif()
-  ]]#
 endif()
 
 if(Uninstall)
