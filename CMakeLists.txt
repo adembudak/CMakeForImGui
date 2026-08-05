@@ -344,20 +344,20 @@ VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-X64-x.y.zzz-Comp
 endif()
 
 if(DearImGui_Backend_WebGPU)
-  add_library(imgui_impl_wgpu)
-  target_sources(imgui_impl_wgpu
+  add_library(Impl_WebGPU)
+  target_sources(Impl_WebGPU
     PRIVATE ${_imgui_dir}/backends/imgui_impl_wgpu.cpp
     PUBLIC FILE_SET imgui_impl_wgpu_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_wgpu.h)
-  target_link_libraries(imgui_impl_wgpu PUBLIC Core)
+  target_link_libraries(Impl_WebGPU PUBLIC Core)
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     enable_language(OBJCXX)
     set_source_files_properties(${_imgui_dir}/backends/imgui_impl_wgpu.cpp PROPERTIES LANGUAGE OBJCXX)
 
-    target_link_libraries(imgui_impl_wgpu INTERFACE "-framework QuartzCore -framework Metal")
+    target_link_libraries(Impl_WebGPU INTERFACE "-framework QuartzCore -framework Metal")
   endif()
 
   if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
@@ -373,9 +373,9 @@ if(DearImGui_Backend_WebGPU)
     if(IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
       find_package(Dawn CONFIG REQUIRED)
 
-      target_compile_features(imgui_impl_wgpu INTERFACE cxx_std_17)
-      target_link_libraries(imgui_impl_wgpu PUBLIC dawn::webgpu_dawn)
-      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+      target_compile_features(Impl_WebGPU INTERFACE cxx_std_17)
+      target_link_libraries(Impl_WebGPU PUBLIC dawn::webgpu_dawn)
+      target_compile_definitions(Impl_WebGPU PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
 
     elseif(IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
       if(NOT WGPU_DIR)
@@ -403,12 +403,12 @@ if(DearImGui_Backend_WebGPU)
         NO_CACHE
         REQUIRED)
 
-      target_sources(imgui_impl_wgpu
+      target_sources(Impl_WebGPU
         PRIVATE FILE_SET HEADERS
         BASE_DIRS ${WGPU_INCLUDE_DIR}
         FILES ${WGPU_INCLUDE_DIR}/webgpu/webgpu.h)
-      target_link_libraries(imgui_impl_wgpu PUBLIC ${WGPU_LIBRARIES})
-      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
+      target_link_libraries(Impl_WebGPU PUBLIC ${WGPU_LIBRARIES})
+      target_compile_definitions(Impl_WebGPU PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
 
     elseif(IMGUI_IMPL_WEBGPU_BACKEND_WGVK)
       find_path(WGVK_INCLUDE_DIR
@@ -424,12 +424,12 @@ if(DearImGui_Backend_WebGPU)
         NO_CACHE
         REQUIRED)
 
-      target_sources(imgui_impl_wgpu
+      target_sources(Impl_WebGPU
         PRIVATE FILE_SET HEADERS
         BASE_DIRS ${WGVK_INCLUDE_DIR}
         FILES ${WGVK_INCLUDE_DIR}/webgpu/webgpu.h)
-      target_link_libraries(imgui_impl_wgpu PUBLIC ${WGVK_LIBRARIES})
-      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_WGVK)
+      target_link_libraries(Impl_WebGPU PUBLIC ${WGVK_LIBRARIES})
+      target_compile_definitions(Impl_WebGPU PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_WGVK)
     endif()
   endif()
 
@@ -446,16 +446,16 @@ if(DearImGui_Backend_WebGPU)
     message(STATUS "Emscripten version ${EMSCRIPTEN_VERSION}")
 
     if(IMGUI_VERSION VERSION_GREATER 19240 AND EMSCRIPTEN_VERSION VERSION_GREATER 4.0.9)
-      target_compile_options(imgui_impl_wgpu PRIVATE --use-port=emdawnwebgpu)
-      target_link_options(imgui_impl_wgpu PRIVATE --use-port=emdawnwebgpu)
-      target_compile_definitions(imgui_impl_wgpu PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+      target_compile_options(Impl_WebGPU PRIVATE --use-port=emdawnwebgpu)
+      target_link_options(Impl_WebGPU PRIVATE --use-port=emdawnwebgpu)
+      target_compile_definitions(Impl_WebGPU PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
     else()
-      target_compile_options(imgui_impl_wgpu PRIVATE -sUSE_WEBGPU)
-      target_link_options(imgui_impl_wgpu PRIVATE -sUSE_WEBGPU)
+      target_compile_options(Impl_WebGPU PRIVATE -sUSE_WEBGPU)
+      target_link_options(Impl_WebGPU PRIVATE -sUSE_WEBGPU)
     endif()
   endif()
 
-  list(APPEND imgui_backends_list imgui_impl_wgpu)
+  list(APPEND imgui_backends_list Impl_WebGPU)
 endif()
 
 if(DearImGui_Backend_Android)
@@ -633,7 +633,7 @@ if(DearImGui_Backend_GLFW)
       PRIVATE FILE_SET HEADERS
       BASE_DIRS $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}>
       FILES $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}/webgpu/webgpu.h>)
-    target_link_libraries(example_glfw_wgpu PRIVATE imgui_impl_glfw imgui_impl_wgpu)
+    target_link_libraries(example_glfw_wgpu PRIVATE imgui_impl_glfw Impl_WebGPU)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       target_compile_features(example_glfw_wgpu PRIVATE cxx_std_17)
@@ -796,7 +796,7 @@ if(DearImGui_Backend_SDL2)
     target_compile_definitions(example_sdl2_wgpu PRIVATE $<$<PLATFORM_ID:Linux>:SDL_VIDEO_DRIVER_WAYLAND>)
 
     target_link_libraries(example_sdl2_wgpu
-      PRIVATE imgui_impl_sdl2 imgui_impl_wgpu
+      PRIVATE imgui_impl_sdl2 Impl_WebGPU
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
@@ -910,7 +910,7 @@ if(DearImGui_Backend_SDL3)
       BASE_DIRS $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}>
       FILES $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}/webgpu/webgpu.h>)
 
-    target_link_libraries(example_sdl3_wgpu PRIVATE imgui_impl_sdl3 imgui_impl_wgpu)
+    target_link_libraries(example_sdl3_wgpu PRIVATE imgui_impl_sdl3 Impl_WebGPU)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       target_compile_options(example_sdl3_wgpu PRIVATE $<IF:$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
