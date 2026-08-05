@@ -324,22 +324,22 @@ VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-X64-x.y.zzz-Comp
     find_package(Vulkan REQUIRED)
   endif()
 
-  add_library(imgui_impl_vulkan)
-  target_sources(imgui_impl_vulkan
+  add_library(Impl_Vulkan)
+  target_sources(Impl_Vulkan
     PRIVATE ${_imgui_dir}/backends/imgui_impl_vulkan.cpp
     PUBLIC FILE_SET imgui_impl_vulkan_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_vulkan.h)
-  target_link_libraries(imgui_impl_vulkan PUBLIC Core)
+  target_link_libraries(Impl_Vulkan PUBLIC Core)
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
-    target_link_libraries(imgui_impl_vulkan PUBLIC Vulkan::Headers ${Vulkan_Libraries})
+    target_link_libraries(Impl_Vulkan PUBLIC Vulkan::Headers ${Vulkan_Libraries})
   else()
-    target_link_libraries(imgui_impl_vulkan PUBLIC Vulkan::Vulkan)
+    target_link_libraries(Impl_Vulkan PUBLIC Vulkan::Vulkan)
   endif()
 
-  list(APPEND imgui_backends_list imgui_impl_vulkan)
+  list(APPEND imgui_backends_list Impl_Vulkan)
   list(APPEND pkg_config_requires_list vulkan)
 endif()
 
@@ -605,7 +605,7 @@ if(DearImGui_Backend_GLFW)
   if(Example_GLFW_Vulkan)
     add_executable(example_glfw_vulkan)
     target_sources(example_glfw_vulkan PRIVATE ${_imgui_dir}/examples/example_glfw_vulkan/main.cpp)
-    target_link_libraries(example_glfw_vulkan PRIVATE imgui_impl_glfw imgui_impl_vulkan)
+    target_link_libraries(example_glfw_vulkan PRIVATE imgui_impl_glfw Impl_Vulkan)
 
     list(APPEND imgui_examples_list example_glfw_vulkan)
   endif()
@@ -762,7 +762,7 @@ if(DearImGui_Backend_SDL2)
     add_executable(example_sdl2_vulkan)
     target_sources(example_sdl2_vulkan PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_vulkan/main.cpp,${_imgui_dir}/examples/example_sdl_vulkan/main.cpp>)
     target_link_libraries(example_sdl2_vulkan
-      PRIVATE imgui_impl_sdl2 imgui_impl_vulkan
+      PRIVATE imgui_impl_sdl2 Impl_Vulkan
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
 
     list(APPEND imgui_examples_list example_sdl2_vulkan)
@@ -889,7 +889,7 @@ if(DearImGui_Backend_SDL3)
   if(Example_SDL3_Vulkan)
     add_executable(example_sdl3_vulkan)
     target_sources(example_sdl3_vulkan PRIVATE ${_imgui_dir}/examples/example_sdl3_vulkan/main.cpp)
-    target_link_libraries(example_sdl3_vulkan PRIVATE imgui_impl_sdl3 imgui_impl_vulkan)
+    target_link_libraries(example_sdl3_vulkan PRIVATE imgui_impl_sdl3 Impl_Vulkan)
 
     list(APPEND imgui_examples_list example_sdl3_vulkan)
   endif()
@@ -1005,7 +1005,7 @@ if(DearImGui_Backend_Win32)
   if(Example_Win32_Vulkan)
     add_executable(example_win32_vulkan)
     target_sources(example_win32_vulkan PRIVATE ${_imgui_dir}/examples/example_win32_vulkan/main.cpp)
-    target_link_libraries(example_win32_vulkan PRIVATE imgui_impl_win32 imgui_impl_vulkan)
+    target_link_libraries(example_win32_vulkan PRIVATE imgui_impl_win32 Impl_Vulkan)
 
     list(APPEND imgui_examples_list example_win32_vulkan)
   endif()
