@@ -1021,7 +1021,7 @@ if(DearImGui_Backend_Win32)
   if(Example_Win32_DirectX10)
     add_executable(example_win32_directx10)
     target_sources(example_win32_directx10 PRIVATE ${_imgui_dir}/examples/example_win32_directx10/main.cpp)
-    target_link_libraries(example_win32_directx10 PRIVATE Impl_Win32 imgui_impl_dx10)
+    target_link_libraries(example_win32_directx10 PRIVATE Impl_Win32 Impl_DirectX10)
 
     list(APPEND imgui_examples_list example_win32_directx10)
   endif()
@@ -1109,27 +1109,27 @@ if(DearImGui_Backend_DirectX9)
 endif()
 
 if(DearImGui_Backend_DirectX10)
-  add_library(imgui_impl_dx10)
-  target_sources(imgui_impl_dx10
+  add_library(Impl_DirectX10)
+  target_sources(Impl_DirectX10
     PRIVATE ${_imgui_dir}/backends/imgui_impl_dx10.cpp
     PUBLIC FILE_SET imgui_impl_dx10_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_dx10.h)
-  target_link_libraries(imgui_impl_dx10 PUBLIC Core)
+  target_link_libraries(Impl_DirectX10 PUBLIC Core)
 
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_link_directories(imgui_impl_dx10 PRIVATE ${Windows_SDK_LIB_DIR})
-    target_link_libraries(imgui_impl_dx10 PUBLIC d3d10_1.lib d3d10.lib d3dcompiler.lib)
-    target_sources(imgui_impl_dx10
+    target_link_directories(Impl_DirectX10 PRIVATE ${Windows_SDK_LIB_DIR})
+    target_link_libraries(Impl_DirectX10 PUBLIC d3d10_1.lib d3d10.lib d3dcompiler.lib)
+    target_sources(Impl_DirectX10
       PRIVATE FILE_SET HEADERS
       BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1}
       FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d10_1.h ${Windows_SDK_INCLUDE_DIR_1}/d3d10.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
-    target_link_libraries(imgui_impl_dx10 PUBLIC d3d10.lib d3dcompiler.lib)
+    target_link_libraries(Impl_DirectX10 PUBLIC d3d10.lib d3dcompiler.lib)
   endif()
 
-  list(APPEND imgui_backends_list imgui_impl_dx10)
+  list(APPEND imgui_backends_list Impl_DirectX10)
 endif()
 
 if(DearImGui_Backend_DirectX11)
