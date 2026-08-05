@@ -534,25 +534,25 @@ endif()
 if(DearImGui_Backend_Allegro5)
   find_package(Allegro CONFIG REQUIRED)
 
-  add_library(imgui_impl_allegro5)
-  target_sources(imgui_impl_allegro5
+  add_library(Impl_Allegro5)
+  target_sources(Impl_Allegro5
     PRIVATE ${_imgui_dir}/backends/imgui_impl_allegro5.cpp
     PUBLIC FILE_SET imgui_impl_allegro5_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_allegro5.h)
-  target_link_libraries(imgui_impl_allegro5
+  target_link_libraries(Impl_Allegro5
     PUBLIC Core
     PUBLIC Allegro::allegro Allegro::allegro_primitives INTERFACE Allegro::allegro_main)
 
-  list(APPEND imgui_backends_list imgui_impl_allegro5)
+  list(APPEND imgui_backends_list Impl_Allegro5)
   list(APPEND pkg_config_requires_list allegro-5 allegro_primitives-5)
 
   if(Example_Allegro5)
     add_executable(example_allegro5)
     target_sources(example_allegro5 PRIVATE ${_imgui_dir}/examples/example_allegro5/main.cpp)
     target_link_libraries(example_allegro5
-      PRIVATE imgui_impl_allegro5
+      PRIVATE Impl_Allegro5
       PRIVATE "$<$<PLATFORM_ID:Darwin>:-framework OpenGL -framework Carbon -framework ApplicationServices>")
 
     list(APPEND imgui_examples_list example_allegro5)
