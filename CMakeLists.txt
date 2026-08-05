@@ -1013,7 +1013,7 @@ if(DearImGui_Backend_Win32)
   if(Example_Win32_DirectX9)
     add_executable(example_win32_directx9)
     target_sources(example_win32_directx9 PRIVATE ${_imgui_dir}/examples/example_win32_directx9/main.cpp)
-    target_link_libraries(example_win32_directx9 PRIVATE Impl_Win32 imgui_impl_dx9)
+    target_link_libraries(example_win32_directx9 PRIVATE Impl_Win32 Impl_DirectX9)
 
     list(APPEND imgui_examples_list example_win32_directx9)
   endif()
@@ -1088,24 +1088,24 @@ if((DearImGui_Backend_DirectX9 OR DearImGui_Backend_DirectX10 OR DearImGui_Backe
 endif()
 
 if(DearImGui_Backend_DirectX9)
-  add_library(imgui_impl_dx9)
-  target_sources(imgui_impl_dx9
+  add_library(Impl_DirectX9)
+  target_sources(Impl_DirectX9
     PRIVATE ${_imgui_dir}/backends/imgui_impl_dx9.cpp
     PUBLIC FILE_SET imgui_impl_dx9_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_dx9.h)
-  target_link_libraries(imgui_impl_dx9 PUBLIC Core)
+  target_link_libraries(Impl_DirectX9 PUBLIC Core)
 
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_link_directories(imgui_impl_dx9 PRIVATE ${Windows_SDK_LIB_DIR})
-    target_link_libraries(imgui_impl_dx9 PUBLIC d3d9.lib)
-    target_sources(imgui_impl_dx9 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/d3d9.h)
+    target_link_directories(Impl_DirectX9 PRIVATE ${Windows_SDK_LIB_DIR})
+    target_link_libraries(Impl_DirectX9 PUBLIC d3d9.lib)
+    target_sources(Impl_DirectX9 PRIVATE FILE_SET HEADERS BASE_DIRS ${Windows_SDK_INCLUDE_DIR} FILES ${Windows_SDK_INCLUDE_DIR}/d3d9.h)
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU") # cross compiling with MinGW or MSYS2
-    target_link_libraries(imgui_impl_dx9 PUBLIC d3d9.lib)
+    target_link_libraries(Impl_DirectX9 PUBLIC d3d9.lib)
   endif()
 
-  list(APPEND imgui_backends_list imgui_impl_dx9)
+  list(APPEND imgui_backends_list Impl_DirectX9)
 endif()
 
 if(DearImGui_Backend_DirectX10)

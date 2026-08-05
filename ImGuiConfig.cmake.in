@@ -22,10 +22,6 @@ if(TARGET ImGui::imgui_impl_sdlgpu3 AND NOT TARGET ImGui::Backend_SDLGPU3)
   add_library(ImGui::Backend_SDLGPU3 ALIAS ImGui::imgui_impl_sdlgpu3)
 endif()
 
-if(TARGET ImGui::imgui_impl_dx9 AND NOT TARGET ImGui::Backend_DirectX9)
-  add_library(ImGui::Backend_DirectX9 ALIAS ImGui::imgui_impl_dx9)
-endif()
-
 if(TARGET ImGui::imgui_impl_dx10 AND NOT TARGET ImGui::Backend_DirectX10)
   add_library(ImGui::Backend_DirectX10 ALIAS ImGui::imgui_impl_dx10)
 endif()
