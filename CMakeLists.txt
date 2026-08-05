@@ -979,25 +979,25 @@ if(DearImGui_Backend_SDLRenderer3)
 endif()
 
 if(DearImGui_Backend_Win32)
-  add_library(imgui_impl_win32)
-  target_sources(imgui_impl_win32
+  add_library(Impl_Win32)
+  target_sources(Impl_Win32
     PRIVATE ${_imgui_dir}/backends/imgui_impl_win32.cpp
     PUBLIC FILE_SET imgui_impl_win32_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_win32.h)
-  target_link_libraries(imgui_impl_win32 PUBLIC Core)
+  target_link_libraries(Impl_Win32 PUBLIC Core)
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
-    target_link_libraries(imgui_impl_win32 PUBLIC dwmapi)
+    target_link_libraries(Impl_Win32 PUBLIC dwmapi)
   endif()
 
-  list(APPEND imgui_backends_list imgui_impl_win32)
+  list(APPEND imgui_backends_list Impl_Win32)
 
   if(Example_Win32_OpenGL3)
     add_executable(example_win32_opengl3)
     target_sources(example_win32_opengl3 PRIVATE ${_imgui_dir}/examples/example_win32_opengl3/main.cpp)
-    target_link_libraries(example_win32_opengl3 PRIVATE imgui_impl_win32 Impl_OpenGL3)
+    target_link_libraries(example_win32_opengl3 PRIVATE Impl_Win32 Impl_OpenGL3)
 
     list(APPEND imgui_examples_list example_win32_opengl3)
   endif()
@@ -1005,7 +1005,7 @@ if(DearImGui_Backend_Win32)
   if(Example_Win32_Vulkan)
     add_executable(example_win32_vulkan)
     target_sources(example_win32_vulkan PRIVATE ${_imgui_dir}/examples/example_win32_vulkan/main.cpp)
-    target_link_libraries(example_win32_vulkan PRIVATE imgui_impl_win32 Impl_Vulkan)
+    target_link_libraries(example_win32_vulkan PRIVATE Impl_Win32 Impl_Vulkan)
 
     list(APPEND imgui_examples_list example_win32_vulkan)
   endif()
@@ -1013,7 +1013,7 @@ if(DearImGui_Backend_Win32)
   if(Example_Win32_DirectX9)
     add_executable(example_win32_directx9)
     target_sources(example_win32_directx9 PRIVATE ${_imgui_dir}/examples/example_win32_directx9/main.cpp)
-    target_link_libraries(example_win32_directx9 PRIVATE imgui_impl_win32 imgui_impl_dx9)
+    target_link_libraries(example_win32_directx9 PRIVATE Impl_Win32 imgui_impl_dx9)
 
     list(APPEND imgui_examples_list example_win32_directx9)
   endif()
@@ -1021,7 +1021,7 @@ if(DearImGui_Backend_Win32)
   if(Example_Win32_DirectX10)
     add_executable(example_win32_directx10)
     target_sources(example_win32_directx10 PRIVATE ${_imgui_dir}/examples/example_win32_directx10/main.cpp)
-    target_link_libraries(example_win32_directx10 PRIVATE imgui_impl_win32 imgui_impl_dx10)
+    target_link_libraries(example_win32_directx10 PRIVATE Impl_Win32 imgui_impl_dx10)
 
     list(APPEND imgui_examples_list example_win32_directx10)
   endif()
@@ -1029,7 +1029,7 @@ if(DearImGui_Backend_Win32)
   if(Example_Win32_DirectX11)
     add_executable(example_win32_directx11)
     target_sources(example_win32_directx11 PRIVATE ${_imgui_dir}/examples/example_win32_directx11/main.cpp)
-    target_link_libraries(example_win32_directx11 PRIVATE imgui_impl_win32 imgui_impl_dx11)
+    target_link_libraries(example_win32_directx11 PRIVATE Impl_Win32 imgui_impl_dx11)
 
     list(APPEND imgui_examples_list example_win32_directx11)
   endif()
@@ -1037,7 +1037,7 @@ if(DearImGui_Backend_Win32)
   if(Example_Win32_DirectX12)
     add_executable(example_win32_directx12)
     target_sources(example_win32_directx12 PRIVATE ${_imgui_dir}/examples/example_win32_directx12/main.cpp)
-    target_link_libraries(example_win32_directx12 PRIVATE imgui_impl_win32 imgui_impl_dx12)
+    target_link_libraries(example_win32_directx12 PRIVATE Impl_Win32 imgui_impl_dx12)
 
     list(APPEND imgui_examples_list example_win32_directx12)
   endif()
