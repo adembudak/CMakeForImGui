@@ -772,7 +772,7 @@ if(DearImGui_Backend_SDL2)
     add_executable(example_sdl2_directx11)
     target_sources(example_sdl2_directx11 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_directx11/main.cpp,${_imgui_dir}/examples/example_sdl_directx11/main.cpp>)
     target_link_libraries(example_sdl2_directx11
-      PRIVATE Impl_SDL2 imgui_impl_dx11
+      PRIVATE Impl_SDL2 Impl_DirectX11
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
 
     list(APPEND imgui_examples_list example_sdl2_directx11)
@@ -1029,7 +1029,7 @@ if(DearImGui_Backend_Win32)
   if(Example_Win32_DirectX11)
     add_executable(example_win32_directx11)
     target_sources(example_win32_directx11 PRIVATE ${_imgui_dir}/examples/example_win32_directx11/main.cpp)
-    target_link_libraries(example_win32_directx11 PRIVATE Impl_Win32 imgui_impl_dx11)
+    target_link_libraries(example_win32_directx11 PRIVATE Impl_Win32 Impl_DirectX11)
 
     list(APPEND imgui_examples_list example_win32_directx11)
   endif()
@@ -1133,27 +1133,27 @@ if(DearImGui_Backend_DirectX10)
 endif()
 
 if(DearImGui_Backend_DirectX11)
-  add_library(imgui_impl_dx11)
-  target_sources(imgui_impl_dx11
+  add_library(Impl_DirectX11)
+  target_sources(Impl_DirectX11
     PRIVATE ${_imgui_dir}/backends/imgui_impl_dx11.cpp
     PUBLIC FILE_SET imgui_impl_dx11_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_dx11.h)
-  target_link_libraries(imgui_impl_dx11 PUBLIC Core)
+  target_link_libraries(Impl_DirectX11 PUBLIC Core)
 
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_link_directories(imgui_impl_dx11 PRIVATE ${Windows_SDK_LIB_DIR})
-    target_link_libraries(imgui_impl_dx11 PUBLIC d3d11.lib d3dcompiler.lib)
-    target_sources(imgui_impl_dx11
+    target_link_directories(Impl_DirectX11 PRIVATE ${Windows_SDK_LIB_DIR})
+    target_link_libraries(Impl_DirectX11 PUBLIC d3d11.lib d3dcompiler.lib)
+    target_sources(Impl_DirectX11
       PRIVATE FILE_SET HEADERS
       BASE_DIRS ${Windows_SDK_INCLUDE_DIR_1}
       FILES ${Windows_SDK_INCLUDE_DIR_1}/d3d11.h ${Windows_SDK_INCLUDE_DIR_1}/d3dcompiler.h)
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
-    target_link_libraries(imgui_impl_dx11 PUBLIC d3d11.lib d3dcompiler.lib)
+    target_link_libraries(Impl_DirectX11 PUBLIC d3d11.lib d3dcompiler.lib)
   endif()
 
-  list(APPEND imgui_backends_list imgui_impl_dx11)
+  list(APPEND imgui_backends_list Impl_DirectX11)
 endif()
 
 if(DearImGui_Backend_DirectX12)
