@@ -708,37 +708,37 @@ if(DearImGui_Backend_SDL2)
     find_package(SDL2 CONFIG REQUIRED)
   endif()
 
-  add_library(imgui_impl_sdl2)
-  target_sources(imgui_impl_sdl2
+  add_library(Impl_SDL2)
+  target_sources(Impl_SDL2
     PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/backends/imgui_impl_sdl2.cpp,${_imgui_dir}/backends/imgui_impl_sdl.cpp>
     PUBLIC FILE_SET imgui_impl_sdl2_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/backends/imgui_impl_sdl2.h,${_imgui_dir}/backends/imgui_impl_sdl.h>)
 
-  target_link_libraries(imgui_impl_sdl2 PUBLIC Core)
+  target_link_libraries(Impl_SDL2 PUBLIC Core)
 
   if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     if(TARGET SDL2::SDL2)
-      target_link_libraries(imgui_impl_sdl2 PUBLIC SDL2::SDL2)
+      target_link_libraries(Impl_SDL2 PUBLIC SDL2::SDL2)
     else()
-      target_link_libraries(imgui_impl_sdl2 PUBLIC SDL2::SDL2-static)
+      target_link_libraries(Impl_SDL2 PUBLIC SDL2::SDL2-static)
     endif()
   endif()
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    target_compile_options(imgui_impl_sdl2 PUBLIC --use-port=sdl2)
-    target_link_options(imgui_impl_sdl2 PUBLIC --use-port=sdl2)
+    target_compile_options(Impl_SDL2 PUBLIC --use-port=sdl2)
+    target_link_options(Impl_SDL2 PUBLIC --use-port=sdl2)
   endif()
 
-  list(APPEND imgui_backends_list imgui_impl_sdl2)
+  list(APPEND imgui_backends_list Impl_SDL2)
   list(APPEND pkg_config_requires_list sdl2)
 
   if(Example_SDL2_OpenGL2)
     add_executable(example_sdl2_opengl2)
     target_sources(example_sdl2_opengl2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_opengl2/main.cpp,${_imgui_dir}/examples/example_sdl_opengl2/main.cpp>)
     target_link_libraries(example_sdl2_opengl2
-      PRIVATE imgui_impl_sdl2 Impl_OpenGL2
+      PRIVATE Impl_SDL2 Impl_OpenGL2
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
 
     list(APPEND imgui_examples_list example_sdl2_opengl2)
@@ -748,7 +748,7 @@ if(DearImGui_Backend_SDL2)
     add_executable(example_sdl2_opengl3)
     target_sources(example_sdl2_opengl3 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_opengl3/main.cpp,${_imgui_dir}/examples/example_sdl_opengl3/main.cpp>)
     target_link_libraries(example_sdl2_opengl3
-      PRIVATE imgui_impl_sdl2 Impl_OpenGL3
+      PRIVATE Impl_SDL2 Impl_OpenGL3
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
@@ -762,7 +762,7 @@ if(DearImGui_Backend_SDL2)
     add_executable(example_sdl2_vulkan)
     target_sources(example_sdl2_vulkan PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_vulkan/main.cpp,${_imgui_dir}/examples/example_sdl_vulkan/main.cpp>)
     target_link_libraries(example_sdl2_vulkan
-      PRIVATE imgui_impl_sdl2 Impl_Vulkan
+      PRIVATE Impl_SDL2 Impl_Vulkan
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
 
     list(APPEND imgui_examples_list example_sdl2_vulkan)
@@ -772,7 +772,7 @@ if(DearImGui_Backend_SDL2)
     add_executable(example_sdl2_directx11)
     target_sources(example_sdl2_directx11 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_directx11/main.cpp,${_imgui_dir}/examples/example_sdl_directx11/main.cpp>)
     target_link_libraries(example_sdl2_directx11
-      PRIVATE imgui_impl_sdl2 imgui_impl_dx11
+      PRIVATE Impl_SDL2 imgui_impl_dx11
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
 
     list(APPEND imgui_examples_list example_sdl2_directx11)
@@ -781,7 +781,7 @@ if(DearImGui_Backend_SDL2)
   if(Example_SDL2_Metal)
     add_executable(example_sdl2_metal)
     target_sources(example_sdl2_metal PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_metal/main.mm,${_imgui_dir}/examples/example_sdl_metal/main.mm>)
-    target_link_libraries(example_sdl2_metal PRIVATE imgui_impl_sdl2 imgui_impl_metal)
+    target_link_libraries(example_sdl2_metal PRIVATE Impl_SDL2 imgui_impl_metal)
 
     list(APPEND imgui_examples_list example_sdl2_metal)
   endif()
@@ -796,7 +796,7 @@ if(DearImGui_Backend_SDL2)
     target_compile_definitions(example_sdl2_wgpu PRIVATE $<$<PLATFORM_ID:Linux>:SDL_VIDEO_DRIVER_WAYLAND>)
 
     target_link_libraries(example_sdl2_wgpu
-      PRIVATE imgui_impl_sdl2 Impl_WebGPU
+      PRIVATE Impl_SDL2 Impl_WebGPU
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
@@ -836,7 +836,7 @@ if(DearImGui_Backend_SDLRenderer2)
     add_executable(example_sdl2_sdlrenderer2)
     target_sources(example_sdl2_sdlrenderer2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18950>,${_imgui_dir}/examples/example_sdl2_sdlrenderer2/main.cpp,$<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_sdlrenderer/main.cpp,${_imgui_dir}/examples/example_sdl_sdlrenderer/main.cpp>>)
     target_link_libraries(example_sdl2_sdlrenderer2
-      PRIVATE imgui_impl_sdlrenderer2 imgui_impl_sdl2
+      PRIVATE imgui_impl_sdlrenderer2 Impl_SDL2
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
 
     list(APPEND imgui_examples_list example_sdl2_sdlrenderer2)
