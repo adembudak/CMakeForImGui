@@ -564,20 +564,20 @@ if(DearImGui_Backend_GLFW)
     find_package(glfw3 CONFIG REQUIRED)
   endif()
 
-  add_library(imgui_impl_glfw)
-  target_sources(imgui_impl_glfw
+  add_library(Impl_GLFW)
+  target_sources(Impl_GLFW
     PRIVATE ${_imgui_dir}/backends/imgui_impl_glfw.cpp
     PUBLIC FILE_SET imgui_impl_glfw_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_glfw.h)
-  target_link_libraries(imgui_impl_glfw PUBLIC Core)
+  target_link_libraries(Impl_GLFW PUBLIC Core)
 
   if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    target_link_libraries(imgui_impl_glfw PUBLIC glfw)
+    target_link_libraries(Impl_GLFW PUBLIC glfw)
   endif()
 
-  list(APPEND imgui_backends_list imgui_impl_glfw)
+  list(APPEND imgui_backends_list Impl_GLFW)
   list(APPEND pkg_config_requires_list glfw3)
 
   if(Example_GLFW_OpenGL3)
@@ -585,7 +585,7 @@ if(DearImGui_Backend_GLFW)
     target_sources(example_glfw_opengl3 PRIVATE ${_imgui_dir}/examples/example_glfw_opengl3/main.cpp)
     target_compile_options(example_glfw_opengl3 PRIVATE $<$<PLATFORM_ID:Emscripten>:--use-port=contrib.glfw3>)
     target_link_options(example_glfw_opengl3 PRIVATE $<$<PLATFORM_ID:Emscripten>:--use-port=contrib.glfw3>)
-    target_link_libraries(example_glfw_opengl3 PRIVATE imgui_impl_glfw Impl_OpenGL3)
+    target_link_libraries(example_glfw_opengl3 PRIVATE Impl_GLFW Impl_OpenGL3)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       set_target_properties(example_glfw_opengl3 PROPERTIES SUFFIX ".html")
@@ -597,7 +597,7 @@ if(DearImGui_Backend_GLFW)
   if(Example_GLFW_OpenGL2)
     add_executable(example_glfw_opengl2)
     target_sources(example_glfw_opengl2 PRIVATE ${_imgui_dir}/examples/example_glfw_opengl2/main.cpp)
-    target_link_libraries(example_glfw_opengl2 PRIVATE imgui_impl_glfw Impl_OpenGL2)
+    target_link_libraries(example_glfw_opengl2 PRIVATE Impl_GLFW Impl_OpenGL2)
 
     list(APPEND imgui_examples_list example_glfw_opengl2)
   endif()
@@ -605,7 +605,7 @@ if(DearImGui_Backend_GLFW)
   if(Example_GLFW_Vulkan)
     add_executable(example_glfw_vulkan)
     target_sources(example_glfw_vulkan PRIVATE ${_imgui_dir}/examples/example_glfw_vulkan/main.cpp)
-    target_link_libraries(example_glfw_vulkan PRIVATE imgui_impl_glfw Impl_Vulkan)
+    target_link_libraries(example_glfw_vulkan PRIVATE Impl_GLFW Impl_Vulkan)
 
     list(APPEND imgui_examples_list example_glfw_vulkan)
   endif()
@@ -614,7 +614,7 @@ if(DearImGui_Backend_GLFW)
     add_executable(example_glfw_metal)
     target_sources(example_glfw_metal PRIVATE ${_imgui_dir}/examples/example_glfw_metal/main.mm)
     target_link_libraries(example_glfw_metal
-      PRIVATE imgui_impl_glfw imgui_impl_metal
+      PRIVATE Impl_GLFW imgui_impl_metal
       PRIVATE "$<$<PLATFORM_ID:Darwin>:-framework QuartzCore>")
 
     list(APPEND imgui_examples_list example_glfw_metal)
@@ -633,7 +633,7 @@ if(DearImGui_Backend_GLFW)
       PRIVATE FILE_SET HEADERS
       BASE_DIRS $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}>
       FILES $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}/webgpu/webgpu.h>)
-    target_link_libraries(example_glfw_wgpu PRIVATE imgui_impl_glfw Impl_WebGPU)
+    target_link_libraries(example_glfw_wgpu PRIVATE Impl_GLFW Impl_WebGPU)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       target_compile_features(example_glfw_wgpu PRIVATE cxx_std_17)
