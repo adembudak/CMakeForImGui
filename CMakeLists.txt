@@ -656,27 +656,27 @@ endif()
 if(DearImGui_Backend_FreeGLUT)
   find_package(FreeGLUT CONFIG REQUIRED)
 
-  add_library(imgui_impl_glut)
-  target_sources(imgui_impl_glut
+  add_library(Impl_GLUT)
+  target_sources(Impl_GLUT
     PRIVATE ${_imgui_dir}/backends/imgui_impl_glut.cpp
     PUBLIC FILE_SET imgui_impl_glut_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_glut.h)
-  target_link_libraries(imgui_impl_glut PUBLIC Core)
+  target_link_libraries(Impl_GLUT PUBLIC Core)
   if(TARGET FreeGLUT::freeglut)
-    target_link_libraries(imgui_impl_glut PUBLIC FreeGLUT::freeglut)
+    target_link_libraries(Impl_GLUT PUBLIC FreeGLUT::freeglut)
   else()
-    target_link_libraries(imgui_impl_glut PUBLIC FreeGLUT::freeglut_static)
+    target_link_libraries(Impl_GLUT PUBLIC FreeGLUT::freeglut_static)
   endif()
 
-  list(APPEND imgui_backends_list imgui_impl_glut)
+  list(APPEND imgui_backends_list Impl_GLUT)
   list(APPEND pkg_config_requires_list glut)
 
   if(Example_FreeGLUT_OpenGL2)
     add_executable(example_glut_opengl2)
     target_sources(example_glut_opengl2 PRIVATE ${_imgui_dir}/examples/example_glut_opengl2/main.cpp)
-    target_link_libraries(example_glut_opengl2 PRIVATE imgui_impl_glut Impl_OpenGL2)
+    target_link_libraries(example_glut_opengl2 PRIVATE Impl_GLUT Impl_OpenGL2)
 
     list(APPEND imgui_examples_list example_glut_opengl2)
   endif()
@@ -1283,7 +1283,7 @@ if(Install)
   install(TARGETS Core EXPORT imgui-targets FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
 
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.3)
-    install(PACKAGE_INFO ImGui EXPORT imgui-targets NO_PROJECT_METADATA VERSION ${IMGUI_VERSION} HOMEPAGE_URL https://github.com/ocornut/imgui)
+	  #install(PACKAGE_INFO ImGui EXPORT imgui-targets NO_PROJECT_METADATA VERSION ${IMGUI_VERSION} HOMEPAGE_URL https://github.com/ocornut/imgui)
   endif()
 
   install(DIRECTORY $<$<VERSION_GREATER:${IMGUI_VERSION},18100>:${_imgui_dir}/misc/debuggers> DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
