@@ -683,22 +683,22 @@ if(DearImGui_Backend_FreeGLUT)
 endif()
 
 if(DearImGui_Backend_NULL)
-  add_library(imgui_impl_null)
-  target_sources(imgui_impl_null
+  add_library(Impl_NULL)
+  target_sources(Impl_NULL
     PRIVATE ${_imgui_dir}/backends/imgui_impl_null.cpp
     PUBLIC FILE_SET imgui_impl_null_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_null.h)
-  target_link_libraries(imgui_impl_null PUBLIC Core)
+  target_link_libraries(Impl_NULL PUBLIC Core)
 
-  list(APPEND imgui_backends_list imgui_impl_null)
+  list(APPEND imgui_backends_list Impl_NULL)
 endif()
 
 if(Example_NULL)
   add_executable(example_null)
   target_sources(example_null PRIVATE ${_imgui_dir}/examples/example_null/main.cpp)
-  target_link_libraries(example_null PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19240>,imgui_impl_null,Core>)
+  target_link_libraries(example_null PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19240>,Impl_NULL,Core>)
 
   list(APPEND imgui_examples_list example_null)
 endif()
