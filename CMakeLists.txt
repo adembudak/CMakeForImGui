@@ -498,8 +498,8 @@ Android NDK toolchain is not used
   set(Android_NDK_INCLUDE_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/${host_tag}/sysroot/usr/include)
   set(Android_NDK_LIB_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/${host_tag}/sysroot/usr/lib/${triplet}/${api_level})
 
-  add_library(imgui_impl_android)
-  target_sources(imgui_impl_android
+  add_library(Impl_Android)
+  target_sources(Impl_Android
     PRIVATE ${_imgui_dir}/backends/imgui_impl_android.cpp
     PUBLIC FILE_SET imgui_impl_android_set
     BASE_DIRS ${_imgui_dir}/backends
@@ -508,12 +508,12 @@ Android NDK toolchain is not used
     PRIVATE FILE_SET HEADERS
     BASE_DIRS ${Android_NDK_INCLUDE_DIR}
     FILES ${Android_NDK_INCLUDE_DIR}/android/native_window.h ${Android_NDK_INCLUDE_DIR}/android/input.h ${Android_NDK_INCLUDE_DIR}/android/keycodes.h ${Android_NDK_INCLUDE_DIR}/android/log.h)
-  target_link_directories(imgui_impl_android PUBLIC ${Android_NDK_LIB_DIR})
-  target_link_libraries(imgui_impl_android
+  target_link_directories(Impl_Android PUBLIC ${Android_NDK_LIB_DIR})
+  target_link_libraries(Impl_Android
     PUBLIC Core
     PUBLIC log android)
 
-  list(APPEND imgui_backends_list imgui_impl_android)
+  list(APPEND imgui_backends_list Impl_Android)
 
   if(Example_Android_OpenGL3)
     find_program(GRADLE_COMMAND gradle
@@ -523,7 +523,7 @@ Android NDK toolchain is not used
     cmake_path(SET android_example_output_path ${_imgui_dir}/examples/example_android_opengl3/android/app/build/outputs/apk)
     cmake_path(ABSOLUTE_PATH android_example_output_path NORMALIZE)
 
-    add_custom_command(TARGET imgui_impl_android
+    add_custom_command(TARGET Impl_Android
       POST_BUILD COMMAND ${GRADLE_COMMAND} --project-dir ${_imgui_dir}/examples/example_android_opengl3/android assembleRelease
       WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
       COMMENT "Building .apk files. Output will be on: ${android_example_output_path}"
