@@ -954,24 +954,24 @@ endif()
 if(DearImGui_Backend_SDLRenderer3)
   find_package(SDL3 CONFIG REQUIRED)
 
-  add_library(imgui_impl_sdlrenderer3)
-  target_sources(imgui_impl_sdlrenderer3
+  add_library(Impl_SDLRenderer3)
+  target_sources(Impl_SDLRenderer3
     PRIVATE ${_imgui_dir}/backends/imgui_impl_sdlrenderer3.cpp
     PUBLIC FILE_SET imgui_impl_sdlrenderer3_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_sdlrenderer3.h)
-  target_link_libraries(imgui_impl_sdlrenderer3
+  target_link_libraries(Impl_SDLRenderer3
     PUBLIC Impl_SDL3
     PUBLIC SDL3::SDL3)
 
-  list(APPEND imgui_backends_list imgui_impl_sdlrenderer3)
+  list(APPEND imgui_backends_list Impl_SDLRenderer3)
   list(APPEND pkg_config_requires_list sdl3)
 
   if(Example_SDL3_SDLRenderer3)
     add_executable(example_sdl3_sdlrenderer3)
     target_sources(example_sdl3_sdlrenderer3 PRIVATE ${_imgui_dir}/examples/example_sdl3_sdlrenderer3/main.cpp)
-    target_link_libraries(example_sdl3_sdlrenderer3 PRIVATE imgui_impl_sdlrenderer3 Impl_SDL3)
+    target_link_libraries(example_sdl3_sdlrenderer3 PRIVATE Impl_SDLRenderer3 Impl_SDL3)
     target_compile_definitions(example_sdl3_sdlrenderer3 PRIVATE $<$<VERSION_LESS:${IMGUI_VERSION},19130>:SDL_INIT_TIMER=0x00000001u>)
 
     list(APPEND imgui_examples_list example_sdl3_sdlrenderer3)
