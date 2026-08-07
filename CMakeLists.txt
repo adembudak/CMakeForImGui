@@ -848,35 +848,35 @@ if(DearImGui_Backend_SDL3)
     find_package(SDL3 CONFIG REQUIRED)
   endif()
 
-  add_library(imgui_impl_sdl3)
-  target_sources(imgui_impl_sdl3
+  add_library(Impl_SDL3)
+  target_sources(Impl_SDL3
     PRIVATE ${_imgui_dir}/backends/imgui_impl_sdl3.cpp
     PUBLIC FILE_SET imgui_impl_sdl3_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_sdl3.h)
-  target_link_libraries(imgui_impl_sdl3 PUBLIC Core)
+  target_link_libraries(Impl_SDL3 PUBLIC Core)
 
   if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    target_link_libraries(imgui_impl_sdl3 PUBLIC SDL3::SDL3)
+    target_link_libraries(Impl_SDL3 PUBLIC SDL3::SDL3)
   endif()
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    target_compile_options(imgui_impl_sdl3 PUBLIC --use-port=sdl3)
-    target_link_options(imgui_impl_sdl3 PUBLIC --use-port=sdl3)
+    target_compile_options(Impl_SDL3 PUBLIC --use-port=sdl3)
+    target_link_options(Impl_SDL3 PUBLIC --use-port=sdl3)
   endif()
 
   if(IMGUI_VERSION VERSION_LESS 19130)
-    target_compile_definitions(imgui_impl_sdl3 PUBLIC SDL_ENABLE_OLD_NAMES)
+    target_compile_definitions(Impl_SDL3 PUBLIC SDL_ENABLE_OLD_NAMES)
   endif()
 
-  list(APPEND imgui_backends_list imgui_impl_sdl3)
+  list(APPEND imgui_backends_list Impl_SDL3)
   list(APPEND pkg_config_requires_list sdl3)
 
   if(Example_SDL3_OpenGL3)
     add_executable(example_sdl3_opengl3)
     target_sources(example_sdl3_opengl3 PRIVATE ${_imgui_dir}/examples/example_sdl3_opengl3/main.cpp)
-    target_link_libraries(example_sdl3_opengl3 PRIVATE imgui_impl_sdl3 Impl_OpenGL3)
+    target_link_libraries(example_sdl3_opengl3 PRIVATE Impl_SDL3 Impl_OpenGL3)
     target_compile_definitions(example_sdl3_opengl3 PRIVATE $<$<VERSION_LESS:${IMGUI_VERSION},19130>:SDL_INIT_TIMER=0x00000001u>)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
@@ -889,7 +889,7 @@ if(DearImGui_Backend_SDL3)
   if(Example_SDL3_Vulkan)
     add_executable(example_sdl3_vulkan)
     target_sources(example_sdl3_vulkan PRIVATE ${_imgui_dir}/examples/example_sdl3_vulkan/main.cpp)
-    target_link_libraries(example_sdl3_vulkan PRIVATE imgui_impl_sdl3 Impl_Vulkan)
+    target_link_libraries(example_sdl3_vulkan PRIVATE Impl_SDL3 Impl_Vulkan)
 
     list(APPEND imgui_examples_list example_sdl3_vulkan)
   endif()
@@ -897,7 +897,7 @@ if(DearImGui_Backend_SDL3)
   if(Example_SDL3_Metal)
     add_executable(example_sdl3_metal)
     target_sources(example_sdl3_metal PRIVATE ${_imgui_dir}/examples/example_sdl3_metal/main.mm)
-    target_link_libraries(example_sdl3_metal PRIVATE imgui_impl_sdl3 imgui_impl_metal)
+    target_link_libraries(example_sdl3_metal PRIVATE Impl_SDL3 imgui_impl_metal)
 
     list(APPEND imgui_examples_list example_sdl3_metal)
   endif()
@@ -910,7 +910,7 @@ if(DearImGui_Backend_SDL3)
       BASE_DIRS $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}>
       FILES $<$<AND:$<NOT:$<PLATFORM_ID:Emscripten>>,$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>>:${WGPU_INCLUDE_DIR}/webgpu/webgpu.h>)
 
-    target_link_libraries(example_sdl3_wgpu PRIVATE imgui_impl_sdl3 Impl_WebGPU)
+    target_link_libraries(example_sdl3_wgpu PRIVATE Impl_SDL3 Impl_WebGPU)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       target_compile_options(example_sdl3_wgpu PRIVATE $<IF:$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
@@ -945,7 +945,7 @@ if(DearImGui_Backend_SDLGPU3)
   if(Example_SDL3_SDLGPU3)
     add_executable(example_sdl3_sdlgpu3)
     target_sources(example_sdl3_sdlgpu3 PRIVATE ${_imgui_dir}/examples/example_sdl3_sdlgpu3/main.cpp)
-    target_link_libraries(example_sdl3_sdlgpu3 PRIVATE imgui_impl_sdlgpu3 imgui_impl_sdl3)
+    target_link_libraries(example_sdl3_sdlgpu3 PRIVATE imgui_impl_sdlgpu3 Impl_SDL3)
 
     list(APPEND imgui_examples_list example_sdl3_sdlgpu3)
   endif()
@@ -962,7 +962,7 @@ if(DearImGui_Backend_SDLRenderer3)
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_sdlrenderer3.h)
   target_link_libraries(imgui_impl_sdlrenderer3
-    PUBLIC imgui_impl_sdl3
+    PUBLIC Impl_SDL3
     PUBLIC SDL3::SDL3)
 
   list(APPEND imgui_backends_list imgui_impl_sdlrenderer3)
@@ -971,7 +971,7 @@ if(DearImGui_Backend_SDLRenderer3)
   if(Example_SDL3_SDLRenderer3)
     add_executable(example_sdl3_sdlrenderer3)
     target_sources(example_sdl3_sdlrenderer3 PRIVATE ${_imgui_dir}/examples/example_sdl3_sdlrenderer3/main.cpp)
-    target_link_libraries(example_sdl3_sdlrenderer3 PRIVATE imgui_impl_sdlrenderer3 imgui_impl_sdl3)
+    target_link_libraries(example_sdl3_sdlrenderer3 PRIVATE imgui_impl_sdlrenderer3 Impl_SDL3)
     target_compile_definitions(example_sdl3_sdlrenderer3 PRIVATE $<$<VERSION_LESS:${IMGUI_VERSION},19130>:SDL_INIT_TIMER=0x00000001u>)
 
     list(APPEND imgui_examples_list example_sdl3_sdlrenderer3)
