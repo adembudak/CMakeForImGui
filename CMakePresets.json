@@ -291,7 +291,7 @@
     {
       "name": "Windows",
       "binaryDir": "build",
-      "generator": "Visual Studio 17 2022",
+      "generator": "Visual Studio 18 2026",
       "inherits": [
         "assume_imgui_is_there",
         "imconfig_h",
