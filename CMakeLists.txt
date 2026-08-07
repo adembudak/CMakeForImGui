@@ -1203,23 +1203,23 @@ if(DearImGui_Backend_Metal)
 endif()
 
 if(DearImGui_Backend_OSX)
-  add_library(imgui_impl_osx)
-  target_sources(imgui_impl_osx
+  add_library(Impl_OSX)
+  target_sources(Impl_OSX
     PRIVATE ${_imgui_dir}/backends/imgui_impl_osx.mm
     PUBLIC FILE_SET imgui_impl_osx_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_osx.h)
-  target_link_libraries(imgui_impl_osx
+  target_link_libraries(Impl_OSX
     PUBLIC Core
     PUBLIC "-framework AppKit" "-framework Carbon" "-framework GameController")
 
-  list(APPEND imgui_backends_list imgui_impl_osx)
+  list(APPEND imgui_backends_list Impl_OSX)
 
   if(Example_Apple_OpenGL2)
     add_executable(example_apple_opengl2 MACOSX_BUNDLE)
     target_sources(example_apple_opengl2 PRIVATE ${_imgui_dir}/examples/example_apple_opengl2/main.mm)
-    target_link_libraries(example_apple_opengl2 PRIVATE imgui_impl_osx Impl_OpenGL2)
+    target_link_libraries(example_apple_opengl2 PRIVATE Impl_OSX Impl_OpenGL2)
 
     list(APPEND imgui_examples_list example_apple_opengl2)
   endif()
@@ -1227,7 +1227,7 @@ if(DearImGui_Backend_OSX)
   if(Example_Apple_Metal)
     add_executable(example_apple_metal MACOSX_BUNDLE)
     target_sources(example_apple_metal PRIVATE ${_imgui_dir}/examples/example_apple_metal/main.mm)
-    target_link_libraries(example_apple_metal PRIVATE imgui_impl_osx imgui_impl_metal)
+    target_link_libraries(example_apple_metal PRIVATE Impl_OSX imgui_impl_metal)
 
     list(APPEND imgui_examples_list example_apple_metal)
   endif()
