@@ -1282,8 +1282,8 @@ if(Install)
   install(EXPORT imgui-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui NAMESPACE ImGui:: FILE ImGuiTargets.cmake)
   install(TARGETS Core EXPORT imgui-targets FILE_SET imgui_core_set FILE_SET imgui_misc_cpp_set FILE_SET imgui_misc_freetype_set)
 
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.3)
-	  #install(PACKAGE_INFO ImGui EXPORT imgui-targets NO_PROJECT_METADATA VERSION ${IMGUI_VERSION} HOMEPAGE_URL https://github.com/ocornut/imgui)
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.3 AND NOT TARGET Impl_GLFW)
+    install(PACKAGE_INFO ImGui EXPORT imgui-targets NO_PROJECT_METADATA VERSION ${IMGUI_VERSION} HOMEPAGE_URL https://github.com/ocornut/imgui)
   endif()
 
   install(DIRECTORY $<$<VERSION_GREATER:${IMGUI_VERSION},18100>:${_imgui_dir}/misc/debuggers> DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
