@@ -38,27 +38,27 @@ Following backend options are available:
 | Build options                    | Targets                       |
 |----------------------------------|-------------------------------|
 | (default)                        | `ImGui::Core`                 |
-| DearImGui_Backend_NULL           | `ImGui::Backend_NULL`         |
-| DearImGui_Backend_Android        | `ImGui::Backend_Android`      |
-| DearImGui_Backend_OpenGL2        | `ImGui::Backend_OpenGL2`      |
-| DearImGui_Backend_OpenGL3        | `ImGui::Backend_OpenGL3`      |
-| DearImGui_Backend_Vulkan         | `ImGui::Backend_Vulkan`       |
-| DearImGui_Backend_Allegro5       | `ImGui::Backend_Allegro5`     |
-| DearImGui_Backend_GLFW           | `ImGui::Backend_GLFW`         |
-| DearImGui_Backend_FreeGLUT       | `ImGui::Backend_FreeGLUT`     |
-| DearImGui_Backend_SDL2           | `ImGui::Backend_SDL2`         |
-| DearImGui_Backend_SDLRenderer2   | `ImGui::Backend_SDLRenderer2` |
-| DearImGui_Backend_SDL3           | `ImGui::Backend_SDL3`         |
-| DearImGui_Backend_SDLGPU3        | `ImGui::Backend_SDLGPU3`      |
-| DearImGui_Backend_SDLRenderer3   | `ImGui::Backend_SDLRenderer3` |
-| DearImGui_Backend_WebGPU         | `ImGui::Backend_WebGPU`       |
-| DearImGui_Backend_Win32          | `ImGui::Backend_Win32`        |
-| DearImGui_Backend_DirectX9       | `ImGui::Backend_DirectX9`     |
-| DearImGui_Backend_DirectX10      | `ImGui::Backend_DirectX10`    |
-| DearImGui_Backend_DirectX11      | `ImGui::Backend_DirectX11`    |
-| DearImGui_Backend_DirectX12      | `ImGui::Backend_DirectX12`    |
-| DearImGui_Backend_OSX            | `ImGui::Backend_OSX`          |
-| DearImGui_Backend_Metal          | `ImGui::Backend_Metal`        |
+| DearImGui_Backend_NULL           | `ImGui::Impl_NULL`         |
+| DearImGui_Backend_Android        | `ImGui::Impl_Android`      |
+| DearImGui_Backend_OpenGL2        | `ImGui::Impl_OpenGL2`      |
+| DearImGui_Backend_OpenGL3        | `ImGui::Impl_OpenGL3`      |
+| DearImGui_Backend_Vulkan         | `ImGui::Impl_Vulkan`       |
+| DearImGui_Backend_Allegro5       | `ImGui::Impl_Allegro5`     |
+| DearImGui_Backend_GLFW           | `ImGui::Impl_GLFW`         |
+| DearImGui_Backend_FreeGLUT       | `ImGui::Impl_GLUT`     |
+| DearImGui_Backend_SDL2           | `ImGui::Impl_SDL2`         |
+| DearImGui_Backend_SDLRenderer2   | `ImGui::Impl_SDLRenderer2` |
+| DearImGui_Backend_SDL3           | `ImGui::Impl_SDL3`         |
+| DearImGui_Backend_SDLGPU3        | `ImGui::Impl_SDLGPU3`      |
+| DearImGui_Backend_SDLRenderer3   | `ImGui::Impl_SDLRenderer3` |
+| DearImGui_Backend_WebGPU         | `ImGui::Impl_WebGPU`       |
+| DearImGui_Backend_Win32          | `ImGui::Impl_Win32`        |
+| DearImGui_Backend_DirectX9       | `ImGui::Impl_DirectX9`     |
+| DearImGui_Backend_DirectX10      | `ImGui::Impl_DirectX10`    |
+| DearImGui_Backend_DirectX11      | `ImGui::Impl_DirectX11`    |
+| DearImGui_Backend_DirectX12      | `ImGui::Impl_DirectX12`    |
+| DearImGui_Backend_OSX            | `ImGui::Impl_OSX`          |
+| DearImGui_Backend_Metal          | `ImGui::Impl_Metal`        |
 
 All backend options are `OFF` by default and all the configuration macros on `imconfig.h` can be passed as CMake command line with `-D` variable.
 
@@ -80,7 +80,7 @@ All the include paths are kept as is. [This repo](https://github.com/adembudak/C
 
 find_package(ImGui CONFIG REQUIRED)
 # ...
-target_link_libraries(tgt PUBLIC ImGui::Backend_SDL2 ImGui::Backend_OpenGL3)
+target_link_libraries(tgt PUBLIC ImGui::Impl_SDL2 ImGui::Impl_OpenGL3)
 ```
 ### With `pkg-config` command
 
