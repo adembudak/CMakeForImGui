@@ -815,28 +815,28 @@ endif()
 if(DearImGui_Backend_SDLRenderer2)
   find_package(SDL2 CONFIG REQUIRED)
 
-  add_library(imgui_impl_sdlrenderer2)
-  target_sources(imgui_impl_sdlrenderer2
+  add_library(Impl_SDLRenderer2)
+  target_sources(Impl_SDLRenderer2
     PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18950>,${_imgui_dir}/backends/imgui_impl_sdlrenderer2.cpp,${_imgui_dir}/backends/imgui_impl_sdlrenderer.cpp>
     PUBLIC FILE_SET imgui_impl_sdlrenderer2_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18950>,${_imgui_dir}/backends/imgui_impl_sdlrenderer2.h,${_imgui_dir}/backends/imgui_impl_sdlrenderer.h>)
-  target_link_libraries(imgui_impl_sdlrenderer2 PUBLIC Core)
+  target_link_libraries(Impl_SDLRenderer2 PUBLIC Core)
   if(TARGET SDL2::SDL2)
-    target_link_libraries(imgui_impl_sdlrenderer2 PUBLIC SDL2::SDL2)
+    target_link_libraries(Impl_SDLRenderer2 PUBLIC SDL2::SDL2)
   else()
-    target_link_libraries(imgui_impl_sdlrenderer2 PUBLIC SDL2::SDL2-static)
+    target_link_libraries(Impl_SDLRenderer2 PUBLIC SDL2::SDL2-static)
   endif()
 
-  list(APPEND imgui_backends_list imgui_impl_sdlrenderer2)
+  list(APPEND imgui_backends_list Impl_SDLRenderer2)
   list(APPEND pkg_config_requires_list sdl2)
 
   if(Example_SDL2_SDLRenderer2)
     add_executable(example_sdl2_sdlrenderer2)
     target_sources(example_sdl2_sdlrenderer2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18950>,${_imgui_dir}/examples/example_sdl2_sdlrenderer2/main.cpp,$<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_sdlrenderer/main.cpp,${_imgui_dir}/examples/example_sdl_sdlrenderer/main.cpp>>)
     target_link_libraries(example_sdl2_sdlrenderer2
-      PRIVATE imgui_impl_sdlrenderer2 Impl_SDL2
+      PRIVATE Impl_SDLRenderer2 Impl_SDL2
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
 
     list(APPEND imgui_examples_list example_sdl2_sdlrenderer2)
