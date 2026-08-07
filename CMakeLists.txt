@@ -614,7 +614,7 @@ if(DearImGui_Backend_GLFW)
     add_executable(example_glfw_metal)
     target_sources(example_glfw_metal PRIVATE ${_imgui_dir}/examples/example_glfw_metal/main.mm)
     target_link_libraries(example_glfw_metal
-      PRIVATE Impl_GLFW imgui_impl_metal
+      PRIVATE Impl_GLFW Impl_Metal
       PRIVATE "$<$<PLATFORM_ID:Darwin>:-framework QuartzCore>")
 
     list(APPEND imgui_examples_list example_glfw_metal)
@@ -781,7 +781,7 @@ if(DearImGui_Backend_SDL2)
   if(Example_SDL2_Metal)
     add_executable(example_sdl2_metal)
     target_sources(example_sdl2_metal PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_metal/main.mm,${_imgui_dir}/examples/example_sdl_metal/main.mm>)
-    target_link_libraries(example_sdl2_metal PRIVATE Impl_SDL2 imgui_impl_metal)
+    target_link_libraries(example_sdl2_metal PRIVATE Impl_SDL2 Impl_Metal)
 
     list(APPEND imgui_examples_list example_sdl2_metal)
   endif()
@@ -897,7 +897,7 @@ if(DearImGui_Backend_SDL3)
   if(Example_SDL3_Metal)
     add_executable(example_sdl3_metal)
     target_sources(example_sdl3_metal PRIVATE ${_imgui_dir}/examples/example_sdl3_metal/main.mm)
-    target_link_libraries(example_sdl3_metal PRIVATE Impl_SDL3 imgui_impl_metal)
+    target_link_libraries(example_sdl3_metal PRIVATE Impl_SDL3 Impl_Metal)
 
     list(APPEND imgui_examples_list example_sdl3_metal)
   endif()
@@ -1184,22 +1184,22 @@ if(DearImGui_Backend_DirectX12)
 endif()
 
 if(DearImGui_Backend_Metal)
-  add_library(imgui_impl_metal)
-  target_sources(imgui_impl_metal
+  add_library(Impl_Metal)
+  target_sources(Impl_Metal
     PRIVATE ${_imgui_dir}/backends/imgui_impl_metal.mm
     PUBLIC FILE_SET imgui_impl_metal_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_metal.h)
-  target_link_libraries(imgui_impl_metal
+  target_link_libraries(Impl_Metal
     PUBLIC Core
     PUBLIC "-framework Metal" INTERFACE "-framework MetalKit")
 
   if(IMGUI_VERSION VERSION_LESS 18940)
-    target_compile_options(imgui_impl_metal PUBLIC -fobjc-arc)
+    target_compile_options(Impl_Metal PUBLIC -fobjc-arc)
   endif()
 
-  list(APPEND imgui_backends_list imgui_impl_metal)
+  list(APPEND imgui_backends_list Impl_Metal)
 endif()
 
 if(DearImGui_Backend_OSX)
@@ -1227,7 +1227,7 @@ if(DearImGui_Backend_OSX)
   if(Example_Apple_Metal)
     add_executable(example_apple_metal MACOSX_BUNDLE)
     target_sources(example_apple_metal PRIVATE ${_imgui_dir}/examples/example_apple_metal/main.mm)
-    target_link_libraries(example_apple_metal PRIVATE Impl_OSX imgui_impl_metal)
+    target_link_libraries(example_apple_metal PRIVATE Impl_OSX Impl_Metal)
 
     list(APPEND imgui_examples_list example_apple_metal)
   endif()
