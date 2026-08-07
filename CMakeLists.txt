@@ -928,24 +928,24 @@ endif()
 if(DearImGui_Backend_SDLGPU3)
   find_package(SDL3 CONFIG REQUIRED)
 
-  add_library(imgui_impl_sdlgpu3)
-  target_sources(imgui_impl_sdlgpu3
+  add_library(Impl_SDLGPU3)
+  target_sources(Impl_SDLGPU3
     PRIVATE ${_imgui_dir}/backends/imgui_impl_sdlgpu3.cpp
     PUBLIC FILE_SET imgui_impl_sdlgpu3_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_sdlgpu3.h ${_imgui_dir}/backends/imgui_impl_sdlgpu3_shaders.h)
-  target_link_libraries(imgui_impl_sdlgpu3
+  target_link_libraries(Impl_SDLGPU3
     PUBLIC Core
     PUBLIC SDL3::SDL3)
 
-  list(APPEND imgui_backends_list imgui_impl_sdlgpu3)
+  list(APPEND imgui_backends_list Impl_SDLGPU3)
   list(APPEND pkg_config_requires_list sdl3)
 
   if(Example_SDL3_SDLGPU3)
     add_executable(example_sdl3_sdlgpu3)
     target_sources(example_sdl3_sdlgpu3 PRIVATE ${_imgui_dir}/examples/example_sdl3_sdlgpu3/main.cpp)
-    target_link_libraries(example_sdl3_sdlgpu3 PRIVATE imgui_impl_sdlgpu3 Impl_SDL3)
+    target_link_libraries(example_sdl3_sdlgpu3 PRIVATE Impl_SDLGPU3 Impl_SDL3)
 
     list(APPEND imgui_examples_list example_sdl3_sdlgpu3)
   endif()
