@@ -467,7 +467,7 @@ if(DearImGui_Backend_Android)
 [=[
 Android NDK toolchain is not used
   Try to pass Android toolchain file when running cmake: --toolchain $ANDROID_NDK/build/cmake/android.toolchain.cmake
-  https://developer.android.com/ndk/guides/cmake#the_new_toolchain_file
+  https://developer.android.com/ndk/guides/cmake
 ]=])
   endif()
 
