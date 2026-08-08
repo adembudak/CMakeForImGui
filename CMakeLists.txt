@@ -62,6 +62,7 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   option(DearImGui_Backend_Metal "" OFF)
+  cmake_dependent_option(DearImGui_Backend_Metal4 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19280)" OFF)
   option(DearImGui_Backend_OSX "" OFF)
 endif()
 
@@ -1202,6 +1203,23 @@ if(DearImGui_Backend_Metal)
   list(APPEND imgui_backends_list Impl_Metal)
 endif()
 
+if(DearImGui_Backend_Metal4)
+  add_library(Impl_Metal4)
+
+  target_sources(Impl_Metal4
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_metal4.mm
+    PUBLIC FILE_SET imgui_impl_metal4_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_metal4.h)
+
+  target_link_libraries(Impl_Metal4
+    PUBLIC Core
+    PUBLIC "-framework Metal" INTERFACE "-framework MetalKit")
+
+  list(APPEND imgui_backends_list Impl_Metal4)
+endif()
+
 if(DearImGui_Backend_OSX)
   add_library(Impl_OSX)
   target_sources(Impl_OSX
@@ -1392,7 +1410,7 @@ if(PrintConfigurationSummary)
   feature_summary(WHAT ALL)
 
   set(options
-    DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_NULL DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 DearImGui_Backend_DirectX10 DearImGui_Backend_DirectX11 DearImGui_Backend_DirectX12 DearImGui_Backend_OSX DearImGui_Backend_Metal
+    DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_NULL DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 DearImGui_Backend_DirectX10 DearImGui_Backend_DirectX11 DearImGui_Backend_DirectX12 DearImGui_Backend_OSX DearImGui_Backend_Metal DearImGui_Backend_Metal4
     Example_NULL
     Example_Allegro5 Example_Android_OpenGL3
     Example_GLFW_OpenGL2 Example_GLFW_OpenGL3 Example_GLFW_Vulkan Example_GLFW_Metal Example_GLFW_WebGPU

@@ -188,6 +188,7 @@
       ],
       "cacheVariables": {
         "DearImGui_Backend_Metal": "ON",
+        "DearImGui_Backend_Metal4": "ON",
         "DearImGui_Backend_OSX": "ON",
         "Example_Apple_OpenGL2": "ON",
         "Example_Apple_Metal": "ON"

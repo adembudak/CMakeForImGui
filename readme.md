@@ -59,6 +59,7 @@ Following backend options are available:
 | DearImGui_Backend_DirectX12      | `ImGui::Impl_DirectX12`    |
 | DearImGui_Backend_OSX            | `ImGui::Impl_OSX`          |
 | DearImGui_Backend_Metal          | `ImGui::Impl_Metal`        |
+| DearImGui_Backend_Metal4         | `ImGui::Impl_Metal4`       |
 
 All backend options are `OFF` by default and all the configuration macros on `imconfig.h` can be passed as CMake command line with `-D` variable.
 
