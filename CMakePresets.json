@@ -138,6 +138,7 @@
         "Example_SDL3_OpenGL3": "ON",
         "Example_SDL3_Vulkan": "ON",
         "Example_SDL3_Metal": "ON",
+        "Example_SDL3_Metal4": "ON",
         "Example_SDL3_SDLGPU3": "ON",
         "Example_SDL3_WebGPU": "OFF",
         "Example_SDL2_SDLRenderer2": "ON",

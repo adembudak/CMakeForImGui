@@ -104,6 +104,7 @@ cmake_dependent_option(Example_Allegro5 "" OFF DearImGui_Backend_Allegro5 OFF)
 cmake_dependent_option(Example_SDL3_OpenGL3 "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_OpenGL3" OFF)
 cmake_dependent_option(Example_SDL3_Vulkan "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_Vulkan AND (${IMGUI_VERSION} VERSION_GREATER 19140)" OFF)
 cmake_dependent_option(Example_SDL3_Metal "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_Metal AND (${IMGUI_VERSION} VERSION_GREATER 19210)" OFF)
+cmake_dependent_option(Example_SDL3_Metal4 "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_Metal4" OFF)
 cmake_dependent_option(Example_SDL3_SDLGPU3 "" OFF DearImGui_Backend_SDLGPU3 OFF)
 cmake_dependent_option(Example_SDL3_WebGPU "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_WebGPU AND (${IMGUI_VERSION} VERSION_GREATER 19240)" OFF)
 cmake_dependent_option(Example_SDL3_SDLRenderer3 "" OFF "DearImGui_Backend_SDLRenderer3 AND DearImGui_Backend_SDL3" OFF)
@@ -903,6 +904,14 @@ if(DearImGui_Backend_SDL3)
     list(APPEND imgui_examples_list example_sdl3_metal)
   endif()
 
+  if(Example_SDL3_Metal4)
+    add_executable(example_sdl3_metal4)
+    target_sources(example_sdl3_metal4 PRIVATE ${_imgui_dir}/examples/example_sdl3_metal4/main.mm)
+    target_link_libraries(example_sdl3_metal4 PRIVATE Impl_SDL3 Impl_Metal4)
+
+    list(APPEND imgui_examples_list example_sdl3_metal4)
+  endif()
+
   if(Example_SDL3_WebGPU)
     add_executable(example_sdl3_wgpu)
     target_sources(example_sdl3_wgpu
@@ -1416,7 +1425,7 @@ if(PrintConfigurationSummary)
     Example_GLFW_OpenGL2 Example_GLFW_OpenGL3 Example_GLFW_Vulkan Example_GLFW_Metal Example_GLFW_WebGPU
     Example_FreeGLUT_OpenGL2
     Example_SDL2_DirectX11 Example_SDL2_OpenGL2 Example_SDL2_OpenGL3 Example_SDL2_Vulkan Example_SDL2_Metal Example_SDL2_WebGPU Example_SDL2_SDLRenderer2
-    Example_SDL3_OpenGL3 Example_SDL3_SDLGPU3 Example_SDL3_SDLRenderer3 Example_SDL3_Vulkan Example_SDL3_WebGPU Example_SDL3_Metal
+    Example_SDL3_OpenGL3 Example_SDL3_SDLGPU3 Example_SDL3_SDLRenderer3 Example_SDL3_Vulkan Example_SDL3_WebGPU Example_SDL3_Metal Example_SDL3_Metal4
     Example_Win32_DirectX9 Example_Win32_DirectX10 Example_Win32_DirectX11 Example_Win32_DirectX12 Example_Win32_OpenGL3 Example_Win32_Vulkan
     Example_Apple_Metal Example_Apple_OpenGL2
     BUILD_SHARED_LIBS Pkg-config Install Install_examples Uninstall visualize_targets
