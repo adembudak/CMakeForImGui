@@ -1379,7 +1379,7 @@ endif()
 file(STRINGS @PROJECT_BINARY_DIR@/install_manifest.txt files_to_uninstall)
 
 foreach(file IN LISTS files_to_uninstall)
-  execute_process(COMMAND @CMAKE_COMMAND@ -E rm $ENV{DESTDIR}${file} COMMAND_ECHO STDOUT)
+  execute_process(COMMAND @CMAKE_COMMAND@ -E rm -rf $ENV{DESTDIR}${file} COMMAND_ECHO STDOUT)
 endforeach()
 ]=] @ONLY)
 
