@@ -203,8 +203,8 @@
     },
     {
       "name": "Default",
-      "displayName": "Backends without platform dependencies, like Metal or DirectX",
-      "description": "Backends without platform dependencies, like Metal or DirectX",
+      "displayName": "Backends without platform dependencies, like DirectX or Metal",
+      "description": "Backends without platform dependencies, like DirectX or Metal",
       "binaryDir": "build",
       "generator": "Ninja Multi-Config",
       "inherits": [

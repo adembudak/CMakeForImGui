@@ -1,4 +1,4 @@
-[CMake](https://cmake.org) build support for [Dear ImGui](https://github.com/ocornut/imgui). It can build and install the library, backends and examples.
+[CMake](https://cmake.org) build support for the [Dear ImGui](https://github.com/ocornut/imgui). It can build and install the library, backends and examples.
 
 This work proposed for the Dear ImGui upstream: https://github.com/ocornut/imgui/issues/8896
 
@@ -16,16 +16,14 @@ cmake -D IMGUI_ENABLE_FREETYPE=ON -D DearImGui_Backend_SDL2=ON -D DearImGui_Back
 cmake --build build --config Release
 cmake --install build --config Release
 ```
-The commands above assume the dependencies of the backend are installed on the host system. One can visit the project site of used backend and get the source and then follow the build instructions. Another option is using a package
-manager. There are several ways to manage dependencies of and build C++ software. The [vcpkg](https://vcpkg.io/en) used on this repository.
+The commands above assume the dependencies of the backend are installed on the host system. Package managers can be used for that or the user can visit the project site of the used backend and get the source and then follow the build instructions. The [vcpkg](https://vcpkg.io/en) used on this repository.
 
 ```cmake
 vcpkg install
-cmake -G 'Ninja Multi-Config' -D VCPKG_MANIFEST_MODE=ON -D IMGUI_SOURCE_DIR=imgui -S . -B build --toolchain $VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
+cmake -D VCPKG_MANIFEST_MODE=ON -D IMGUI_SOURCE_DIR=imgui -S . -B build --toolchain $VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
 ```
-Note that this will not install some platform dependencies like DirectX libraries on Windows, Windows App SDK needs to installed for it or Metal framework on macOS, Xcode needs to be installed.
 
-CMake presets file can also be used:
+CMake presets file can be used for easy configuration:
 ```cmake
 cmake --list-presets # list available presets
 cmake --preset Default
@@ -35,9 +33,9 @@ cmake --install build --config Debug
 
 Following backend options are available:
 
-| Build options                    | Targets                       |
-|----------------------------------|-------------------------------|
-| (default)                        | `ImGui::Core`                 |
+| Build options                    | Targets                    |
+|----------------------------------|----------------------------|
+| (default)                        | `ImGui::Core`              |
 | DearImGui_Backend_NULL           | `ImGui::Impl_NULL`         |
 | DearImGui_Backend_Android        | `ImGui::Impl_Android`      |
 | DearImGui_Backend_OpenGL2        | `ImGui::Impl_OpenGL2`      |
@@ -45,7 +43,7 @@ Following backend options are available:
 | DearImGui_Backend_Vulkan         | `ImGui::Impl_Vulkan`       |
 | DearImGui_Backend_Allegro5       | `ImGui::Impl_Allegro5`     |
 | DearImGui_Backend_GLFW           | `ImGui::Impl_GLFW`         |
-| DearImGui_Backend_FreeGLUT       | `ImGui::Impl_GLUT`     |
+| DearImGui_Backend_FreeGLUT       | `ImGui::Impl_GLUT`         |
 | DearImGui_Backend_SDL2           | `ImGui::Impl_SDL2`         |
 | DearImGui_Backend_SDLRenderer2   | `ImGui::Impl_SDLRenderer2` |
 | DearImGui_Backend_SDL3           | `ImGui::Impl_SDL3`         |
@@ -63,13 +61,11 @@ Following backend options are available:
 
 All backend options are `OFF` by default and all the configuration macros on `imconfig.h` can be passed as CMake command line with `-D` variable.
 
-Example programs set as dependent options corresponding to their used backends:
-```cmake
-cmake_dependent_option(Example_SDL2_OpenGL3 "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_OpenGL3" OFF)
-```
-The `Example_SDL2_OpenGL3` option will be available only when used backends are `ON`. The same is true for all the other examples and they're `OFF` by default.
+Example programs set as dependent options and will be available when their backends enabled. Libraries and examples can be installed by setting `Install` and `Install_examples` options `ON`. An `uninstall` custom target is provided to undo the latest install step.
 
-Libraries and examples can be installed by setting `Install` and `Install_examples` options `ON`, respectively. An `uninstall` custom target is also provided to remove the artifacts where they are installed.
+```cmake
+cmake --build build --target uninstall
+```
 
 ## Usage
 
