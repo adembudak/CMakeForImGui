@@ -6,70 +6,60 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/ImGuiTargets.cmake")
   include("${CMAKE_CURRENT_LIST_DIR}/ImGuiTargets.cmake")
 endif()
 
-if(${CMAKE_FIND_PACKAGE_NAME}_FIND_REQUIRED)
-  set(required REQUIRED)
-endif()
-
-if(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY)
-  set(quiet QUIET)
-endif()
-
 if(TARGET ImGui::Impl_Allegro5)
-  find_dependency(Allegro ${quiet} ${required})
+  find_dependency(Allegro)
 endif()
 
 if(TARGET ImGui::Impl_GLFW)
-  find_dependency(glfw3 ${quiet} ${required})
+  find_dependency(glfw3)
 endif()
 
 if(TARGET ImGui::Impl_GLUT)
-  find_dependency(FreeGLUT ${quiet} ${required})
+  find_dependency(FreeGLUT)
 endif()
 
 if(TARGET ImGui::Impl_SDL2)
-  find_dependency(SDL2 ${quiet} ${required})
+  find_dependency(SDL2)
 endif()
 
 if(TARGET ImGui::Impl_SDLRenderer2)
-  find_dependency(SDL2 ${quiet} ${required})
+  find_dependency(SDL2)
 endif()
 
 if(TARGET ImGui::Impl_SDL3)
-  find_dependency(SDL3 ${quiet} ${required})
+  find_dependency(SDL3)
 endif()
 
 if(TARGET ImGui::Impl_SDLRenderer3)
-  find_dependency(SDL3 ${quiet} ${required})
+  find_dependency(SDL3)
 endif()
 
 if(TARGET ImGui::Impl_SDLGPU3)
-  find_dependency(SDL3 ${quiet} ${required})
+  find_dependency(SDL3)
 endif()
 
 if(TARGET ImGui::Impl_OpenGL2)
-  find_dependency(OpenGL 2 ${quiet} ${required})
+  find_dependency(OpenGL 2)
 endif()
 
 if(TARGET ImGui::Impl_OpenGL3)
-  find_dependency(OpenGL 3 ${quiet} ${required})
+  find_dependency(OpenGL 3)
 endif()
 
 if(TARGET ImGui::Impl_Vulkan)
-  find_dependency(Vulkan ${quiet} ${required})
+  find_dependency(Vulkan)
 endif()
 
 if(TARGET ImGui::Impl_WebGPU)
-  find_dependency(Threads ${quiet} ${required})
-  find_dependency(Dawn ${quiet} ${required})
+  find_dependency(Dawn)
 endif()
 
-
 if(@IMGUI_ENABLE_FREETYPE@)
-  find_dependency(freetype ${quiet} ${required})
+  find_dependency(Freetype)
 
   if(@IMGUI_ENABLE_FREETYPE_LUNASVG@)
-    find_dependency(lunasvg ${quiet} ${required})
+    find_dependency(lunasvg)
   elseif(@IMGUI_ENABLE_FREETYPE_PLUTOSVG@)
-    find_dependency(plutosvg ${quiet} ${required})
+    find_dependency(plutosvg)
   endif()
 endif()
