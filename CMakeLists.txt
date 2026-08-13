@@ -70,9 +70,9 @@ option(BUILD_SHARED_LIBS "" OFF)
 
 option(Pkg-config "Generate imgui.pc file" OFF)
 
-option(Install "Install Dear ImGui" ON)
-option(Uninstall "A custom target 'uninstall' is generated to undo the latest install step" ON)
-cmake_dependent_option(Install_examples "Install Dear ImGui examples" OFF Install OFF)
+option(DearImGui_Install "Install Dear ImGui" ON)
+option(DearImGui_Uninstall "A custom target 'uninstall' is generated to undo the latest install step" ON)
+cmake_dependent_option(DearImGui_Install_Examples "Install Dear ImGui examples" OFF DearImGui_Install OFF)
 
 option(visualize_targets "A custom target 'graph' that shows linkage graph enabled to generate a targets.png on build directory" OFF)
 mark_as_advanced(FORCE visualize_targets)
@@ -1289,7 +1289,7 @@ Cflags: -I${includedir}
 
 endif()
 
-if(Install)
+if(DearImGui_Install)
   set_property(GLOBAL PROPERTY INSTALL_PARALLEL ON)
 
   install(DIRECTORY ${_imgui_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
@@ -1315,7 +1315,7 @@ if(Install)
     install(TARGETS ${name} EXPORT imgui-targets FILE_SET ${file_set})
   endforeach()
 
-  if(Install_examples)
+  if(DearImGui_Install_Examples)
     if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
       set_target_properties(${imgui_examples_list} PROPERTIES MACOSX_BUNDLE TRUE)
       install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications)
@@ -1353,7 +1353,7 @@ if(Install)
 
 endif()
 
-if(Uninstall)
+if(DearImGui_Uninstall)
   file(CONFIGURE
     OUTPUT cmake_uninstall.cmake
     CONTENT
@@ -1417,7 +1417,7 @@ if(PrintConfigurationSummary)
     Example_SDL3_OpenGL3 Example_SDL3_SDLGPU3 Example_SDL3_SDLRenderer3 Example_SDL3_Vulkan Example_SDL3_WebGPU Example_SDL3_Metal Example_SDL3_Metal4
     Example_Win32_DirectX9 Example_Win32_DirectX10 Example_Win32_DirectX11 Example_Win32_DirectX12 Example_Win32_OpenGL3 Example_Win32_Vulkan
     Example_Apple_Metal Example_Apple_Metal4 Example_Apple_OpenGL2 Example_Apple_OpenGL3
-    BUILD_SHARED_LIBS Pkg-config Install Install_examples Uninstall visualize_targets
+    BUILD_SHARED_LIBS Pkg-config DearImGui_Install DearImGui_Install_Examples DearImGui_Uninstall visualize_targets
     IMGUI_USER_CONFIG IMGUI_USER_H_FILENAME IMGUI_STB_TRUETYPE_FILENAME IMGUI_STB_RECT_PACK_FILENAME IMGUI_STB_SPRINTF_FILENAME
     IMGUI_IMPL_WEBGPU_BACKEND_DAWN IMGUI_IMPL_WEBGPU_BACKEND_WGPU IMGUI_IMPL_WEBGPU_BACKEND_WGVK)
   list(SORT options CASE INSENSITIVE)

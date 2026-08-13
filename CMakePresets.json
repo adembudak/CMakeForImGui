@@ -29,9 +29,9 @@
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "visualize_targets": "OFF",
-        "Install": "ON",
-        "Install_examples": "ON",
-        "Uninstall": "ON",
+        "DearImGui_Install": "ON",
+        "DearImGui_Install_Examples": "ON",
+        "DearImGui_Uninstall": "ON",
         "Pkg-config": "ON",
         "PrintConfigurationSummary": "ON"
       }
