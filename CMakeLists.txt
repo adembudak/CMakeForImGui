@@ -246,8 +246,8 @@ if(DearImGui_Backend_OpenGL2)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_opengl2.h)
-
   target_link_libraries(Impl_OpenGL2 PUBLIC Core)
+
   if(WIN32 AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
     target_link_libraries(Impl_OpenGL2 PUBLIC opengl32)
   else()
@@ -296,8 +296,6 @@ endif()
 
 if(DearImGui_Backend_Vulkan)
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
-    list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES .dll)
-
     if(NOT VULKAN_RUNTIME_COMPONENTS_DIR)
       message(FATAL_ERROR
 [=[
@@ -313,6 +311,7 @@ VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-X64-x.y.zzz-Comp
       set(suffix x64)
     endif()
 
+    list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES .dll)
     find_library(Vulkan_Libraries vulkan-1
       PATHS ${VULKAN_RUNTIME_COMPONENTS_DIR}
       PATH_SUFFIXES ${suffix}
@@ -322,6 +321,7 @@ VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-X64-x.y.zzz-Comp
       NO_DEFAULT_PATH
       NO_CMAKE_SYSTEM_PATH
       NO_CMAKE_FIND_ROOT_PATH)
+    list(POP_BACK CMAKE_FIND_LIBRARY_SUFFIXES)
 
     find_package(VulkanHeaders REQUIRED)
   else()
@@ -406,6 +406,7 @@ if(DearImGui_Backend_WebGPU)
         NO_CMAKE_SYSTEM_PATH
         NO_CACHE
         REQUIRED)
+     list(POP_FRONT CMAKE_FIND_LIBRARY_SUFFIXES)
 
       target_sources(Impl_WebGPU
         PRIVATE FILE_SET HEADERS
