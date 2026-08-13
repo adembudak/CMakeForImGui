@@ -32,7 +32,7 @@
         "DearImGui_Install": "ON",
         "DearImGui_Install_Examples": "ON",
         "DearImGui_Uninstall": "ON",
-        "Pkg-config": "ON",
+        "DearImGui_Pkg_Config ": "ON",
         "DearImGui_Print_Summary": "ON"
       }
     },

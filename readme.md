@@ -83,7 +83,7 @@ target_link_libraries(tgt PUBLIC ImGui::Impl_SDL2 ImGui::Impl_OpenGL3)
 
 The build script can be used to generate a **pkg-config** file:
 ```cmake
-cmake -D Pkg-config=ON -S . -B build
+cmake -D DearImGui_Pkg_Config=ON -S . -B build
 ```
 This generates a `imgui.pc` file in build directory which can be installed and used:
 ```bash

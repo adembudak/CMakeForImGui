@@ -68,7 +68,7 @@ endif()
 
 option(BUILD_SHARED_LIBS "" OFF)
 
-option(Pkg-config "Generate imgui.pc file" OFF)
+option(DearImGui_Pkg_Config "Generate imgui.pc file [Tested only under Linux]" OFF)
 
 option(DearImGui_Install "Install Dear ImGui" ON)
 option(DearImGui_Uninstall "A custom target 'uninstall' is generated to undo the latest install step" ON)
@@ -1247,7 +1247,7 @@ if(DearImGui_Backend_OSX)
   endif()
 endif()
 
-if(Pkg-config)
+if(DearImGui_Pkg_Config)
   if(pkg_config_requires_list)
     list(SORT pkg_config_requires_list)
     list(REMOVE_DUPLICATES pkg_config_requires_list)
@@ -1341,7 +1341,7 @@ if(DearImGui_Install)
     endif()
   endif()
 
-  if(Pkg-config)
+  if(DearImGui_Pkg_Config)
     install(FILES ${PROJECT_BINARY_DIR}/imgui.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
   endif()
 
@@ -1415,7 +1415,7 @@ if(DearImGui_Print_Summary)
     Example_SDL3_OpenGL3 Example_SDL3_SDLGPU3 Example_SDL3_SDLRenderer3 Example_SDL3_Vulkan Example_SDL3_WebGPU Example_SDL3_Metal Example_SDL3_Metal4
     Example_Win32_DirectX9 Example_Win32_DirectX10 Example_Win32_DirectX11 Example_Win32_DirectX12 Example_Win32_OpenGL3 Example_Win32_Vulkan
     Example_Apple_Metal Example_Apple_Metal4 Example_Apple_OpenGL2 Example_Apple_OpenGL3
-    BUILD_SHARED_LIBS Pkg-config DearImGui_Install DearImGui_Install_Examples DearImGui_Uninstall DearImGui_Show_Linkage_Graph DearImGui_Print_Summary
+    BUILD_SHARED_LIBS DearImGui_Pkg_Config DearImGui_Install DearImGui_Install_Examples DearImGui_Uninstall DearImGui_Show_Linkage_Graph DearImGui_Print_Summary
     IMGUI_USER_CONFIG IMGUI_USER_H_FILENAME IMGUI_STB_TRUETYPE_FILENAME IMGUI_STB_RECT_PACK_FILENAME IMGUI_STB_SPRINTF_FILENAME
     IMGUI_IMPL_WEBGPU_BACKEND_DAWN IMGUI_IMPL_WEBGPU_BACKEND_WGPU IMGUI_IMPL_WEBGPU_BACKEND_WGVK)
   list(SORT options CASE INSENSITIVE)
