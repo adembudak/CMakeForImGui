@@ -262,6 +262,8 @@ endif()
 
 if(DearImGui_Backend_OpenGL3)
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+  elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
+    find_package(OpenGL 3 QUIET REQUIRED COMPONENTS EGL GLES2 GLES3)
   else()
     find_package(OpenGL 3 QUIET REQUIRED)
   endif()
@@ -278,7 +280,7 @@ if(DearImGui_Backend_OpenGL3)
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
     target_link_libraries(Impl_OpenGL3 PUBLIC opengl32)
   elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
-    target_link_libraries(Impl_OpenGL3 PUBLIC EGL)
+    target_link_libraries(Impl_OpenGL3 PUBLIC OpenGL::EGL OpenGL::GLES2 OpenGL::GLES3)
   else()
     target_link_libraries(Impl_OpenGL3 PUBLIC OpenGL::GL)
   endif()
@@ -472,35 +474,7 @@ Android NDK toolchain is not used
 ]=])
   endif()
 
-  cmake_print_variables(CMAKE_SYSTEM_NAME CMAKE_ANDROID_NDK CMAKE_TOOLCHAIN_FILE ANDROID_TOOLCHAIN ANDROID_TOOLCHAIN_NAME $ENV{ANDROID_HOME} $ENV{ANDROID_NDK} ANDROID_ABI ANDROID_STL ANDROID_PIE ANDROID_CPP_FEATURES ANDROID_ALLOW_UNDEFINED_SYMBOLS ANDROID_ARM_MODE ANDROID_PLATFORM ANDROID_NATIVE_API_LEVEL)
-
-  if(CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a" OR CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a with NEON")
-    set(triplet arm-linux-androideabi)
-  elseif(CMAKE_ANDROID_ARCH_ABI STREQUAL "arm64-v8a")
-    set(triplet aarch64-linux-android)
-  elseif(CMAKE_ANDROID_ARCH_ABI STREQUAL "x86")
-    set(triplet i686-linux-android)
-  elseif(CMAKE_ANDROID_ARCH_ABI STREQUAL "x86_64")
-    set(triplet x86_64-linux-android)
-  elseif(CMAKE_ANDROID_ARCH_ABI STREQUAL "risv64")
-    set(triplet riscv64-linux-android)
-  else()
-    set(triplet arm-linux-androideabi)
-  endif()
-
-  set(api_level ${ANDROID_NATIVE_API_LEVEL})
-
-  cmake_host_system_information(RESULT os_name QUERY OS_NAME)
-  if(os_name STREQUAL "Darwin")
-    set(host_tag darwin-x86_64)
-  elseif(os_name STREQUAL "Linux")
-    set(host_tag linux-x86_64)
-  elseif(os_name STREQUAL "Windows")
-    set(host_tag windows-x86_64)
-  endif()
-
-  set(Android_NDK_INCLUDE_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/${host_tag}/sysroot/usr/include)
-  set(Android_NDK_LIB_DIR $ENV{ANDROID_NDK}/toolchains/llvm/prebuilt/${host_tag}/sysroot/usr/lib/${triplet}/${api_level})
+  set(Android_NDK_INCLUDE_DIR ${CMAKE_SYSROOT}/usr/include)
 
   add_library(Impl_Android)
   target_sources(Impl_Android
@@ -511,8 +485,11 @@ Android NDK toolchain is not used
     FILES ${_imgui_dir}/backends/imgui_impl_android.h
     PRIVATE FILE_SET HEADERS
     BASE_DIRS ${Android_NDK_INCLUDE_DIR}
-    FILES ${Android_NDK_INCLUDE_DIR}/android/native_window.h ${Android_NDK_INCLUDE_DIR}/android/input.h ${Android_NDK_INCLUDE_DIR}/android/keycodes.h ${Android_NDK_INCLUDE_DIR}/android/log.h)
-  target_link_directories(Impl_Android PUBLIC ${Android_NDK_LIB_DIR})
+    FILES
+      ${Android_NDK_INCLUDE_DIR}/android/native_window.h
+      ${Android_NDK_INCLUDE_DIR}/android/input.h
+      ${Android_NDK_INCLUDE_DIR}/android/keycodes.h
+      ${Android_NDK_INCLUDE_DIR}/android/log.h)
   target_link_libraries(Impl_Android
     PUBLIC Core
     PUBLIC log android)
@@ -530,7 +507,7 @@ Android NDK toolchain is not used
     add_custom_command(TARGET Impl_Android
       POST_BUILD COMMAND ${GRADLE_COMMAND} --project-dir ${_imgui_dir}/examples/example_android_opengl3/android assembleRelease
       WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-      COMMENT "Building .apk files. Output will be on: ${android_example_output_path}"
+      COMMENT "Building .apk files. Output will be on:\n${android_example_output_path}"
       VERBATIM)
   endif()
 endif()
