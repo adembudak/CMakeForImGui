@@ -117,6 +117,7 @@ cmake_dependent_option(Example_Win32_DirectX11 "" OFF "DearImGui_Backend_Win32 A
 cmake_dependent_option(Example_Win32_DirectX12 "" OFF "DearImGui_Backend_Win32 AND DearImGui_Backend_DirectX12" OFF)
 
 cmake_dependent_option(Example_Apple_OpenGL2 "" OFF "DearImGui_Backend_OSX AND DearImGui_Backend_OpenGL2" OFF)
+cmake_dependent_option(Example_Apple_OpenGL3 "" OFF "DearImGui_Backend_OSX AND DearImGui_Backend_OpenGL3 AND (${IMGUI_VERSION} VERSION_GREATER 19290)" OFF)
 cmake_dependent_option(Example_Apple_Metal "" OFF "DearImGui_Backend_OSX AND DearImGui_Backend_Metal" OFF)
 cmake_dependent_option(Example_Apple_Metal4 "" OFF "DearImGui_Backend_OSX AND DearImGui_Backend_Metal4" OFF)
 
@@ -262,7 +263,7 @@ endif()
 if(DearImGui_Backend_OpenGL3)
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
   else()
-    include(FindOpenGL)
+    find_package(OpenGL 3 QUIET REQUIRED)
   endif()
 
   add_library(Impl_OpenGL3)
@@ -1246,6 +1247,14 @@ if(DearImGui_Backend_OSX)
     list(APPEND imgui_examples_list example_apple_opengl2)
   endif()
 
+  if(Example_Apple_OpenGL3)
+    add_executable(example_apple_opengl3 MACOSX_BUNDLE)
+    target_sources(example_apple_opengl3 PRIVATE ${_imgui_dir}/examples/example_apple_opengl3/main.mm)
+    target_link_libraries(example_apple_opengl3 PRIVATE Impl_OSX Impl_OpenGL3)
+
+    list(APPEND imgui_examples_list example_apple_opengl3)
+  endif()
+
   if(Example_Apple_Metal)
     add_executable(example_apple_metal MACOSX_BUNDLE)
     target_sources(example_apple_metal PRIVATE ${_imgui_dir}/examples/example_apple_metal/main.mm)
@@ -1430,7 +1439,7 @@ if(PrintConfigurationSummary)
     Example_SDL2_DirectX11 Example_SDL2_OpenGL2 Example_SDL2_OpenGL3 Example_SDL2_Vulkan Example_SDL2_Metal Example_SDL2_WebGPU Example_SDL2_SDLRenderer2
     Example_SDL3_OpenGL3 Example_SDL3_SDLGPU3 Example_SDL3_SDLRenderer3 Example_SDL3_Vulkan Example_SDL3_WebGPU Example_SDL3_Metal Example_SDL3_Metal4
     Example_Win32_DirectX9 Example_Win32_DirectX10 Example_Win32_DirectX11 Example_Win32_DirectX12 Example_Win32_OpenGL3 Example_Win32_Vulkan
-    Example_Apple_Metal Example_Apple_Metal4 Example_Apple_OpenGL2
+    Example_Apple_Metal Example_Apple_Metal4 Example_Apple_OpenGL2 Example_Apple_OpenGL3
     BUILD_SHARED_LIBS Pkg-config Install Install_examples Uninstall visualize_targets
     IMGUI_USER_CONFIG IMGUI_USER_H_FILENAME IMGUI_STB_TRUETYPE_FILENAME IMGUI_STB_RECT_PACK_FILENAME IMGUI_STB_SPRINTF_FILENAME
     IMGUI_IMPL_WEBGPU_BACKEND_DAWN IMGUI_IMPL_WEBGPU_BACKEND_WGPU IMGUI_IMPL_WEBGPU_BACKEND_WGVK)
