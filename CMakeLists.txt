@@ -74,8 +74,8 @@ option(DearImGui_Install "Install Dear ImGui" ON)
 option(DearImGui_Uninstall "A custom target 'uninstall' is generated to undo the latest install step" ON)
 cmake_dependent_option(DearImGui_Install_Examples "Install Dear ImGui examples" OFF DearImGui_Install OFF)
 
-option(PrintConfigurationSummary "Print enabled/disabled features at the end of configuration" ON)
 option(DearImGui_Show_Linkage_Graph "A custom target 'graph' is generated to create a targets.svg file on build directory" OFF)
+option(DearImGui_Print_Summary "Print enabled/disabled features at the end of configuration" ON)
 
 cmake_dependent_option(Example_Android_OpenGL3 "" OFF "DearImGui_Backend_Android AND DearImGui_Backend_OpenGL3" OFF)
 
@@ -1402,7 +1402,7 @@ set(CPACK_SOURCE_IGNORE_FILES \.cache/ \.clangd/ \.cxx/ \.git/ \.jj/ \.ini$ buil
 
 include(CPack)
 
-if(PrintConfigurationSummary)
+if(DearImGui_Print_Summary)
   feature_summary(WHAT ALL)
 
   set(options
@@ -1415,7 +1415,7 @@ if(PrintConfigurationSummary)
     Example_SDL3_OpenGL3 Example_SDL3_SDLGPU3 Example_SDL3_SDLRenderer3 Example_SDL3_Vulkan Example_SDL3_WebGPU Example_SDL3_Metal Example_SDL3_Metal4
     Example_Win32_DirectX9 Example_Win32_DirectX10 Example_Win32_DirectX11 Example_Win32_DirectX12 Example_Win32_OpenGL3 Example_Win32_Vulkan
     Example_Apple_Metal Example_Apple_Metal4 Example_Apple_OpenGL2 Example_Apple_OpenGL3
-    BUILD_SHARED_LIBS Pkg-config DearImGui_Install DearImGui_Install_Examples DearImGui_Uninstall DearImGui_Show_Linkage_Graph
+    BUILD_SHARED_LIBS Pkg-config DearImGui_Install DearImGui_Install_Examples DearImGui_Uninstall DearImGui_Show_Linkage_Graph DearImGui_Print_Summary
     IMGUI_USER_CONFIG IMGUI_USER_H_FILENAME IMGUI_STB_TRUETYPE_FILENAME IMGUI_STB_RECT_PACK_FILENAME IMGUI_STB_SPRINTF_FILENAME
     IMGUI_IMPL_WEBGPU_BACKEND_DAWN IMGUI_IMPL_WEBGPU_BACKEND_WGPU IMGUI_IMPL_WEBGPU_BACKEND_WGVK)
   list(SORT options CASE INSENSITIVE)
