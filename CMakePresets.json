@@ -28,12 +28,12 @@
       "hidden": true,
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "visualize_targets": "OFF",
+        "DearImGui_Show_Linkage_Graph": "OFF",
         "DearImGui_Install": "ON",
         "DearImGui_Install_Examples": "ON",
         "DearImGui_Uninstall": "ON",
         "Pkg-config": "ON",
-        "PrintConfigurationSummary": "ON"
+        "DearImGui_Print_Summary": "ON"
       }
     },
     {

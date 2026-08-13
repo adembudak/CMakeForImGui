@@ -74,10 +74,8 @@ option(DearImGui_Install "Install Dear ImGui" ON)
 option(DearImGui_Uninstall "A custom target 'uninstall' is generated to undo the latest install step" ON)
 cmake_dependent_option(DearImGui_Install_Examples "Install Dear ImGui examples" OFF DearImGui_Install OFF)
 
-option(visualize_targets "A custom target 'graph' that shows linkage graph enabled to generate a targets.png on build directory" OFF)
-mark_as_advanced(FORCE visualize_targets)
-
 option(PrintConfigurationSummary "Print enabled/disabled features at the end of configuration" ON)
+option(DearImGui_Show_Linkage_Graph "A custom target 'graph' is generated to create a targets.svg file on build directory" OFF)
 
 cmake_dependent_option(Example_Android_OpenGL3 "" OFF "DearImGui_Backend_Android AND DearImGui_Backend_OpenGL3" OFF)
 
@@ -1374,7 +1372,7 @@ endforeach()
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 endif()
 
-if(visualize_targets)
+if(DearImGui_Show_Linkage_Graph)
   if(NOT EXISTS ${PROJECT_BINARY_DIR}/CMakeGraphVizOptions.cmake)
     file(WRITE ${PROJECT_BINARY_DIR}/CMakeGraphVizOptions.cmake
 [=[
@@ -1389,7 +1387,7 @@ set(GRAPHVIZ_GENERATE_DEPENDERS FALSE)
 
   add_custom_target(graph
     COMMAND ${CMAKE_COMMAND} --graphviz=targets.dot ${PROJECT_BINARY_DIR}
-    COMMAND ${DOT_COMMAND} -Tpng targets.dot -o targets.png
+    COMMAND ${DOT_COMMAND} -Tsvg targets.dot -o targets.svg
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
     VERBATIM)
 endif()
@@ -1417,7 +1415,7 @@ if(PrintConfigurationSummary)
     Example_SDL3_OpenGL3 Example_SDL3_SDLGPU3 Example_SDL3_SDLRenderer3 Example_SDL3_Vulkan Example_SDL3_WebGPU Example_SDL3_Metal Example_SDL3_Metal4
     Example_Win32_DirectX9 Example_Win32_DirectX10 Example_Win32_DirectX11 Example_Win32_DirectX12 Example_Win32_OpenGL3 Example_Win32_Vulkan
     Example_Apple_Metal Example_Apple_Metal4 Example_Apple_OpenGL2 Example_Apple_OpenGL3
-    BUILD_SHARED_LIBS Pkg-config DearImGui_Install DearImGui_Install_Examples DearImGui_Uninstall visualize_targets
+    BUILD_SHARED_LIBS Pkg-config DearImGui_Install DearImGui_Install_Examples DearImGui_Uninstall DearImGui_Show_Linkage_Graph
     IMGUI_USER_CONFIG IMGUI_USER_H_FILENAME IMGUI_STB_TRUETYPE_FILENAME IMGUI_STB_RECT_PACK_FILENAME IMGUI_STB_SPRINTF_FILENAME
     IMGUI_IMPL_WEBGPU_BACKEND_DAWN IMGUI_IMPL_WEBGPU_BACKEND_WGPU IMGUI_IMPL_WEBGPU_BACKEND_WGVK)
   list(SORT options CASE INSENSITIVE)
