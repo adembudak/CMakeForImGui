@@ -375,10 +375,13 @@ if(DearImGui_Backend_WebGPU)
     endif()
 
     if(IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+      find_package(Threads REQUIRED)
       find_package(Dawn CONFIG REQUIRED)
 
       target_compile_features(Impl_WebGPU INTERFACE cxx_std_17)
-      target_link_libraries(Impl_WebGPU PUBLIC dawn::webgpu_dawn)
+      target_link_libraries(Impl_WebGPU
+        PUBLIC dawn::webgpu_dawn
+        PRIVATE Threads::Threads)
       target_compile_definitions(Impl_WebGPU PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
 
     elseif(IMGUI_IMPL_WEBGPU_BACKEND_WGPU)
