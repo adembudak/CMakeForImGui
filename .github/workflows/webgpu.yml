@@ -8,7 +8,6 @@ on:
     paths-ignore:
       - 'README.md'
       - 'LICENSE.md'
-      - '.github/dependabot.yml'
 
 jobs:
   Configure-Build-Install-Uninstall-Package-Upload:
