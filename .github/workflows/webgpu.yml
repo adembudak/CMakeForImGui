@@ -120,21 +120,17 @@ jobs:
           -S WGVK \
           -B build \
           -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build-type }} \
-          -D CMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}/wgvk-install
+          -D CMAKE_INSTALL_PREFIX:PATH=wgvk.installed.in.here
 
           cmake --build build
           cmake --install build --config ${{ matrix.build-type }}
-
-          tree ${{ github.workspace }}/wgvk-install
-
           cmake -E rm -rf WGVK build
 
           cmake \
           -D IMGUI_SOURCE_DIR:PATH="${{ github.workspace }}/imgui" \
           -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build-type }} \
-          -D CMAKE_LIBRARY_PATH:PATH=${{ github.workspace }}/wgvk-install/lib \
-          -D CMAKE_INCLUDE_PATH:PATH=${{ github.workspace }}/wgvk-install/include \
-          -D CMAKE_INSTALL_PREFIX:PATH="${{ github.workspace }}/install.in.here" \
+          -D WGVK_DIR:PATH=wgvk.installed.in.here \
+          -D CMAKE_INSTALL_PREFIX:PATH=install.in.here \
           --preset Core
 
           cmake \

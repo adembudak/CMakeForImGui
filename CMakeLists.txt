@@ -369,6 +369,7 @@ if(DearImGui_Backend_WebGPU)
 
     set(IMGUI_IMPL_WEBGPU_BACKEND_WGPU "" CACHE BOOL "")
     set(WGPU_DIR "" CACHE PATH "Path to the folder containing wgpu-native: https://github.com/gfx-rs/wgpu-native/releases")
+    set(WGVK_DIR "" CACHE PATH "Path to the folder containing WGVK: https://github.com/manuel5975p/WGVK")
 
     if(IMGUI_VERSION VERSION_GREATER 19260)
       set(IMGUI_IMPL_WEBGPU_BACKEND_WGVK "" CACHE BOOL "")
@@ -421,12 +422,14 @@ if(DearImGui_Backend_WebGPU)
     elseif(IMGUI_IMPL_WEBGPU_BACKEND_WGVK)
       find_path(WGVK_INCLUDE_DIR
         NAMES webgpu/webgpu.h
+        PATHS ${WGVK_DIR}
         PATH_SUFFIXES include
         DOC "https://github.com/manuel5975p/WGVK"
         NO_CACHE
         REQUIRED)
 
       find_library(WGVK_LIBRARIES wgvk
+        PATHS ${WGVK_DIR}
         PATH_SUFFIXES lib
         DOC "https://github.com/manuel5975p/WGVK"
         NO_CACHE
