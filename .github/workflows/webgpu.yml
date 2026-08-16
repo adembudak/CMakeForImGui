@@ -33,7 +33,6 @@ jobs:
 
           backend:
             - dawn
-            - wgpu-native
             - WGVK
 
     runs-on: ${{ matrix.os }}
@@ -100,47 +99,6 @@ jobs:
           -D VCPKG_INSTALL_OPTIONS:STRING=--x-feature=wgpu-dawn \
           -D DearImGui_Backend_WebGPU:BOOL=ON \
           -D IMGUI_IMPL_WEBGPU_BACKEND_DAWN:BOOL=ON \
-          -D DearImGui_Backend_GLFW:BOOL=ON \
-          -D Example_GLFW_WebGPU:BOOL=ON \
-          -D DearImGui_Backend_SDL2:BOOL=ON \
-          -D Example_SDL2_WebGPU:BOOL=ON \
-          -D DearImGui_Backend_SDL3:BOOL=ON \
-          -D Example_SDL3_WebGPU:BOOL=ON \
-          -S . \
-          -B build
-
-      - name: Configure WebGPU+wgpu-native and related examples
-        if: matrix.backend == 'wgpu-native'
-        shell: bash
-        run: |
-          cd "${{ github.workspace }}/CMakeForImGui"
-          cmake -E make_directory wgpu-native
-
-          case "${{ matrix.os }}" in
-            ubuntu-latest)
-              curl --output-dir ./wgpu-native --remote-name --location https://github.com/gfx-rs/wgpu-native/releases/download/v27.0.2.0/wgpu-linux-x86_64-debug.zip
-              cmake -E chdir wgpu-native cmake -E tar xvf wgpu-linux-x86_64-debug.zip
-              ;;
-            macos-latest)
-              curl --output-dir ./wgpu-native --remote-name --location https://github.com/gfx-rs/wgpu-native/releases/download/v27.0.2.0/wgpu-macos-aarch64-debug.zip
-              cmake -E chdir wgpu-native cmake -E tar xvf wgpu-macos-aarch64-debug.zip
-              ;;
-            windows-latest)
-              curl --output-dir ./wgpu-native --remote-name --location https://github.com/gfx-rs/wgpu-native/releases/download/v27.0.2.0/wgpu-windows-x86_64-msvc-debug.zip
-              cmake -E chdir wgpu-native cmake -E tar xvf wgpu-windows-x86_64-msvc-debug.zip
-              ;;
-          esac
-
-          cmake \
-          -D IMGUI_SOURCE_DIR:PATH="${{ github.workspace }}/imgui" \
-          -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build-type }} \
-          -D CMAKE_INSTALL_PREFIX:PATH="${{ github.workspace }}/install.in.here" \
-          --preset Core
-
-          cmake \
-          -D DearImGui_Backend_WebGPU:BOOL=ON \
-          -D IMGUI_IMPL_WEBGPU_BACKEND_WGPU:BOOL=ON \
-          -D WGPU_DIR:PATH="./wgpu-native" \
           -D DearImGui_Backend_GLFW:BOOL=ON \
           -D Example_GLFW_WebGPU:BOOL=ON \
           -D DearImGui_Backend_SDL2:BOOL=ON \
