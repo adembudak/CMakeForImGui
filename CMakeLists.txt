@@ -197,7 +197,6 @@ if(IMGUI_STB_SPRINTF_FILENAME)
 endif()
 
 if(IMGUI_ENABLE_FREETYPE)
-  find_package(Freetype CONFIG REQUIRED NAMES Freetype freetype)
 
   target_sources(Core
     PRIVATE ${_imgui_dir}/misc/freetype/imgui_freetype.cpp
@@ -205,7 +204,13 @@ if(IMGUI_ENABLE_FREETYPE)
     BASE_DIRS ${_imgui_dir}/misc/freetype
     TYPE HEADERS
     FILES ${_imgui_dir}/misc/freetype/imgui_freetype.h)
-  target_link_libraries(Core PRIVATE Freetype::Freetype)
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    target_compile_options(Core PRIVATE --use-port=freetype)
+  else()
+    find_package(Freetype CONFIG REQUIRED NAMES Freetype freetype)
+    target_link_libraries(Core PRIVATE Freetype::Freetype)
+  endif()
 
   if(IMGUI_ENABLE_FREETYPE_LUNASVG)
     if(IMGUI_VERSION VERSION_LESS 19200)
@@ -546,10 +551,6 @@ if(DearImGui_Backend_Allegro5)
 endif()
 
 if(DearImGui_Backend_GLFW)
-  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten") # Emscripten uses provided --use-port=contrib.glfw3 option instead. $ em++ --show-ports
-    find_package(glfw3 CONFIG REQUIRED)
-  endif()
-
   add_library(Impl_GLFW)
   target_sources(Impl_GLFW
     PRIVATE ${_imgui_dir}/backends/imgui_impl_glfw.cpp
@@ -559,7 +560,12 @@ if(DearImGui_Backend_GLFW)
     FILES ${_imgui_dir}/backends/imgui_impl_glfw.h)
   target_link_libraries(Impl_GLFW PUBLIC Core)
 
-  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+  if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    target_compile_options(Impl_GLFW PUBLIC --use-port=contrib.glfw3) # em++ --show-ports
+    target_link_options(Impl_GLFW PUBLIC --use-port=contrib.glfw3)
+    target_compile_features(Impl_GLFW PUBLIC cxx_std_17)
+  else()
+    find_package(glfw3 CONFIG REQUIRED)
     target_link_libraries(Impl_GLFW PUBLIC glfw)
   endif()
 
@@ -569,8 +575,6 @@ if(DearImGui_Backend_GLFW)
   if(Example_GLFW_OpenGL3)
     add_executable(example_glfw_opengl3)
     target_sources(example_glfw_opengl3 PRIVATE ${_imgui_dir}/examples/example_glfw_opengl3/main.cpp)
-    target_compile_options(example_glfw_opengl3 PRIVATE $<$<PLATFORM_ID:Emscripten>:--use-port=contrib.glfw3>)
-    target_link_options(example_glfw_opengl3 PRIVATE $<$<PLATFORM_ID:Emscripten>:--use-port=contrib.glfw3>)
     target_link_libraries(example_glfw_opengl3 PRIVATE Impl_GLFW Impl_OpenGL3)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
@@ -619,8 +623,8 @@ if(DearImGui_Backend_GLFW)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       target_compile_features(example_glfw_wgpu PRIVATE cxx_std_17)
-      target_compile_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
-      target_link_options(example_glfw_wgpu PRIVATE --use-port=contrib.glfw3 $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU> -sASYNCIFY)
+      target_compile_options(example_glfw_wgpu PRIVATE $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
+      target_link_options(example_glfw_wgpu PRIVATE $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU> -sASYNCIFY)
 
       set_target_properties(example_glfw_wgpu PROPERTIES SUFFIX ".html")
 
