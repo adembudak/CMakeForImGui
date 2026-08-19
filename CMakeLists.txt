@@ -197,7 +197,6 @@ if(IMGUI_STB_SPRINTF_FILENAME)
 endif()
 
 if(IMGUI_ENABLE_FREETYPE)
-
   target_sources(Core
     PRIVATE ${_imgui_dir}/misc/freetype/imgui_freetype.cpp
     PUBLIC FILE_SET imgui_misc_freetype_set
@@ -239,11 +238,6 @@ target_sources(binary_to_compressed_c PRIVATE ${_imgui_dir}/misc/fonts/binary_to
 target_compile_features(binary_to_compressed_c PRIVATE cxx_std_11)
 
 if(DearImGui_Backend_OpenGL2)
-  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
-  else()
-    find_package(OpenGL 2 QUIET REQUIRED)
-  endif()
-
   add_library(Impl_OpenGL2)
   target_sources(Impl_OpenGL2
     PRIVATE ${_imgui_dir}/backends/imgui_impl_opengl2.cpp
@@ -253,9 +247,10 @@ if(DearImGui_Backend_OpenGL2)
     FILES ${_imgui_dir}/backends/imgui_impl_opengl2.h)
   target_link_libraries(Impl_OpenGL2 PUBLIC Core)
 
-  if(WIN32 AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     target_link_libraries(Impl_OpenGL2 PUBLIC opengl32)
   else()
+    find_package(OpenGL 2 QUIET REQUIRED)
     target_link_libraries(Impl_OpenGL2 PUBLIC OpenGL::GL)
   endif()
 
@@ -264,13 +259,6 @@ if(DearImGui_Backend_OpenGL2)
 endif()
 
 if(DearImGui_Backend_OpenGL3)
-  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
-  elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
-    find_package(OpenGL 3 QUIET REQUIRED COMPONENTS EGL GLES2 GLES3)
-  else()
-    find_package(OpenGL 3 QUIET REQUIRED)
-  endif()
-
   add_library(Impl_OpenGL3)
   target_sources(Impl_OpenGL3
     PRIVATE ${_imgui_dir}/backends/imgui_impl_opengl3.cpp
@@ -283,8 +271,10 @@ if(DearImGui_Backend_OpenGL3)
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
     target_link_libraries(Impl_OpenGL3 PUBLIC opengl32)
   elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
+    find_package(OpenGL 3 QUIET REQUIRED COMPONENTS EGL GLES2 GLES3)
     target_link_libraries(Impl_OpenGL3 PUBLIC OpenGL::EGL OpenGL::GLES2 OpenGL::GLES3)
   else()
+    find_package(OpenGL 3 QUIET REQUIRED)
     target_link_libraries(Impl_OpenGL3 PUBLIC OpenGL::GL)
   endif()
 
@@ -300,11 +290,20 @@ if(DearImGui_Backend_OpenGL3)
 endif()
 
 if(DearImGui_Backend_Vulkan)
+  add_library(Impl_Vulkan)
+  target_sources(Impl_Vulkan
+    PRIVATE ${_imgui_dir}/backends/imgui_impl_vulkan.cpp
+    PUBLIC FILE_SET imgui_impl_vulkan_set
+    BASE_DIRS ${_imgui_dir}/backends
+    TYPE HEADERS
+    FILES ${_imgui_dir}/backends/imgui_impl_vulkan.h)
+  target_link_libraries(Impl_Vulkan PUBLIC Core)
+
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     if(NOT VULKAN_RUNTIME_COMPONENTS_DIR)
       message(FATAL_ERROR
 [=[
-VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-X64-x.y.zzz-Components folder
+VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-X64-x.y.z-Components folder
   https://vulkan.lunarg.com/sdk/home
 ]=])
     endif()
@@ -312,7 +311,7 @@ VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-X64-x.y.zzz-Comp
     if(CMAKE_SIZEOF_VOID_P EQUAL 4)
       set(suffix x86)
     endif()
-    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8) # Revisit: check platform for ARM64 Windows target
       set(suffix x64)
     endif()
 
@@ -329,22 +328,9 @@ VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-X64-x.y.zzz-Comp
     list(POP_BACK CMAKE_FIND_LIBRARY_SUFFIXES)
 
     find_package(VulkanHeaders REQUIRED)
-  else()
-    find_package(Vulkan REQUIRED)
-  endif()
-
-  add_library(Impl_Vulkan)
-  target_sources(Impl_Vulkan
-    PRIVATE ${_imgui_dir}/backends/imgui_impl_vulkan.cpp
-    PUBLIC FILE_SET imgui_impl_vulkan_set
-    BASE_DIRS ${_imgui_dir}/backends
-    TYPE HEADERS
-    FILES ${_imgui_dir}/backends/imgui_impl_vulkan.h)
-  target_link_libraries(Impl_Vulkan PUBLIC Core)
-
-  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
     target_link_libraries(Impl_Vulkan PUBLIC Vulkan::Headers ${Vulkan_Libraries})
   else()
+    find_package(Vulkan REQUIRED)
     target_link_libraries(Impl_Vulkan PUBLIC Vulkan::Vulkan)
   endif()
 
