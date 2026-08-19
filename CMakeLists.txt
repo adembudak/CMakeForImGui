@@ -355,15 +355,35 @@ if(DearImGui_Backend_WebGPU)
     target_link_libraries(Impl_WebGPU INTERFACE "-framework QuartzCore -framework Metal")
   endif()
 
-  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+  if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    find_program(EMSCRIPTEN_COMPILER_COMMAND
+      NAMES emcc em++
+      DOC "https://emscripten.org"
+      REQUIRED)
+
+    execute_process(COMMAND ${EMSCRIPTEN_COMPILER_COMMAND} --version
+      OUTPUT_VARIABLE emscripten_compiler_command_version_output)
+
+    string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" EMSCRIPTEN_VERSION ${emscripten_compiler_command_version_output})
+    message(STATUS "Emscripten version ${EMSCRIPTEN_VERSION}")
+
+    if(IMGUI_VERSION VERSION_GREATER 19240 AND EMSCRIPTEN_VERSION VERSION_GREATER 4.0.9)
+      target_compile_options(Impl_WebGPU PRIVATE --use-port=emdawnwebgpu)
+      target_link_options(Impl_WebGPU PRIVATE --use-port=emdawnwebgpu)
+      target_compile_definitions(Impl_WebGPU PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
+    else()
+      target_compile_options(Impl_WebGPU PRIVATE -sUSE_WEBGPU)
+      target_link_options(Impl_WebGPU PRIVATE -sUSE_WEBGPU)
+    endif()
+  else()
     set(IMGUI_IMPL_WEBGPU_BACKEND_DAWN "" CACHE BOOL "")
 
     set(IMGUI_IMPL_WEBGPU_BACKEND_WGPU "" CACHE BOOL "")
     set(WGPU_DIR "" CACHE PATH "Path to the folder containing wgpu-native: https://github.com/gfx-rs/wgpu-native/releases")
-    set(WGVK_DIR "" CACHE PATH "Path to the folder containing WGVK: https://github.com/manuel5975p/WGVK")
 
     if(IMGUI_VERSION VERSION_GREATER 19260)
       set(IMGUI_IMPL_WEBGPU_BACKEND_WGVK "" CACHE BOOL "")
+      set(WGVK_DIR "" CACHE PATH "Path to the folder containing WGVK: https://github.com/manuel5975p/WGVK")
     endif()
 
     if(IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
@@ -432,28 +452,6 @@ if(DearImGui_Backend_WebGPU)
         FILES ${WGVK_INCLUDE_DIR}/webgpu/webgpu.h)
       target_link_libraries(Impl_WebGPU PUBLIC ${WGVK_LIBRARIES})
       target_compile_definitions(Impl_WebGPU PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_WGVK)
-    endif()
-  endif()
-
-  if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    find_program(EMSCRIPTEN_COMPILER_COMMAND
-      NAMES emcc em++
-      DOC "https://emscripten.org"
-      REQUIRED)
-
-    execute_process(COMMAND ${EMSCRIPTEN_COMPILER_COMMAND} --version
-      OUTPUT_VARIABLE emscripten_compiler_command_version_output)
-
-    string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" EMSCRIPTEN_VERSION ${emscripten_compiler_command_version_output})
-    message(STATUS "Emscripten version ${EMSCRIPTEN_VERSION}")
-
-    if(IMGUI_VERSION VERSION_GREATER 19240 AND EMSCRIPTEN_VERSION VERSION_GREATER 4.0.9)
-      target_compile_options(Impl_WebGPU PRIVATE --use-port=emdawnwebgpu)
-      target_link_options(Impl_WebGPU PRIVATE --use-port=emdawnwebgpu)
-      target_compile_definitions(Impl_WebGPU PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
-    else()
-      target_compile_options(Impl_WebGPU PRIVATE -sUSE_WEBGPU)
-      target_link_options(Impl_WebGPU PRIVATE -sUSE_WEBGPU)
     endif()
   endif()
 
@@ -676,10 +674,6 @@ if(Example_NULL)
 endif()
 
 if(DearImGui_Backend_SDL2)
-  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    find_package(SDL2 CONFIG REQUIRED)
-  endif()
-
   add_library(Impl_SDL2)
   target_sources(Impl_SDL2
     PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/backends/imgui_impl_sdl2.cpp,${_imgui_dir}/backends/imgui_impl_sdl.cpp>
@@ -687,20 +681,18 @@ if(DearImGui_Backend_SDL2)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/backends/imgui_impl_sdl2.h,${_imgui_dir}/backends/imgui_impl_sdl.h>)
-
   target_link_libraries(Impl_SDL2 PUBLIC Core)
 
-  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+  if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    target_compile_options(Impl_SDL2 PUBLIC --use-port=sdl2)
+    target_link_options(Impl_SDL2 PUBLIC --use-port=sdl2)
+  else()
+    find_package(SDL2 CONFIG REQUIRED)
     if(TARGET SDL2::SDL2)
       target_link_libraries(Impl_SDL2 PUBLIC SDL2::SDL2)
     else()
       target_link_libraries(Impl_SDL2 PUBLIC SDL2::SDL2-static)
     endif()
-  endif()
-
-  if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    target_compile_options(Impl_SDL2 PUBLIC --use-port=sdl2)
-    target_link_options(Impl_SDL2 PUBLIC --use-port=sdl2)
   endif()
 
   list(APPEND imgui_backends_list Impl_SDL2)
@@ -818,10 +810,6 @@ if(DearImGui_Backend_SDLRenderer2)
 endif()
 
 if(DearImGui_Backend_SDL3)
-  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    find_package(SDL3 CONFIG REQUIRED)
-  endif()
-
   add_library(Impl_SDL3)
   target_sources(Impl_SDL3
     PRIVATE ${_imgui_dir}/backends/imgui_impl_sdl3.cpp
@@ -831,13 +819,12 @@ if(DearImGui_Backend_SDL3)
     FILES ${_imgui_dir}/backends/imgui_impl_sdl3.h)
   target_link_libraries(Impl_SDL3 PUBLIC Core)
 
-  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    target_link_libraries(Impl_SDL3 PUBLIC SDL3::SDL3)
-  endif()
-
   if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     target_compile_options(Impl_SDL3 PUBLIC --use-port=sdl3)
     target_link_options(Impl_SDL3 PUBLIC --use-port=sdl3)
+  else()
+    find_package(SDL3 CONFIG REQUIRED)
+    target_link_libraries(Impl_SDL3 PUBLIC SDL3::SDL3)
   endif()
 
   if(IMGUI_VERSION VERSION_LESS 19130)
