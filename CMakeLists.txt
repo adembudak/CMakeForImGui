@@ -300,19 +300,39 @@ if(DearImGui_Backend_Vulkan)
   target_link_libraries(Impl_Vulkan PUBLIC Core)
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+    set(VULKAN_RUNTIME_COMPONENTS_DIR "" CACHE PATH "")
     if(NOT VULKAN_RUNTIME_COMPONENTS_DIR)
       message(FATAL_ERROR
 [=[
-VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-X64-x.y.z-Components folder
+VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-[ARM64|X64]-x.y.z.w-Components folder
   https://vulkan.lunarg.com/sdk/home
 ]=])
     endif()
 
-    if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-      set(suffix x86)
-    endif()
-    if(CMAKE_SIZEOF_VOID_P EQUAL 8) # Revisit: check platform for ARM64 Windows target
-      set(suffix x64)
+    if(CMAKE_CXX_COMPILER_ARCHITECTURE_ID)
+      if(CMAKE_CXX_COMPILER_ARCHITECTURE_ID STREQUAL "aarch64")
+        set(suffix "")
+      elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "^(i386|i486|i586|i686)$")
+        set(suffix x86)
+      elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID STREQUAL "x86_64")
+        set(suffix x64)
+      else()
+        message(FATAL_ERROR "Unsupported Windows architecture: ${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
+      endif()
+    else()
+      if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64|arm64|ARM64)$")
+        set(suffix "")
+      elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(x86_64|amd64|AMD64)$")
+        if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+          set(suffix x64)
+        else()
+          set(suffix x86)
+        endif()
+      elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(i386|i486|i586|i686|x86|X86)$")
+        set(suffix x86)
+      else()
+        message(FATAL_ERROR "Unsupported Windows architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+      endif()
     endif()
 
     list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES .dll)
