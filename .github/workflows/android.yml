@@ -25,6 +25,30 @@ jobs:
         with:
           cmake-version: '4.4.2'
 
+      - name: Setup FASTBuild
+        shell: bash
+        run: |
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            curl --fail --location --output FASTBuild.zip 'https://fastbuild.org/downloads/v1.20/FASTBuild-Linux-x64-v1.20.zip'
+            cmake -E make_directory FASTBuild
+            unzip FASTBuild.zip -d FASTBuild
+            chmod +x FASTBuild/fbuild FASTBuild/fbuildworker
+            echo "$GITHUB_WORKSPACE/FASTBuild" >> "$GITHUB_PATH"
+
+          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+            curl --fail --location --output FASTBuild.zip 'https://fastbuild.org/downloads/v1.20/FASTBuild-OSX-x64+ARM-v1.20.zip'
+            cmake -E make_directory FASTBuild
+            unzip FASTBuild.zip -d FASTBuild
+            chmod +x FASTBuild/FBuild FASTBuild/FBuildWorker
+            echo "$GITHUB_WORKSPACE/FASTBuild" >> "$GITHUB_PATH"
+
+          elif [ "${{ matrix.os }}" = "windows-latest" ]; then
+            curl --fail --location --output FASTBuild.zip 'https://fastbuild.org/downloads/v1.20/FASTBuild-Windows-x64-v1.20.zip'
+            cmake -E make_directory FASTBuild
+            unzip FASTBuild.zip -d FASTBuild
+            echo "$GITHUB_WORKSPACE/FASTBuild" >> "$GITHUB_PATH"
+          fi
+
       - name: Check out ImGui repository
         uses: actions/checkout@v6
         with:
