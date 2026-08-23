@@ -61,7 +61,7 @@ Following backend options are available:
 
 All backend options are `OFF` by default and all the configuration macros on `imconfig.h` can be passed as CMake command line with `-D` variable.
 
-Example programs set as dependent options and will be available when their backends enabled. Libraries and examples can be installed by setting `Install` and `Install_examples` options `ON`. An `uninstall` custom target is provided to undo the latest install step.
+Example programs set as dependent options and will be available when their backends enabled. Libraries and examples can be installed by setting `DearImGui_Install` and `DearImGui_Install_Examples` options `ON`. An `uninstall` custom target is provided to undo the latest install step.
 
 ```cmake
 cmake --build build --target uninstall
