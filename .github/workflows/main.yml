@@ -6,8 +6,8 @@ on:
     branches:
       - main
     paths-ignore:
-      - 'README.md'
-      - 'LICENSE.md'
+      - 'readme.md'
+      - 'license.md'
 
 jobs:
   Configure-Build-Install-Uninstall-Package-Upload:
