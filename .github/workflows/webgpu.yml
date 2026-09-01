@@ -33,6 +33,7 @@ jobs:
 
           backend:
             - dawn
+            - wgpu-native
             - WGVK
 
     runs-on: ${{ matrix.os }}
@@ -96,6 +97,8 @@ jobs:
           --preset Core
 
           cmake \
+          -S . \
+          -B build \
           -D VCPKG_INSTALL_OPTIONS:STRING=--x-feature=wgpu-dawn \
           -D DearImGui_Backend_WebGPU:BOOL=ON \
           -D IMGUI_IMPL_WEBGPU_BACKEND_DAWN:BOOL=ON \
@@ -104,9 +107,46 @@ jobs:
           -D DearImGui_Backend_SDL2:BOOL=ON \
           -D Example_SDL2_WebGPU:BOOL=ON \
           -D DearImGui_Backend_SDL3:BOOL=ON \
-          -D Example_SDL3_WebGPU:BOOL=ON \
+          -D Example_SDL3_WebGPU:BOOL=ON
+
+      - name: Configure WebGPU+wgpu-native and related examples
+        if: matrix.backend == 'wgpu-native'
+        shell: bash
+        run: |
+          cd "${{ github.workspace }}/CMakeForImGui"
+
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            asset="wgpu-linux-x86_64-debug.zip"
+
+          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+            asset="wgpu-macos-aarch64-debug.zip"
+
+          elif [ "${{ matrix.os }}" = "windows-latest" ]; then
+            asset="wgpu-windows-x86_64-msvc-debug.zip"
+          fi
+
+          curl --fail --location --output wgpu-native.zip "https://github.com/gfx-rs/wgpu-native/releases/latest/download/$asset"
+          cmake -E make_directory wgpu-native
+          unzip wgpu-native.zip -d wgpu-native
+
+          cmake \
+          -D IMGUI_SOURCE_DIR:PATH="${{ github.workspace }}/imgui" \
+          -D CMAKE_BUILD_TYPE:STRING=${{ matrix.build-type }} \
+          -D CMAKE_INSTALL_PREFIX:PATH=install.in.here \
+          --preset Core
+
+          cmake \
           -S . \
-          -B build
+          -B build \
+          -D DearImGui_Backend_WebGPU:BOOL=ON \
+          -D IMGUI_IMPL_WEBGPU_BACKEND_WGPU:BOOL=ON \
+          -D WGPU_DIR:PATH=./wgpu-native \
+          -D DearImGui_Backend_GLFW:BOOL=ON \
+          -D Example_GLFW_WebGPU:BOOL=ON \
+          -D DearImGui_Backend_SDL2:BOOL=ON \
+          -D Example_SDL2_WebGPU:BOOL=ON \
+          -D DearImGui_Backend_SDL3:BOOL=ON \
+          -D Example_SDL3_WebGPU:BOOL=ON
 
       - name: Configure WebGPU+WGVK and related examples
         if: matrix.backend == 'WGVK'
@@ -134,6 +174,8 @@ jobs:
           --preset Core
 
           cmake \
+          -S . \
+          -B build \
           -D DearImGui_Backend_WebGPU:BOOL=ON \
           -D IMGUI_IMPL_WEBGPU_BACKEND_WGVK:BOOL=ON \
           -D DearImGui_Backend_GLFW:BOOL=ON \
@@ -141,9 +183,7 @@ jobs:
           -D DearImGui_Backend_SDL2:BOOL=ON \
           -D Example_SDL2_WebGPU:BOOL=ON \
           -D DearImGui_Backend_SDL3:BOOL=ON \
-          -D Example_SDL3_WebGPU:BOOL=ON \
-          -S . \
-          -B build
+          -D Example_SDL3_WebGPU:BOOL=ON
 
       - name: Build
         run: |
