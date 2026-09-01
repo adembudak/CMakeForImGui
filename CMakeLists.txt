@@ -422,8 +422,9 @@ if(DearImGui_Backend_WebGPU)
         message(FATAL_ERROR "WebGPU backend WGPU selected but WGPU_DIR is not set")
       endif()
 
-     file(STRINGS ${WGPU_DIR}/wgpu-native-meta/wgpu-native-git-tag wgpu-native_version)
-     message(STATUS "wgpu-native version ${wgpu-native_version}")
+     file(STRINGS ${WGPU_DIR}/wgpu-native-meta/wgpu-native-git-tag wgpu-native-git-tag)
+     string(REGEX MATCH "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" WGPU_NATIVE_VERSION ${wgpu-native-git-tag})
+     message(STATUS "wgpu-native version ${WGPU_NATIVE_VERSION}")
 
       find_path(WGPU_INCLUDE_DIR
         NAMES webgpu/wgpu.h webgpu/webgpu.h
@@ -1072,7 +1073,7 @@ if((DearImGui_Backend_DirectX9 OR DearImGui_Backend_DirectX10 OR DearImGui_Backe
   endif()
 
   if(NOT arch)
-    message(FATAL_ERROR "-- Unsupported architecture: ${_arch}")
+    message(FATAL_ERROR "-- Unsupported Windows architecture: ${_arch}")
   endif()
 
   find_path(Windows_SDK_LIB_DIR
