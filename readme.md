@@ -69,7 +69,7 @@ cmake --build build --target uninstall
 
 ## Usage
 
-All the include paths are kept as is. [This repo](https://github.com/adembudak/CMakeForImGui.test) demonstrates how to build programs as a client of the library:
+All the include paths are kept as is. Compiled and installed library can be used with:
 
 ```cmake
 # project setup
