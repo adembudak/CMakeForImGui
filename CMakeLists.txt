@@ -25,7 +25,13 @@ endif()
 cmake_path(SET _imgui_dir ${IMGUI_SOURCE_DIR})
 
 file(STRINGS ${_imgui_dir}/imgui.h imgui_version_number_string REGEX "#define[ \t]+IMGUI_VERSION_NUM[ \t]+[0-9]+")
-string(REGEX MATCH "[0-9]+" IMGUI_VERSION ${imgui_version_number_string})
+string(REGEX MATCH "[0-9]+" IMGUI_VERSION_NUMBER ${imgui_version_number_string})
+
+math(EXPR IMGUI_VERSION_MAJOR "(${IMGUI_VERSION_NUMBER} / 10000)")
+math(EXPR IMGUI_VERSION_MINOR "(${IMGUI_VERSION_NUMBER} / 100) % 100")
+math(EXPR IMGUI_VERSION_PATCH "(${IMGUI_VERSION_NUMBER} / 10) % 10")
+math(EXPR IMGUI_VERSION_TWEAK "(${IMGUI_VERSION_NUMBER} % 10)")
+set(IMGUI_VERSION "${IMGUI_VERSION_MAJOR}.${IMGUI_VERSION_MINOR}.${IMGUI_VERSION_PATCH}.${IMGUI_VERSION_TWEAK}")
 
 message(STATUS "ImGui version ${IMGUI_VERSION}")
 
@@ -41,16 +47,16 @@ endif()
 option(DearImGui_Backend_Allegro5 "" OFF)
 option(DearImGui_Backend_GLFW "" OFF)
 option(DearImGui_Backend_FreeGLUT "" OFF)
-cmake_dependent_option(DearImGui_Backend_NULL "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19240)" OFF)
+cmake_dependent_option(DearImGui_Backend_NULL "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.92.4)" OFF)
 option(DearImGui_Backend_SDL2 "" OFF)
-cmake_dependent_option(DearImGui_Backend_SDLRenderer2 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 18420)" OFF)
-cmake_dependent_option(DearImGui_Backend_SDL3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19100)" OFF)
-cmake_dependent_option(DearImGui_Backend_SDLGPU3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19160)" OFF)
-cmake_dependent_option(DearImGui_Backend_SDLRenderer3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19100)" OFF)
+cmake_dependent_option(DearImGui_Backend_SDLRenderer2 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.84.2)" OFF)
+cmake_dependent_option(DearImGui_Backend_SDL3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.0)" OFF)
+cmake_dependent_option(DearImGui_Backend_SDLGPU3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
+cmake_dependent_option(DearImGui_Backend_SDLRenderer3 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.91.0)" OFF)
 option(DearImGui_Backend_OpenGL2 "" OFF)
 option(DearImGui_Backend_OpenGL3 "" OFF)
 option(DearImGui_Backend_Vulkan "" OFF)
-cmake_dependent_option(DearImGui_Backend_WebGPU "" OFF "(${IMGUI_VERSION} VERSION_GREATER 18000)" OFF)
+cmake_dependent_option(DearImGui_Backend_WebGPU "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.80.0)" OFF)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   option(DearImGui_Backend_Win32 "" OFF)
@@ -62,7 +68,7 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   option(DearImGui_Backend_Metal "" OFF)
-  cmake_dependent_option(DearImGui_Backend_Metal4 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 19280)" OFF)
+  cmake_dependent_option(DearImGui_Backend_Metal4 "" OFF "(${IMGUI_VERSION} VERSION_GREATER 1.92.8)" OFF)
   option(DearImGui_Backend_OSX "" OFF)
 endif()
 
@@ -87,35 +93,35 @@ cmake_dependent_option(Example_GLFW_WebGPU "" OFF "DearImGui_Backend_GLFW AND De
 
 cmake_dependent_option(Example_FreeGLUT_OpenGL2 "" OFF "DearImGui_Backend_FreeGLUT AND DearImGui_Backend_OpenGL2" OFF)
 
-cmake_dependent_option(Example_NULL "" OFF "DearImGui_Backend_NULL OR (${IMGUI_VERSION} VERSION_LESS 19250)" OFF)
+cmake_dependent_option(Example_NULL "" OFF "DearImGui_Backend_NULL OR (${IMGUI_VERSION} VERSION_LESS 1.92.5)" OFF)
 
 cmake_dependent_option(Example_SDL2_OpenGL2 "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_OpenGL2" OFF)
 cmake_dependent_option(Example_SDL2_OpenGL3 "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_OpenGL3" OFF)
 cmake_dependent_option(Example_SDL2_Vulkan "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_Vulkan" OFF)
 cmake_dependent_option(Example_SDL2_DirectX11 "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_DirectX11" OFF)
 cmake_dependent_option(Example_SDL2_Metal "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_Metal" OFF)
-cmake_dependent_option(Example_SDL2_WebGPU "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_WebGPU AND (${IMGUI_VERSION} VERSION_GREATER 19240)" OFF)
+cmake_dependent_option(Example_SDL2_WebGPU "" OFF "DearImGui_Backend_SDL2 AND DearImGui_Backend_WebGPU AND (${IMGUI_VERSION} VERSION_GREATER 1.92.4)" OFF)
 cmake_dependent_option(Example_SDL2_SDLRenderer2 "" OFF "DearImGui_Backend_SDLRenderer2 AND DearImGui_Backend_SDL2" OFF)
 
 cmake_dependent_option(Example_Allegro5 "" OFF DearImGui_Backend_Allegro5 OFF)
 
 cmake_dependent_option(Example_SDL3_OpenGL3 "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_OpenGL3" OFF)
-cmake_dependent_option(Example_SDL3_Vulkan "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_Vulkan AND (${IMGUI_VERSION} VERSION_GREATER 19140)" OFF)
-cmake_dependent_option(Example_SDL3_Metal "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_Metal AND (${IMGUI_VERSION} VERSION_GREATER 19210)" OFF)
+cmake_dependent_option(Example_SDL3_Vulkan "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_Vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.4)" OFF)
+cmake_dependent_option(Example_SDL3_Metal "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_Metal AND (${IMGUI_VERSION} VERSION_GREATER 1.92.1)" OFF)
 cmake_dependent_option(Example_SDL3_Metal4 "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_Metal4" OFF)
 cmake_dependent_option(Example_SDL3_SDLGPU3 "" OFF DearImGui_Backend_SDLGPU3 OFF)
-cmake_dependent_option(Example_SDL3_WebGPU "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_WebGPU AND (${IMGUI_VERSION} VERSION_GREATER 19240)" OFF)
+cmake_dependent_option(Example_SDL3_WebGPU "" OFF "DearImGui_Backend_SDL3 AND DearImGui_Backend_WebGPU AND (${IMGUI_VERSION} VERSION_GREATER 1.92.4)" OFF)
 cmake_dependent_option(Example_SDL3_SDLRenderer3 "" OFF "DearImGui_Backend_SDLRenderer3 AND DearImGui_Backend_SDL3" OFF)
 
-cmake_dependent_option(Example_Win32_OpenGL3 "" OFF "DearImGui_Backend_Win32 AND DearImGui_Backend_OpenGL3 AND (${IMGUI_VERSION} VERSION_GREATER 18950)" OFF)
-cmake_dependent_option(Example_Win32_Vulkan "" OFF "DearImGui_Backend_Win32 AND DearImGui_Backend_Vulkan AND (${IMGUI_VERSION} VERSION_GREATER 19160)" OFF)
+cmake_dependent_option(Example_Win32_OpenGL3 "" OFF "DearImGui_Backend_Win32 AND DearImGui_Backend_OpenGL3 AND (${IMGUI_VERSION} VERSION_GREATER 1.89.5)" OFF)
+cmake_dependent_option(Example_Win32_Vulkan "" OFF "DearImGui_Backend_Win32 AND DearImGui_Backend_Vulkan AND (${IMGUI_VERSION} VERSION_GREATER 1.91.6)" OFF)
 cmake_dependent_option(Example_Win32_DirectX9 "" OFF "DearImGui_Backend_Win32 AND DearImGui_Backend_DirectX9" OFF)
 cmake_dependent_option(Example_Win32_DirectX10 "" OFF "DearImGui_Backend_Win32 AND DearImGui_Backend_DirectX10" OFF)
 cmake_dependent_option(Example_Win32_DirectX11 "" OFF "DearImGui_Backend_Win32 AND DearImGui_Backend_DirectX11" OFF)
 cmake_dependent_option(Example_Win32_DirectX12 "" OFF "DearImGui_Backend_Win32 AND DearImGui_Backend_DirectX12" OFF)
 
 cmake_dependent_option(Example_Apple_OpenGL2 "" OFF "DearImGui_Backend_OSX AND DearImGui_Backend_OpenGL2" OFF)
-cmake_dependent_option(Example_Apple_OpenGL3 "" OFF "DearImGui_Backend_OSX AND DearImGui_Backend_OpenGL3 AND (${IMGUI_VERSION} VERSION_GREATER 19290)" OFF)
+cmake_dependent_option(Example_Apple_OpenGL3 "" OFF "DearImGui_Backend_OSX AND DearImGui_Backend_OpenGL3 AND (${IMGUI_VERSION} VERSION_GREATER 1.92.9)" OFF)
 cmake_dependent_option(Example_Apple_Metal "" OFF "DearImGui_Backend_OSX AND DearImGui_Backend_Metal" OFF)
 cmake_dependent_option(Example_Apple_Metal4 "" OFF "DearImGui_Backend_OSX AND DearImGui_Backend_Metal4" OFF)
 
@@ -213,7 +219,7 @@ if(IMGUI_ENABLE_FREETYPE)
   endif()
 
   if(IMGUI_ENABLE_FREETYPE_LUNASVG)
-    if(IMGUI_VERSION VERSION_LESS 19200)
+    if(IMGUI_VERSION VERSION_LESS 1.92.0)
       find_package(lunasvg 2.4.3 EXACT CONFIG REQUIRED)
     else()
       find_package(lunasvg CONFIG REQUIRED)
@@ -279,7 +285,7 @@ if(DearImGui_Backend_OpenGL3)
     target_link_libraries(Impl_OpenGL3 PUBLIC OpenGL::GL)
   endif()
 
-  if(IMGUI_VERSION VERSION_LESS 18400)
+  if(IMGUI_VERSION VERSION_LESS 1.84.0)
     find_package(GLEW REQUIRED)
 
     target_link_libraries(Impl_OpenGL3 PUBLIC GLEW::GLEW)
@@ -390,7 +396,7 @@ if(DearImGui_Backend_WebGPU)
     string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" EMSCRIPTEN_VERSION ${emscripten_compiler_command_version_output})
     message(STATUS "Emscripten version ${EMSCRIPTEN_VERSION}")
 
-    if(IMGUI_VERSION VERSION_GREATER 19240 AND EMSCRIPTEN_VERSION VERSION_GREATER 4.0.9)
+    if(IMGUI_VERSION VERSION_GREATER 1.92.4 AND EMSCRIPTEN_VERSION VERSION_GREATER 4.0.9)
       target_compile_options(Impl_WebGPU PRIVATE --use-port=emdawnwebgpu)
       target_link_options(Impl_WebGPU PRIVATE --use-port=emdawnwebgpu)
       target_compile_definitions(Impl_WebGPU PUBLIC IMGUI_IMPL_WEBGPU_BACKEND_DAWN)
@@ -405,7 +411,7 @@ if(DearImGui_Backend_WebGPU)
     set(IMGUI_IMPL_WEBGPU_BACKEND_WGPU "" CACHE BOOL "")
     set(WGPU_DIR "" CACHE PATH "Path to the folder containing wgpu-native: https://github.com/gfx-rs/wgpu-native/releases")
 
-    if(IMGUI_VERSION VERSION_GREATER 19260)
+    if(IMGUI_VERSION VERSION_GREATER 1.92.6)
       set(IMGUI_IMPL_WEBGPU_BACKEND_WGVK "" CACHE BOOL "")
       set(WGVK_DIR "" CACHE PATH "Path to the folder containing WGVK: https://github.com/manuel5975p/WGVK")
     endif()
@@ -631,7 +637,7 @@ if(DearImGui_Backend_GLFW)
   if(Example_GLFW_WebGPU) # WebGPU support must be enabled on used web browser
     add_executable(example_glfw_wgpu)
     target_sources(example_glfw_wgpu
-      PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19050>,${_imgui_dir}/examples/example_glfw_wgpu/main.cpp,${_imgui_dir}/examples/example_emscripten_wgpu/main.cpp>
+      PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.90.5>,${_imgui_dir}/examples/example_glfw_wgpu/main.cpp,${_imgui_dir}/examples/example_emscripten_wgpu/main.cpp>
       PRIVATE FILE_SET HEADERS
       BASE_DIRS
         $<$<BOOL:${IMGUI_IMPL_WEBGPU_BACKEND_WGPU}>:${WGPU_INCLUDE_DIR}>
@@ -642,15 +648,15 @@ if(DearImGui_Backend_GLFW)
     target_link_libraries(example_glfw_wgpu PRIVATE Impl_GLFW Impl_WebGPU)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-      target_compile_options(example_glfw_wgpu PRIVATE $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
-      target_link_options(example_glfw_wgpu PRIVATE $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU> -sASYNCIFY)
+      target_compile_options(example_glfw_wgpu PRIVATE $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},1.92.4>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU>)
+      target_link_options(example_glfw_wgpu PRIVATE $<IF:$<AND:$<VERSION_GREATER:${IMGUI_VERSION},1.92.4>,$<VERSION_GREATER:${EMSCRIPTEN_VERSION},4.0.9>>,--use-port=emdawnwebgpu,-sUSE_WEBGPU> -sASYNCIFY)
 
       set_target_properties(example_glfw_wgpu PROPERTIES SUFFIX ".html")
 
-      if(IMGUI_VERSION VERSION_LESS_EQUAL 19240)
+      if(IMGUI_VERSION VERSION_LESS_EQUAL 1.92.4)
         set_target_properties(example_glfw_wgpu PROPERTIES OUTPUT_NAME index)
         add_custom_command(TARGET example_glfw_wgpu
-          POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${_imgui_dir}/examples/$<IF:$<VERSION_GREATER:${IMGUI_VERSION},19050>,example_glfw_wgpu,example_emscripten_wgpu>/web/index.html $<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.html)
+          POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${_imgui_dir}/examples/$<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.90.5>,example_glfw_wgpu,example_emscripten_wgpu>/web/index.html $<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.html)
       endif()
     endif()
 
@@ -703,7 +709,7 @@ endif()
 if(Example_NULL)
   add_executable(example_null)
   target_sources(example_null PRIVATE ${_imgui_dir}/examples/example_null/main.cpp)
-  target_link_libraries(example_null PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19240>,Impl_NULL,Core>)
+  target_link_libraries(example_null PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.92.4>,Impl_NULL,Core>)
 
   list(APPEND imgui_examples_list example_null)
 endif()
@@ -711,11 +717,11 @@ endif()
 if(DearImGui_Backend_SDL2)
   add_library(Impl_SDL2)
   target_sources(Impl_SDL2
-    PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/backends/imgui_impl_sdl2.cpp,${_imgui_dir}/backends/imgui_impl_sdl.cpp>
+    PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imgui_dir}/backends/imgui_impl_sdl2.cpp,${_imgui_dir}/backends/imgui_impl_sdl.cpp>
     PUBLIC FILE_SET imgui_impl_sdl2_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
-    FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/backends/imgui_impl_sdl2.h,${_imgui_dir}/backends/imgui_impl_sdl.h>)
+    FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imgui_dir}/backends/imgui_impl_sdl2.h,${_imgui_dir}/backends/imgui_impl_sdl.h>)
   target_link_libraries(Impl_SDL2 PUBLIC Core)
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
@@ -735,7 +741,7 @@ if(DearImGui_Backend_SDL2)
 
   if(Example_SDL2_OpenGL2)
     add_executable(example_sdl2_opengl2)
-    target_sources(example_sdl2_opengl2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_opengl2/main.cpp,${_imgui_dir}/examples/example_sdl_opengl2/main.cpp>)
+    target_sources(example_sdl2_opengl2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imgui_dir}/examples/example_sdl2_opengl2/main.cpp,${_imgui_dir}/examples/example_sdl_opengl2/main.cpp>)
     target_link_libraries(example_sdl2_opengl2
       PRIVATE Impl_SDL2 Impl_OpenGL2
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
@@ -745,7 +751,7 @@ if(DearImGui_Backend_SDL2)
 
   if(Example_SDL2_OpenGL3)
     add_executable(example_sdl2_opengl3)
-    target_sources(example_sdl2_opengl3 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_opengl3/main.cpp,${_imgui_dir}/examples/example_sdl_opengl3/main.cpp>)
+    target_sources(example_sdl2_opengl3 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imgui_dir}/examples/example_sdl2_opengl3/main.cpp,${_imgui_dir}/examples/example_sdl_opengl3/main.cpp>)
     target_link_libraries(example_sdl2_opengl3
       PRIVATE Impl_SDL2 Impl_OpenGL3
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
@@ -759,7 +765,7 @@ if(DearImGui_Backend_SDL2)
 
   if(Example_SDL2_Vulkan)
     add_executable(example_sdl2_vulkan)
-    target_sources(example_sdl2_vulkan PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_vulkan/main.cpp,${_imgui_dir}/examples/example_sdl_vulkan/main.cpp>)
+    target_sources(example_sdl2_vulkan PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imgui_dir}/examples/example_sdl2_vulkan/main.cpp,${_imgui_dir}/examples/example_sdl_vulkan/main.cpp>)
     target_link_libraries(example_sdl2_vulkan
       PRIVATE Impl_SDL2 Impl_Vulkan
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
@@ -769,7 +775,7 @@ if(DearImGui_Backend_SDL2)
 
   if(Example_SDL2_DirectX11)
     add_executable(example_sdl2_directx11)
-    target_sources(example_sdl2_directx11 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_directx11/main.cpp,${_imgui_dir}/examples/example_sdl_directx11/main.cpp>)
+    target_sources(example_sdl2_directx11 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imgui_dir}/examples/example_sdl2_directx11/main.cpp,${_imgui_dir}/examples/example_sdl_directx11/main.cpp>)
     target_link_libraries(example_sdl2_directx11
       PRIVATE Impl_SDL2 Impl_DirectX11
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
@@ -779,7 +785,7 @@ if(DearImGui_Backend_SDL2)
 
   if(Example_SDL2_Metal)
     add_executable(example_sdl2_metal)
-    target_sources(example_sdl2_metal PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_metal/main.mm,${_imgui_dir}/examples/example_sdl_metal/main.mm>)
+    target_sources(example_sdl2_metal PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imgui_dir}/examples/example_sdl2_metal/main.mm,${_imgui_dir}/examples/example_sdl_metal/main.mm>)
     target_link_libraries(example_sdl2_metal PRIVATE Impl_SDL2 Impl_Metal)
 
     list(APPEND imgui_examples_list example_sdl2_metal)
@@ -819,11 +825,11 @@ if(DearImGui_Backend_SDLRenderer2)
 
   add_library(Impl_SDLRenderer2)
   target_sources(Impl_SDLRenderer2
-    PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18950>,${_imgui_dir}/backends/imgui_impl_sdlrenderer2.cpp,${_imgui_dir}/backends/imgui_impl_sdlrenderer.cpp>
+    PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.5>,${_imgui_dir}/backends/imgui_impl_sdlrenderer2.cpp,${_imgui_dir}/backends/imgui_impl_sdlrenderer.cpp>
     PUBLIC FILE_SET imgui_impl_sdlrenderer2_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
-    FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18950>,${_imgui_dir}/backends/imgui_impl_sdlrenderer2.h,${_imgui_dir}/backends/imgui_impl_sdlrenderer.h>)
+    FILES $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.5>,${_imgui_dir}/backends/imgui_impl_sdlrenderer2.h,${_imgui_dir}/backends/imgui_impl_sdlrenderer.h>)
   target_link_libraries(Impl_SDLRenderer2 PUBLIC Core)
   if(TARGET SDL2::SDL2)
     target_link_libraries(Impl_SDLRenderer2 PUBLIC SDL2::SDL2)
@@ -836,7 +842,7 @@ if(DearImGui_Backend_SDLRenderer2)
 
   if(Example_SDL2_SDLRenderer2)
     add_executable(example_sdl2_sdlrenderer2)
-    target_sources(example_sdl2_sdlrenderer2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},18950>,${_imgui_dir}/examples/example_sdl2_sdlrenderer2/main.cpp,$<IF:$<VERSION_GREATER:${IMGUI_VERSION},18920>,${_imgui_dir}/examples/example_sdl2_sdlrenderer/main.cpp,${_imgui_dir}/examples/example_sdl_sdlrenderer/main.cpp>>)
+    target_sources(example_sdl2_sdlrenderer2 PRIVATE $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.5>,${_imgui_dir}/examples/example_sdl2_sdlrenderer2/main.cpp,$<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.89.2>,${_imgui_dir}/examples/example_sdl2_sdlrenderer/main.cpp,${_imgui_dir}/examples/example_sdl_sdlrenderer/main.cpp>>)
     target_link_libraries(example_sdl2_sdlrenderer2
       PRIVATE Impl_SDLRenderer2 Impl_SDL2
       PRIVATE $<$<PLATFORM_ID:Windows>:SDL2::SDL2main>)
@@ -863,7 +869,7 @@ if(DearImGui_Backend_SDL3)
     target_link_libraries(Impl_SDL3 PUBLIC SDL3::SDL3)
   endif()
 
-  if(IMGUI_VERSION VERSION_LESS 19130)
+  if(IMGUI_VERSION VERSION_LESS 1.91.3)
     target_compile_definitions(Impl_SDL3 PUBLIC SDL_ENABLE_OLD_NAMES)
   endif()
 
@@ -874,7 +880,7 @@ if(DearImGui_Backend_SDL3)
     add_executable(example_sdl3_opengl3)
     target_sources(example_sdl3_opengl3 PRIVATE ${_imgui_dir}/examples/example_sdl3_opengl3/main.cpp)
     target_link_libraries(example_sdl3_opengl3 PRIVATE Impl_SDL3 Impl_OpenGL3)
-    target_compile_definitions(example_sdl3_opengl3 PRIVATE $<$<VERSION_LESS:${IMGUI_VERSION},19130>:SDL_INIT_TIMER=0x00000001u>)
+    target_compile_definitions(example_sdl3_opengl3 PRIVATE $<$<VERSION_LESS:${IMGUI_VERSION},1.91.3>:SDL_INIT_TIMER=0x00000001u>)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       set_target_properties(example_sdl3_opengl3 PROPERTIES SUFFIX ".html")
@@ -979,7 +985,7 @@ if(DearImGui_Backend_SDLRenderer3)
     add_executable(example_sdl3_sdlrenderer3)
     target_sources(example_sdl3_sdlrenderer3 PRIVATE ${_imgui_dir}/examples/example_sdl3_sdlrenderer3/main.cpp)
     target_link_libraries(example_sdl3_sdlrenderer3 PRIVATE Impl_SDLRenderer3 Impl_SDL3)
-    target_compile_definitions(example_sdl3_sdlrenderer3 PRIVATE $<$<VERSION_LESS:${IMGUI_VERSION},19130>:SDL_INIT_TIMER=0x00000001u>)
+    target_compile_definitions(example_sdl3_sdlrenderer3 PRIVATE $<$<VERSION_LESS:${IMGUI_VERSION},1.91.3>:SDL_INIT_TIMER=0x00000001u>)
 
     list(APPEND imgui_examples_list example_sdl3_sdlrenderer3)
   endif()
@@ -1207,7 +1213,7 @@ if(DearImGui_Backend_Metal)
     PUBLIC ${Metal_LIBRARY}
     INTERFACE ${MetalKit_LIBRARY})
 
-  if(IMGUI_VERSION VERSION_LESS 18940)
+  if(IMGUI_VERSION VERSION_LESS 1.89.4)
     target_compile_options(Impl_Metal PUBLIC -fobjc-arc)
   endif()
 
@@ -1338,7 +1344,7 @@ if(DearImGui_Install)
     install(PACKAGE_INFO ImGui EXPORT imgui-targets NO_PROJECT_METADATA VERSION ${IMGUI_VERSION} HOMEPAGE_URL https://github.com/ocornut/imgui)
   endif()
 
-  install(DIRECTORY $<$<VERSION_GREATER:${IMGUI_VERSION},18100>:${_imgui_dir}/misc/debuggers> DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
+  install(DIRECTORY $<$<VERSION_GREATER:${IMGUI_VERSION},1.81.0>:${_imgui_dir}/misc/debuggers> DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(TARGETS binary_to_compressed_c DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui/fonts)
 
   install(DIRECTORY ${_imgui_dir}/misc/fonts DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui FILES_MATCHING PATTERN "*.ttf")
@@ -1369,8 +1375,8 @@ if(DearImGui_Install)
       if(TARGET example_glfw_wgpu)
         install(FILES
                   $<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.html
-                  $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.js,$<TARGET_FILE_DIR:example_glfw_wgpu>/index.js>
-                  $<IF:$<VERSION_GREATER:${IMGUI_VERSION},19240>,$<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.wasm,$<TARGET_FILE_DIR:example_glfw_wgpu>/index.wasm>
+                  $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.92.4>,$<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.js,$<TARGET_FILE_DIR:example_glfw_wgpu>/index.js>
+                  $<IF:$<VERSION_GREATER:${IMGUI_VERSION},1.92.4>,$<TARGET_FILE_DIR:example_glfw_wgpu>/example_glfw_wgpu.wasm,$<TARGET_FILE_DIR:example_glfw_wgpu>/index.wasm>
                 DESTINATION ${CMAKE_INSTALL_BINDIR}/example_glfw_wgpu)
       endif()
 
