@@ -372,7 +372,7 @@ if(DearImGui_Backend_WebGPU)
     enable_language(OBJCXX)
     set_source_files_properties(${_imgui_dir}/backends/imgui_impl_wgpu.cpp PROPERTIES LANGUAGE OBJCXX)
 
-    target_link_libraries(Impl_WebGPU INTERFACE "-framework QuartzCore -framework Metal")
+    target_link_libraries(Impl_WebGPU INTERFACE "-framework QuartzCore" "-framework Metal")
   endif()
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
@@ -550,7 +550,7 @@ if(DearImGui_Backend_Allegro5)
     target_sources(example_allegro5 PRIVATE ${_imgui_dir}/examples/example_allegro5/main.cpp)
     target_link_libraries(example_allegro5
       PRIVATE Impl_Allegro5
-      PRIVATE "$<$<PLATFORM_ID:Darwin>:-framework OpenGL -framework Carbon -framework ApplicationServices>")
+      PRIVATE "$<$<PLATFORM_ID:Darwin>:-framework OpenGL;-framework Carbon;-framework ApplicationServices>")
 
     list(APPEND imgui_examples_list example_allegro5)
   endif()
