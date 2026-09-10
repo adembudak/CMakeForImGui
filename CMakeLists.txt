@@ -155,7 +155,8 @@ target_sources(Core
     ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND IMGUI_ENABLE_OSX_DEFAULT_CLIPBOARD_FUNCTIONS)
-  target_link_libraries(Core PRIVATE "-framework ApplicationServices")
+  find_library(ApplicationServices_LIBRARY ApplicationServices REQUIRED)
+  target_link_libraries(Core PRIVATE ${ApplicationServices_LIBRARY})
 endif()
 
 target_compile_features(Core PUBLIC cxx_std_11)
@@ -372,7 +373,9 @@ if(DearImGui_Backend_WebGPU)
     enable_language(OBJCXX)
     set_source_files_properties(${_imgui_dir}/backends/imgui_impl_wgpu.cpp PROPERTIES LANGUAGE OBJCXX)
 
-    target_link_libraries(Impl_WebGPU INTERFACE "-framework QuartzCore" "-framework Metal")
+    find_library(QuartzCore_LIBRARY QuartzCore REQUIRED)
+    find_library(Metal_LIBRARY Metal REQUIRED)
+    target_link_libraries(Impl_WebGPU INTERFACE ${QuartzCore_LIBRARY} ${Metal_LIBRARY})
   endif()
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
@@ -548,9 +551,15 @@ if(DearImGui_Backend_Allegro5)
   if(Example_Allegro5)
     add_executable(example_allegro5)
     target_sources(example_allegro5 PRIVATE ${_imgui_dir}/examples/example_allegro5/main.cpp)
-    target_link_libraries(example_allegro5
-      PRIVATE Impl_Allegro5
-      PRIVATE "$<$<PLATFORM_ID:Darwin>:-framework OpenGL;-framework Carbon;-framework ApplicationServices>")
+    target_link_libraries(example_allegro5 PRIVATE Impl_Allegro5)
+
+    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+      find_library(OpenGL_LIBRARY OpenGL REQUIRED)
+      find_library(Carbon_LIBRARY Carbon REQUIRED)
+      find_library(ApplicationServices_LIBRARY ApplicationServices REQUIRED)
+      target_link_libraries(example_allegro5
+        PRIVATE ${OpenGL_LIBRARY} ${Carbon_LIBRARY} ${ApplicationServices_LIBRARY})
+    endif()
 
     list(APPEND imgui_examples_list example_allegro5)
   endif()
@@ -609,9 +618,12 @@ if(DearImGui_Backend_GLFW)
   if(Example_GLFW_Metal)
     add_executable(example_glfw_metal)
     target_sources(example_glfw_metal PRIVATE ${_imgui_dir}/examples/example_glfw_metal/main.mm)
-    target_link_libraries(example_glfw_metal
-      PRIVATE Impl_GLFW Impl_Metal
-      PRIVATE "$<$<PLATFORM_ID:Darwin>:-framework QuartzCore>")
+    target_link_libraries(example_glfw_metal PRIVATE Impl_GLFW Impl_Metal)
+
+    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+      find_library(QuartzCore_LIBRARY QuartzCore REQUIRED)
+      target_link_libraries(example_glfw_metal PRIVATE ${QuartzCore_LIBRARY})
+    endif()
 
     list(APPEND imgui_examples_list example_glfw_metal)
   endif()
@@ -1186,9 +1198,14 @@ if(DearImGui_Backend_Metal)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_metal.h)
+  target_link_libraries(Impl_Metal PUBLIC Core)
+
+  find_library(Metal_LIBRARY Metal REQUIRED)
+  find_library(MetalKit_LIBRARY MetalKit REQUIRED)
   target_link_libraries(Impl_Metal
     PUBLIC Core
-    PUBLIC "-framework Metal" INTERFACE "-framework MetalKit")
+    PUBLIC ${Metal_LIBRARY}
+    INTERFACE ${MetalKit_LIBRARY})
 
   if(IMGUI_VERSION VERSION_LESS 18940)
     target_compile_options(Impl_Metal PUBLIC -fobjc-arc)
@@ -1206,10 +1223,14 @@ if(DearImGui_Backend_Metal4)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_metal4.h)
+  target_link_libraries(Impl_Metal4 PUBLIC Core)
 
+  find_library(Metal_LIBRARY Metal REQUIRED)
+  find_library(MetalKit_LIBRARY MetalKit REQUIRED)
   target_link_libraries(Impl_Metal4
     PUBLIC Core
-    PUBLIC "-framework Metal" INTERFACE "-framework MetalKit")
+    PUBLIC ${Metal_LIBRARY}
+    INTERFACE ${MetalKit_LIBRARY})
 
   list(APPEND imgui_backends_list Impl_Metal4)
 endif()
@@ -1222,9 +1243,12 @@ if(DearImGui_Backend_OSX)
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
     FILES ${_imgui_dir}/backends/imgui_impl_osx.h)
-  target_link_libraries(Impl_OSX
-    PUBLIC Core
-    PUBLIC "-framework AppKit" "-framework Carbon" "-framework GameController")
+  target_link_libraries(Impl_OSX PUBLIC Core)
+
+  find_library(AppKit_LIBRARY AppKit REQUIRED)
+  find_library(Carbon_LIBRARY Carbon REQUIRED)
+  find_library(GameController_LIBRARY GameController REQUIRED)
+  target_link_libraries(Impl_OSX PUBLIC ${AppKit_LIBRARY} ${Carbon_LIBRARY} ${GameController_LIBRARY})
 
   list(APPEND imgui_backends_list Impl_OSX)
 
