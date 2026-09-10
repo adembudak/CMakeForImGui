@@ -24,8 +24,8 @@ endif()
 
 cmake_path(SET _imgui_dir ${IMGUI_SOURCE_DIR})
 
-file(STRINGS ${_imgui_dir}/imgui.h imgui_version_string REGEX "#define[ \t]+IMGUI_VERSION_NUM[ \t]+[0-9]+")
-string(REGEX MATCH "[0-9]+" IMGUI_VERSION ${imgui_version_string})
+file(STRINGS ${_imgui_dir}/imgui.h imgui_version_number_string REGEX "#define[ \t]+IMGUI_VERSION_NUM[ \t]+[0-9]+")
+string(REGEX MATCH "[0-9]+" IMGUI_VERSION ${imgui_version_number_string})
 
 message(STATUS "ImGui version ${IMGUI_VERSION}")
 
