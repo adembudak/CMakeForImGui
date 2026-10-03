@@ -1332,7 +1332,9 @@ Cflags: -I${includedir}
 endif()
 
 if(DearImGui_Install)
-  set_property(GLOBAL PROPERTY INSTALL_PARALLEL ON)
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.30)
+    set_property(GLOBAL PROPERTY INSTALL_PARALLEL ON)
+  endif()
 
   install(DIRECTORY ${_imgui_dir}/docs DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
   install(FILES ${_imgui_dir}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_DATADIR}/Dear\ ImGui)
