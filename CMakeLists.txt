@@ -32,13 +32,7 @@ math(EXPR IMGUI_VERSION_MINOR "(${IMGUI_VERSION_NUMBER} / 100) % 100")
 math(EXPR IMGUI_VERSION_PATCH "(${IMGUI_VERSION_NUMBER} / 10) % 10")
 math(EXPR IMGUI_VERSION_TWEAK "(${IMGUI_VERSION_NUMBER} % 10)")
 set(IMGUI_VERSION "${IMGUI_VERSION_MAJOR}.${IMGUI_VERSION_MINOR}.${IMGUI_VERSION_PATCH}.${IMGUI_VERSION_TWEAK}")
-
 message(STATUS "ImGui version ${IMGUI_VERSION}")
-
-file(READ ${_imgui_dir}/imconfig.h imconfig_h_string)
-string(REGEX REPLACE  "//#define (IMGUI_(ENABLE|DISABLE|USER|USE|DEFINE|DEBUG|INCLUDE)[_A-Z0-9]*)" "#cmakedefine \\1" imconfig_h_in_string ${imconfig_h_string})
-file(WRITE ${PROJECT_BINARY_DIR}/generated/imconfig.h.in ${imconfig_h_in_string})
-configure_file(${PROJECT_BINARY_DIR}/generated/imconfig.h.in ${PROJECT_BINARY_DIR}/generated/imconfig.h)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
   option(DearImGui_Backend_Android "" OFF)
@@ -142,7 +136,6 @@ target_sources(Core
   PUBLIC FILE_SET imgui_core_set
   BASE_DIRS
     ${_imgui_dir}
-    ${PROJECT_BINARY_DIR}/generated
   TYPE HEADERS
   FILES
     ${_imgui_dir}/imgui.h
@@ -150,7 +143,7 @@ target_sources(Core
     ${_imgui_dir}/imstb_rectpack.h
     ${_imgui_dir}/imstb_textedit.h
     ${_imgui_dir}/imstb_truetype.h
-    ${PROJECT_BINARY_DIR}/generated/imconfig.h
+    ${_imgui_dir}/imconfig.h
   PRIVATE
     ${_imgui_dir}/misc/cpp/imgui_stdlib.cpp
   PUBLIC FILE_SET imgui_misc_cpp_set
