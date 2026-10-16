@@ -1495,19 +1495,8 @@ include(CPack)
 if(DearImGui_Print_Summary)
   feature_summary(WHAT ALL)
 
-  set(options
-    DearImGui_Backend_Android DearImGui_Backend_Allegro5 DearImGui_Backend_GLFW DearImGui_Backend_FreeGLUT DearImGui_Backend_NULL DearImGui_Backend_SDL2 DearImGui_Backend_SDLRenderer2 DearImGui_Backend_SDL3 DearImGui_Backend_SDLGPU3 DearImGui_Backend_SDLRenderer3 DearImGui_Backend_OpenGL2 DearImGui_Backend_OpenGL3 DearImGui_Backend_Vulkan DearImGui_Backend_WebGPU DearImGui_Backend_Win32 DearImGui_Backend_DirectX9 DearImGui_Backend_DirectX10 DearImGui_Backend_DirectX11 DearImGui_Backend_DirectX12 DearImGui_Backend_OSX DearImGui_Backend_Metal DearImGui_Backend_Metal4
-    Example_NULL
-    Example_Allegro5 Example_Android_OpenGL3
-    Example_GLFW_OpenGL2 Example_GLFW_OpenGL3 Example_GLFW_Vulkan Example_GLFW_Metal Example_GLFW_WebGPU
-    Example_FreeGLUT_OpenGL2
-    Example_SDL2_DirectX11 Example_SDL2_OpenGL2 Example_SDL2_OpenGL3 Example_SDL2_Vulkan Example_SDL2_Metal Example_SDL2_WebGPU Example_SDL2_SDLRenderer2
-    Example_SDL3_OpenGL3 Example_SDL3_SDLGPU3 Example_SDL3_SDLRenderer3 Example_SDL3_Vulkan Example_SDL3_WebGPU Example_SDL3_Metal Example_SDL3_Metal4
-    Example_Win32_DirectX9 Example_Win32_DirectX10 Example_Win32_DirectX11 Example_Win32_DirectX12 Example_Win32_OpenGL3 Example_Win32_Vulkan
-    Example_Apple_Metal Example_Apple_Metal4 Example_Apple_OpenGL2 Example_Apple_OpenGL3
-    BUILD_SHARED_LIBS DearImGui_Pkg_Config DearImGui_Install DearImGui_Install_Examples DearImGui_Uninstall DearImGui_Show_Linkage_Graph DearImGui_Print_Summary
-    IMGUI_USER_CONFIG IMGUI_USER_H_FILENAME IMGUI_STB_TRUETYPE_FILENAME IMGUI_STB_RECT_PACK_FILENAME IMGUI_STB_SPRINTF_FILENAME
-    IMGUI_IMPL_WEBGPU_BACKEND_DAWN IMGUI_IMPL_WEBGPU_BACKEND_WGPU IMGUI_IMPL_WEBGPU_BACKEND_WGVK)
+  get_directory_property(options CACHE_VARIABLES)
+  list(FILTER options INCLUDE REGEX "^IMGUI_.*|^DearImGui_.*|^Example_.*")
   list(SORT options CASE INSENSITIVE)
 
   message(STATUS "Configuration summary:\n")
