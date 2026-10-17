@@ -119,49 +119,9 @@ cmake_dependent_option(Example_Apple_OpenGL3 "" OFF "DearImGui_Backend_OSX AND D
 cmake_dependent_option(Example_Apple_Metal "" OFF "DearImGui_Backend_OSX AND DearImGui_Backend_Metal" OFF)
 cmake_dependent_option(Example_Apple_Metal4 "" OFF "DearImGui_Backend_OSX AND DearImGui_Backend_Metal4" OFF)
 
-set(imgui_backends_list)
-set(imgui_examples_list)
-
-set(pkg_config_requires_list)
-set(pkg_config_requires_private_list)
-
-add_library(Core)
-target_sources(Core
-  PRIVATE
-    ${_imgui_dir}/imgui.cpp
-    ${_imgui_dir}/imgui_draw.cpp
-    ${_imgui_dir}/imgui_tables.cpp
-    ${_imgui_dir}/imgui_widgets.cpp
-    ${_imgui_dir}/imgui_demo.cpp
-  PUBLIC FILE_SET imgui_core_set
-  BASE_DIRS
-    ${_imgui_dir}
-  TYPE HEADERS
-  FILES
-    ${_imgui_dir}/imgui.h
-    ${_imgui_dir}/imgui_internal.h
-    ${_imgui_dir}/imstb_rectpack.h
-    ${_imgui_dir}/imstb_textedit.h
-    ${_imgui_dir}/imstb_truetype.h
-    ${_imgui_dir}/imconfig.h
-  PRIVATE
-    ${_imgui_dir}/misc/cpp/imgui_stdlib.cpp
-  PUBLIC FILE_SET imgui_misc_cpp_set
-  BASE_DIRS
-    ${_imgui_dir}/misc/cpp
-  TYPE HEADERS
-  FILES
-    ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND IMGUI_ENABLE_OSX_DEFAULT_CLIPBOARD_FUNCTIONS)
-  find_library(ApplicationServices_LIBRARY ApplicationServices REQUIRED)
-  target_link_libraries(Core PRIVATE ${ApplicationServices_LIBRARY})
-endif()
-
-target_compile_features(Core PUBLIC cxx_std_11)
-
 # imconfig.h macros
 set(IMGUI_DISABLE_OBSOLETE_FUNCTIONS "" CACHE BOOL "")
+
 set(IMGUI_DISABLE "" CACHE BOOL "")
 set(IMGUI_DISABLE_DEMO_WINDOWS "" CACHE BOOL "")
 set(IMGUI_DISABLE_DEBUG_TOOLS "" CACHE BOOL "")
@@ -208,14 +168,141 @@ set(IMGUI_USE_STB_SPRINTF "" CACHE BOOL "")
 
 set(IMGUI_ENABLE_FREETYPE "" CACHE BOOL "")
 set(IMGUI_ENABLE_STB_TRUETYPE "" CACHE BOOL "")
-set(IMGUI_ENABLE_STB_TRUETYPE "" CACHE BOOL "")
-
-set(IMGUI_ENABLE_STB_TRUETYPE "" CACHE BOOL "")
 set(IMGUI_DISABLE_STB_TRUETYPE "" CACHE BOOL "")
-
 set(IMGUI_STB_TRUETYPE_FILENAME "" CACHE FILEPATH "")
+
 set(IMGUI_STB_RECT_PACK_FILENAME "" CACHE FILEPATH "")
 set(IMGUI_STB_SPRINTF_FILENAME "" CACHE FILEPATH "")
+
+set(imgui_backends_list)
+set(imgui_examples_list)
+
+set(pkg_config_requires_list)
+set(pkg_config_requires_private_list)
+
+add_library(Core)
+target_sources(Core
+  PRIVATE
+    ${_imgui_dir}/imgui.cpp
+    ${_imgui_dir}/imgui_draw.cpp
+    ${_imgui_dir}/imgui_tables.cpp
+    ${_imgui_dir}/imgui_widgets.cpp
+    ${_imgui_dir}/imgui_demo.cpp
+  PUBLIC FILE_SET imgui_core_set
+  BASE_DIRS
+    ${_imgui_dir}
+  TYPE HEADERS
+  FILES
+    ${_imgui_dir}/imgui.h
+  PRIVATE FILE_SET HEADERS
+  BASE_DIRS
+    ${_imgui_dir}
+  TYPE HEADERS
+  FILES
+    ${_imgui_dir}/imgui_internal.h
+    ${_imgui_dir}/imstb_textedit.h
+    ${_imgui_dir}/imconfig.h
+  PRIVATE
+    ${_imgui_dir}/misc/cpp/imgui_stdlib.cpp
+  PUBLIC FILE_SET imgui_misc_cpp_set
+  BASE_DIRS
+    ${_imgui_dir}/misc/cpp
+  TYPE HEADERS
+  FILES
+    ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
+target_compile_features(Core PUBLIC cxx_std_11)
+
+if(IMGUI_DISABLE_OBSOLETE_FUNCTIONS)
+  target_compile_definitions(Core PUBLIC IMGUI_DISABLE_OBSOLETE_FUNCTIONS)
+endif()
+
+if(IMGUI_DISABLE)
+  target_compile_definitions(Core PUBLIC IMGUI_DISABLE)
+endif()
+
+if(IMGUI_DISABLE_DEMO_WINDOWS)
+  target_compile_definitions(Core PUBLIC IMGUI_DISABLE_DEMO_WINDOWS)
+endif()
+
+if(IMGUI_DISABLE_DEBUG_TOOLS)
+  target_compile_definitions(Core PUBLIC IMGUI_DISABLE_DEBUG_TOOLS)
+endif()
+
+if(IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCTIONS)
+  target_compile_definitions(Core PUBLIC IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCTIONS)
+endif()
+
+if(NOT IMGUI_DISABLE_WIN32_FUNCTIONS AND IMGUI_ENABLE_WIN32_DEFAULT_IME_FUNCTIONS)
+  target_compile_definitions(Core PUBLIC IMGUI_ENABLE_WIN32_DEFAULT_IME_FUNCTIONS)
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+    find_library(imm32_LIBRARY imm32 REQUIRED)
+    target_link_libraries(Core PRIVATE ${imm32_LIBRARY})
+  endif()
+endif()
+
+if(IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS)
+  target_compile_definitions(Core PUBLIC IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS)
+endif()
+
+if(IMGUI_DISABLE_WIN32_FUNCTIONS)
+  target_compile_definitions(Core PUBLIC IMGUI_DISABLE_WIN32_FUNCTIONS)
+endif()
+
+if(IMGUI_ENABLE_OSX_DEFAULT_CLIPBOARD_FUNCTIONS)
+  target_compile_definitions(Core PRIVATE IMGUI_ENABLE_OSX_DEFAULT_CLIPBOARD_FUNCTIONS)
+
+  find_library(ApplicationServices_LIBRARY ApplicationServices REQUIRED)
+  target_link_libraries(Core PRIVATE ${ApplicationServices_LIBRARY})
+endif()
+
+if(IMGUI_DISABLE_TIME_FUNCTIONS)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_TIME_FUNCTIONS)
+endif()
+
+if(IMGUI_DISABLE_DEFAULT_SHELL_FUNCTIONS)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_DEFAULT_SHELL_FUNCTIONS)
+endif()
+
+if(IMGUI_DISABLE_DEFAULT_FORMAT_FUNCTIONS)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_DEFAULT_FORMAT_FUNCTIONS)
+endif()
+
+if(IMGUI_DISABLE_DEFAULT_MATH_FUNCTIONS)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_DEFAULT_MATH_FUNCTIONS)
+endif()
+
+if(IMGUI_DISABLE_FILE_FUNCTIONS)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_FILE_FUNCTIONS)
+endif()
+
+if(IMGUI_DISABLE_DEFAULT_FILE_FUNCTIONS)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_DEFAULT_FILE_FUNCTIONS)
+endif()
+
+if(IMGUI_DISABLE_DEFAULT_ALLOCATORS)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_DEFAULT_ALLOCATORS)
+endif()
+
+if(IMGUI_DISABLE_DEFAULT_FONT)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_DEFAULT_FONT)
+endif()
+
+if(IMGUI_DISABLE_DEFAULT_FONT_BITMAP)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_DEFAULT_FONT_BITMAP)
+endif()
+
+if(IMGUI_DISABLE_DEFAULT_FONT_VECTOR)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_DEFAULT_FONT_VECTOR)
+endif()
+
+if(IMGUI_DISABLE_SSE)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_SSE)
+endif()
+
+if(IMGUI_ENABLE_TEST_ENGINE)
+  target_compile_definitions(Core PUBLIC IMGUI_ENABLE_TEST_ENGINE)
+endif()
 
 if(IMGUI_USER_CONFIG)
   cmake_path(SET IMGUI_USER_CONFIG ${IMGUI_USER_CONFIG})
@@ -223,28 +310,58 @@ if(IMGUI_USER_CONFIG)
   target_compile_definitions(Core PUBLIC IMGUI_USER_CONFIG="${IMGUI_USER_CONFIG}")
 endif()
 
-if(IMGUI_INCLUDE_IMGUI_USER_H AND IMGUI_USER_H_FILENAME)
+if(IMGUI_INCLUDE_IMGUI_USER_H)
+  target_compile_definitions(Core PRIVATE IMGUI_INCLUDE_IMGUI_USER_H)
+endif()
+
+if(IMGUI_USER_H_FILENAME)
   cmake_path(SET IMGUI_USER_H_FILENAME ${IMGUI_USER_H_FILENAME})
   cmake_path(ABSOLUTE_PATH IMGUI_USER_H_FILENAME NORMALIZE)
-  target_compile_definitions(Core PRIVATE IMGUI_INCLUDE_IMGUI_USER_H IMGUI_USER_H_FILENAME="${IMGUI_USER_H_FILENAME}")
+  target_compile_definitions(Core PRIVATE IMGUI_USER_H_FILENAME="${IMGUI_USER_H_FILENAME}")
 endif()
 
-if(IMGUI_STB_TRUETYPE_FILENAME)
-  cmake_path(SET IMGUI_STB_TRUETYPE_FILENAME ${IMGUI_STB_TRUETYPE_FILENAME})
-  cmake_path(ABSOLUTE_PATH IMGUI_STB_TRUETYPE_FILENAME NORMALIZE)
-  target_compile_definitions(Core PRIVATE IMGUI_STB_TRUETYPE_FILENAME="${IMGUI_STB_TRUETYPE_FILENAME}")
+if(IMGUI_USE_BGRA_PACKED_COLOR)
+  target_compile_definitions(Core PUBLIC IMGUI_USE_BGRA_PACKED_COLOR)
 endif()
 
-if(IMGUI_STB_RECT_PACK_FILENAME)
-  cmake_path(SET IMGUI_STB_RECT_PACK_FILENAME ${IMGUI_STB_RECT_PACK_FILENAME})
-  cmake_path(ABSOLUTE_PATH IMGUI_STB_RECT_PACK_FILENAME NORMALIZE)
-  target_compile_definitions(Core PRIVATE IMGUI_STB_RECT_PACK_FILENAME="${IMGUI_STB_RECT_PACK_FILENAME}")
+if(IMGUI_USE_LEGACY_CRC32_ADLER)
+  target_compile_definitions(Core PRIVATE IMGUI_USE_LEGACY_CRC32_ADLER)
 endif()
 
-if(IMGUI_STB_SPRINTF_FILENAME)
-  cmake_path(SET IMGUI_STB_SPRINTF_FILENAME ${IMGUI_STB_SPRINTF_FILENAME})
-  cmake_path(ABSOLUTE_PATH IMGUI_STB_SPRINTF_FILENAME NORMALIZE)
-  target_compile_definitions(Core PRIVATE IMGUI_STB_SPRINTF_FILENAME="${IMGUI_STB_SPRINTF_FILENAME}")
+if(IMGUI_USE_WCHAR32)
+  target_compile_definitions(Core PRIVATE IMGUI_USE_WCHAR32)
+endif()
+
+if(IMGUI_DISABLE_STB_TRUETYPE_IMPLEMENTATION)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_STB_TRUETYPE_IMPLEMENTATION)
+endif()
+
+if(IMGUI_DISABLE_STB_RECT_PACK_IMPLEMENTATION)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_STB_RECT_PACK_IMPLEMENTATION)
+endif()
+
+if(IMGUI_DISABLE_STB_SPRINTF_IMPLEMENTATION)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_STB_SPRINTF_IMPLEMENTATION)
+endif()
+
+if(IMGUI_USE_STB_SPRINTF)
+  target_compile_definitions(Core PRIVATE IMGUI_USE_STB_SPRINTF)
+
+  if(IMGUI_STB_SPRINTF_FILENAME)
+    cmake_path(SET IMGUI_STB_SPRINTF_FILENAME ${IMGUI_STB_SPRINTF_FILENAME})
+    cmake_path(ABSOLUTE_PATH IMGUI_STB_SPRINTF_FILENAME NORMALIZE)
+    target_compile_definitions(Core PRIVATE IMGUI_STB_SPRINTF_FILENAME="${IMGUI_STB_SPRINTF_FILENAME}")
+  else()
+    find_file(stb_sprintf_LIBRARY
+      NAMES stb_sprintf.h
+      DOC "https://github.com/nothings/stb"
+      REQUIRED)
+    get_filename_component(dir ${stb_sprintf_LIBRARY} DIRECTORY)
+    target_sources(Core
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS ${dir}
+      FILES ${stb_sprintf_LIBRARY})
+  endif()
 endif()
 
 if(IMGUI_ENABLE_FREETYPE)
@@ -254,6 +371,7 @@ if(IMGUI_ENABLE_FREETYPE)
     BASE_DIRS ${_imgui_dir}/misc/freetype
     TYPE HEADERS
     FILES ${_imgui_dir}/misc/freetype/imgui_freetype.h)
+  target_compile_definitions(Core PRIVATE IMGUI_ENABLE_FREETYPE)
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     target_compile_options(Core PRIVATE --use-port=freetype)
@@ -269,11 +387,13 @@ if(IMGUI_ENABLE_FREETYPE)
       find_package(lunasvg CONFIG REQUIRED)
     endif()
     target_link_libraries(Core PRIVATE lunasvg::lunasvg)
+    target_compile_definitions(Core PRIVATE IMGUI_ENABLE_FREETYPE_LUNASVG)
 
     list(APPEND pkg_config_requires_private_list lunasvg)
   elseif(IMGUI_ENABLE_FREETYPE_PLUTOSVG)
     find_package(plutosvg CONFIG REQUIRED)
     target_link_libraries(Core PRIVATE plutosvg::plutosvg)
+    target_compile_definitions(Core PRIVATE IMGUI_ENABLE_FREETYPE_PLUTOSVG)
 
     list(APPEND pkg_config_requires_private_list plutosvg)
   endif()
@@ -282,6 +402,36 @@ if(IMGUI_ENABLE_FREETYPE)
   if(IMGUI_ENABLE_FREETYPE_LUNASVG OR IMGUI_ENABLE_FREETYPE_PLUTOSVG)
     list(TRANSFORM pkg_config_requires_private_list REPLACE "freetype2" "freetype2 >= 2.12")
   endif()
+endif()
+
+if(IMGUI_ENABLE_STB_TRUETYPE)
+  target_compile_definitions(Core PRIVATE IMGUI_ENABLE_STB_TRUETYPE)
+
+  if(IMGUI_STB_TRUETYPE_FILENAME)
+    cmake_path(SET IMGUI_STB_TRUETYPE_FILENAME ${IMGUI_STB_TRUETYPE_FILENAME})
+    cmake_path(ABSOLUTE_PATH IMGUI_STB_TRUETYPE_FILENAME NORMALIZE)
+    target_compile_definitions(Core PRIVATE IMGUI_STB_TRUETYPE_FILENAME="${IMGUI_STB_TRUETYPE_FILENAME}")
+  else()
+    target_sources(Core
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS ${_imgui_dir}
+      FILES ${_imgui_dir}/imstb_truetype.h)
+  endif()
+endif()
+
+if(IMGUI_DISABLE_STB_TRUETYPE)
+  target_compile_definitions(Core PRIVATE IMGUI_DISABLE_STB_TRUETYPE)
+endif()
+
+if(IMGUI_STB_RECT_PACK_FILENAME)
+  cmake_path(SET IMGUI_STB_RECT_PACK_FILENAME ${IMGUI_STB_RECT_PACK_FILENAME})
+  cmake_path(ABSOLUTE_PATH IMGUI_STB_RECT_PACK_FILENAME NORMALIZE)
+  target_compile_definitions(Core PRIVATE IMGUI_STB_RECT_PACK_FILENAME="${IMGUI_STB_RECT_PACK_FILENAME}")
+else()
+  target_sources(Core
+    PRIVATE FILE_SET HEADERS
+    BASE_DIRS ${_imgui_dir}
+    FILES ${_imgui_dir}/imstb_rectpack.h)
 endif()
 
 add_executable(binary_to_compressed_c)
