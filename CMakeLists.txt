@@ -194,6 +194,7 @@ target_sources(Core
   TYPE HEADERS
   FILES
     ${_imgui_dir}/imgui.h
+    ${_imgui_dir}/imconfig.h
   PRIVATE FILE_SET HEADERS
   BASE_DIRS
     ${_imgui_dir}
@@ -201,7 +202,6 @@ target_sources(Core
   FILES
     ${_imgui_dir}/imgui_internal.h
     ${_imgui_dir}/imstb_textedit.h
-    ${_imgui_dir}/imconfig.h
   PRIVATE
     ${_imgui_dir}/misc/cpp/imgui_stdlib.cpp
   PUBLIC FILE_SET imgui_misc_cpp_set
