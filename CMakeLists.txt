@@ -356,10 +356,12 @@ if(IMGUI_USE_STB_SPRINTF)
       NAMES stb_sprintf.h
       DOC "https://github.com/nothings/stb"
       REQUIRED)
-    get_filename_component(dir ${stb_sprintf_LIBRARY} DIRECTORY)
+    cmake_path(SET p stb_sprintf_LIBRARY)
+    cmake_path(GET ${p} PARENT_PATH stb_base_dir)
+
     target_sources(Core
       PRIVATE FILE_SET HEADERS
-      BASE_DIRS ${dir}
+      BASE_DIRS ${stb_base_dir}
       FILES ${stb_sprintf_LIBRARY})
   endif()
 endif()
