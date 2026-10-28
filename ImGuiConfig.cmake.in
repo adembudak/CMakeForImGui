@@ -58,6 +58,10 @@ endif()
 
 if(TARGET ImGui::Impl_Vulkan)
   find_dependency(Vulkan)
+
+  if(@IMGUI_IMPL_VULKAN_USE_VOLK@ AND NOT @IMGUI_IMPL_VULKAN_VOLK_FILENAME@)
+    find_dependency(volk)
+  endif()
 endif()
 
 if(TARGET ImGui::Impl_WebGPU)

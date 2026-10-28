@@ -493,6 +493,10 @@ if(DearImGui_Backend_OpenGL3)
 endif()
 
 if(DearImGui_Backend_Vulkan)
+  set(IMGUI_IMPL_VULKAN_NO_PROTOTYPES "" CACHE BOOL "")
+  set(IMGUI_IMPL_VULKAN_USE_VOLK "" CACHE BOOL "")
+  set(IMGUI_IMPL_VULKAN_VOLK_FILENAME "" CACHE FILEPATH "")
+
   add_library(Impl_Vulkan)
   target_sources(Impl_Vulkan
     PRIVATE ${_imgui_dir}/backends/imgui_impl_vulkan.cpp
@@ -555,6 +559,21 @@ VULKAN_RUNTIME_COMPONENTS_DIR must be set and point to VulkanRT-[ARM64|X64]-x.y.
   else()
     find_package(Vulkan REQUIRED)
     target_link_libraries(Impl_Vulkan PUBLIC Vulkan::Vulkan)
+  endif()
+
+  if(IMGUI_IMPL_VULKAN_NO_PROTOTYPES)
+    target_compile_definitions(Impl_Vulkan PRIVATE IMGUI_IMPL_VULKAN_NO_PROTOTYPES)
+  endif()
+
+  if(IMGUI_IMPL_VULKAN_USE_VOLK)
+    target_compile_definitions(Impl_Vulkan PUBLIC IMGUI_IMPL_VULKAN_USE_VOLK)
+
+    if(IMGUI_IMPL_VULKAN_VOLK_FILENAME)
+      target_compile_definitions(Impl_Vulkan PRIVATE IMGUI_IMPL_VULKAN_USE_VOLK=${IMGUI_IMPL_VULKAN_VOLK_FILENAME})
+    else()
+      find_package(volk CONFIG REQUIRED)
+      target_link_libraries(Impl_Vulkan PUBLIC volk::volk)
+    endif()
   endif()
 
   list(APPEND imgui_backends_list Impl_Vulkan)

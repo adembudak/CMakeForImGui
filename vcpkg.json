@@ -36,7 +36,8 @@
         "vulkan"
       ]
     },
-    "vulkan"
+    "vulkan",
+    "volk"
   ],
   "features": {
     "wgpu-dawn": {
