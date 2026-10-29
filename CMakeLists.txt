@@ -1487,6 +1487,9 @@ if(DearImGui_Backend_Metal4)
 endif()
 
 if(DearImGui_Backend_OSX)
+  set(IMGUI_IMPL_METAL_CPP_EXTENSIONS "" CACHE BOOL "")
+  set(apple_cpp_DIR "" CACHE PATH "")
+
   add_library(Impl_OSX)
   target_sources(Impl_OSX
     PRIVATE ${_imgui_dir}/backends/imgui_impl_osx.mm
@@ -1500,6 +1503,20 @@ if(DearImGui_Backend_OSX)
   find_library(Carbon_LIBRARY Carbon REQUIRED)
   find_library(GameController_LIBRARY GameController REQUIRED)
   target_link_libraries(Impl_OSX PUBLIC ${AppKit_LIBRARY} ${Carbon_LIBRARY} ${GameController_LIBRARY})
+
+  if(IMGUI_IMPL_METAL_CPP_EXTENSIONS)
+    if(NOT apple_cpp_DIR)
+      message(FATAL_ERROR "IMGUI_IMPL_METAL_CPP_EXTENSIONS is defined but apple_cpp_DIR is not set: https://github.com/nchavez324/apple_cpp")
+    endif()
+
+    target_sources(Impl_OSX
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS ${apple_cpp_DIR}
+      FILES ${apple_cpp_DIR}/AppKit/AppKit.hpp)
+
+    target_compile_definitions(Impl_OSX PRIVATE IMGUI_IMPL_METAL_CPP_EXTENSIONS)
+    target_compile_features(Impl_OSX PRIVATE cxx_std_17)
+  endif()
 
   list(APPEND imgui_backends_list Impl_OSX)
 
