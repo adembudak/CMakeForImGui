@@ -468,7 +468,10 @@ if(DearImGui_Backend_OpenGL3)
     PUBLIC FILE_SET imgui_impl_opengl3_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
-    FILES ${_imgui_dir}/backends/imgui_impl_opengl3.h)
+    FILES ${_imgui_dir}/backends/imgui_impl_opengl3.h
+    PRIVATE FILE_SET HEADERS
+    BASE_DIRS ${_imgui_dir}/backends
+    FILES ${_imgui_dir}/backends/imgui_impl_opengl3_loader.h)
   target_link_libraries(Impl_OpenGL3 PUBLIC Core)
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
