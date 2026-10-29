@@ -1450,6 +1450,9 @@ if(DearImGui_Backend_Metal)
 endif()
 
 if(DearImGui_Backend_Metal4)
+  set(IMGUI_IMPL_METAL_CPP "" CACHE BOOL "")
+  set(metal-cpp_DIR "" CACHE PATH "Path to the folder containing metal-cpp: https://github.com/apple/metal-cpp")
+
   add_library(Impl_Metal4)
 
   target_sources(Impl_Metal4
@@ -1461,11 +1464,24 @@ if(DearImGui_Backend_Metal4)
   target_link_libraries(Impl_Metal4 PUBLIC Core)
 
   find_library(Metal_LIBRARY Metal REQUIRED)
-  find_library(MetalKit_LIBRARY MetalKit REQUIRED)
+  find_library(Foundation_LIBRARY Foundation REQUIRED)
   target_link_libraries(Impl_Metal4
-    PUBLIC Core
-    PUBLIC ${Metal_LIBRARY}
-    INTERFACE ${MetalKit_LIBRARY})
+    PRIVATE ${Foundation_LIBRARY}
+    PUBLIC ${Metal_LIBRARY})
+
+  if(IMGUI_IMPL_METAL_CPP)
+    if(NOT metal-cpp_DIR)
+      message(FATAL_ERROR "IMGUI_IMPL_METAL_CPP is defined but metal-cpp_DIR is not set")
+    endif()
+
+    target_sources(Impl_Metal4
+      PRIVATE FILE_SET HEADERS
+      BASE_DIRS ${metal-cpp_DIR}
+      FILES ${metal-cpp_DIR}/Metal/Metal.hpp)
+
+    target_compile_definitions(Impl_Metal4 PRIVATE IMGUI_IMPL_METAL_CPP)
+    target_compile_features(Impl_Metal4 PRIVATE cxx_std_17)
+  endif()
 
   list(APPEND imgui_backends_list Impl_Metal4)
 endif()
