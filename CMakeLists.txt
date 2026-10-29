@@ -1541,6 +1541,9 @@ if(DearImGui_Backend_OSX)
     target_sources(example_apple_metal PRIVATE ${_imgui_dir}/examples/example_apple_metal/main.mm)
     target_link_libraries(example_apple_metal PRIVATE Impl_OSX Impl_Metal)
 
+    find_library(MetalKit_LIBRARY MetalKit REQUIRED)
+    target_link_libraries(example_apple_metal PRIVATE ${MetalKit_LIBRARY})
+
     list(APPEND imgui_examples_list example_apple_metal)
   endif()
 
@@ -1548,6 +1551,9 @@ if(DearImGui_Backend_OSX)
     add_executable(example_apple_metal4 MACOSX_BUNDLE)
     target_sources(example_apple_metal4 PRIVATE ${_imgui_dir}/examples/example_apple_metal4/main.mm)
     target_link_libraries(example_apple_metal4 PRIVATE Impl_OSX Impl_Metal4)
+
+    find_library(MetalKit_LIBRARY MetalKit REQUIRED)
+    target_link_libraries(example_apple_metal4 PRIVATE ${MetalKit_LIBRARY})
 
     list(APPEND imgui_examples_list example_apple_metal4)
   endif()
