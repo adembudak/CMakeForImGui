@@ -462,6 +462,8 @@ if(DearImGui_Backend_OpenGL2)
 endif()
 
 if(DearImGui_Backend_OpenGL3)
+  set(IMGUI_IMPL_OPENGL_DEBUG "" CACHE BOOL "")
+
   add_library(Impl_OpenGL3)
   target_sources(Impl_OpenGL3
     PRIVATE ${_imgui_dir}/backends/imgui_impl_opengl3.cpp
@@ -473,6 +475,10 @@ if(DearImGui_Backend_OpenGL3)
     BASE_DIRS ${_imgui_dir}/backends
     FILES ${_imgui_dir}/backends/imgui_impl_opengl3_loader.h)
   target_link_libraries(Impl_OpenGL3 PUBLIC Core)
+
+  if(IMGUI_IMPL_OPENGL_DEBUG)
+    target_compile_definitions(Impl_OpenGL3 PRIVATE IMGUI_IMPL_OPENGL_DEBUG)
+  endif()
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
     target_link_libraries(Impl_OpenGL3 PUBLIC opengl32)
