@@ -1171,7 +1171,10 @@ if(DearImGui_Backend_SDLGPU3)
     PUBLIC FILE_SET imgui_impl_sdlgpu3_set
     BASE_DIRS ${_imgui_dir}/backends
     TYPE HEADERS
-    FILES ${_imgui_dir}/backends/imgui_impl_sdlgpu3.h ${_imgui_dir}/backends/imgui_impl_sdlgpu3_shaders.h)
+    FILES ${_imgui_dir}/backends/imgui_impl_sdlgpu3.h
+    PRIVATE FILE_SET HEADERS
+    BASE_DIRS ${_imgui_dir}/backends
+    FILES ${_imgui_dir}/backends/imgui_impl_sdlgpu3_shaders.h)
   target_link_libraries(Impl_SDLGPU3
     PUBLIC Core
     PUBLIC SDL3::SDL3)
