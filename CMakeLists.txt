@@ -189,27 +189,21 @@ target_sources(Core
     ${_imgui_dir}/imgui_widgets.cpp
     ${_imgui_dir}/imgui_demo.cpp
   PUBLIC FILE_SET imgui_core_set
-  BASE_DIRS
-    ${_imgui_dir}
+  BASE_DIRS ${_imgui_dir}
   TYPE HEADERS
   FILES
     ${_imgui_dir}/imgui.h
     ${_imgui_dir}/imconfig.h
-  PRIVATE FILE_SET HEADERS
-  BASE_DIRS
-    ${_imgui_dir}
-  TYPE HEADERS
-  FILES
     ${_imgui_dir}/imgui_internal.h
-    ${_imgui_dir}/imstb_textedit.h
-  PRIVATE
-    ${_imgui_dir}/misc/cpp/imgui_stdlib.cpp
-  PUBLIC FILE_SET imgui_misc_cpp_set
-  BASE_DIRS
-    ${_imgui_dir}/misc/cpp
+  PRIVATE FILE_SET HEADERS
+  BASE_DIRS ${_imgui_dir}
   TYPE HEADERS
-  FILES
-    ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
+  FILES ${_imgui_dir}/imstb_textedit.h
+  PRIVATE ${_imgui_dir}/misc/cpp/imgui_stdlib.cpp
+  PUBLIC FILE_SET imgui_misc_cpp_set
+  BASE_DIRS ${_imgui_dir}/misc/cpp
+  TYPE HEADERS
+  FILES ${_imgui_dir}/misc/cpp/imgui_stdlib.h)
 target_compile_features(Core PUBLIC cxx_std_11)
 
 if(IMGUI_DISABLE_OBSOLETE_FUNCTIONS)
