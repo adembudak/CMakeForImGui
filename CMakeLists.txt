@@ -767,7 +767,16 @@ if(DearImGui_Backend_Allegro5)
     FILES ${_imgui_dir}/backends/imgui_impl_allegro5.h)
   target_link_libraries(Impl_Allegro5
     PUBLIC Core
-    PUBLIC Allegro::allegro Allegro::allegro_primitives INTERFACE Allegro::allegro_main)
+    PUBLIC Allegro::allegro Allegro::allegro_primitives)
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    find_library(OpenGL_LIBRARY OpenGL REQUIRED)
+    find_library(Carbon_LIBRARY Carbon REQUIRED)
+    find_library(ApplicationServices_LIBRARY ApplicationServices REQUIRED)
+
+    target_link_libraries(Impl_Allegro5
+      PRIVATE ${OpenGL_LIBRARY} ${Carbon_LIBRARY} ${ApplicationServices_LIBRARY})
+  endif()
 
   list(APPEND imgui_backends_list Impl_Allegro5)
   list(APPEND pkg_config_requires_list allegro-5 allegro_primitives-5)
@@ -775,15 +784,9 @@ if(DearImGui_Backend_Allegro5)
   if(Example_Allegro5)
     add_executable(example_allegro5)
     target_sources(example_allegro5 PRIVATE ${_imgui_dir}/examples/example_allegro5/main.cpp)
-    target_link_libraries(example_allegro5 PRIVATE Impl_Allegro5)
-
-    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-      find_library(OpenGL_LIBRARY OpenGL REQUIRED)
-      find_library(Carbon_LIBRARY Carbon REQUIRED)
-      find_library(ApplicationServices_LIBRARY ApplicationServices REQUIRED)
-      target_link_libraries(example_allegro5
-        PRIVATE ${OpenGL_LIBRARY} ${Carbon_LIBRARY} ${ApplicationServices_LIBRARY})
-    endif()
+    target_link_libraries(example_allegro5
+      PRIVATE Impl_Allegro5
+      PRIVATE Allegro::allegro_main)
 
     list(APPEND imgui_examples_list example_allegro5)
   endif()
