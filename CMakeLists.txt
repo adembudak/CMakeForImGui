@@ -1641,6 +1641,38 @@ if(DearImGui_Install)
       set_target_properties(${imgui_examples_list} PROPERTIES MACOSX_BUNDLE TRUE)
       install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications)
 
+      set(SIGN_IDENTITY "" CACHE STRING "This will be used as: codesign --sign <identity>")
+
+      set_target_properties(${imgui_examples_list} PROPERTIES
+        MACOSX_BUNDLE TRUE
+        INSTALL_RPATH "@executable_path/../Frameworks")
+
+      foreach(ex IN LISTS imgui_examples_list)
+        install(TARGETS ${ex} RUNTIME_DEPENDENCY_SET ${ex}_deps BUNDLE DESTINATION Applications)
+
+	install(RUNTIME_DEPENDENCY_SET ${ex}_deps
+	  POST_EXCLUDE_REGEXES "^/opt/X11/.*"
+          FRAMEWORK DESTINATION Applications/${ex}.app/Contents/Frameworks
+          LIBRARY DESTINATION Applications/${ex}.app/Contents/Frameworks)
+      endforeach()
+
+      if(SIGN_IDENTITY)
+        string(CONFIGURE [=[
+          message(STATUS "Signing with identity: @SIGN_IDENTITY@")
+
+          file(GLOB app_bundles LIST_DIRECTORIES TRUE "@CMAKE_INSTALL_PREFIX@/Applications/*.app")
+
+          find_program(CODESIGN_COMMAND codesign REQUIRED)
+
+          foreach(app IN LISTS app_bundles)
+            execute_process( COMMAND "${CODESIGN_COMMAND}" --verbose --force --sign "@SIGN_IDENTITY@" "${app}"
+              COMMAND_ECHO STDOUT
+              COMMAND_ERROR_IS_FATAL ANY)
+          endforeach() ]=] _codesign_code @ONLY)
+        install(CODE "${_codesign_code}")
+      else()
+        message(WARNING "Generated executables are not signed by the 'codesign' command. You may not able to run them. Consider to set SIGN_IDENTITY variable.")
+      endif()
     elseif(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       foreach(tgt example_glfw_opengl3 example_sdl2_opengl3 example_sdl2_wgpu example_sdl3_opengl3 example_sdl3_wgpu)
         if(TARGET ${tgt})
