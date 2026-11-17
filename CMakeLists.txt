@@ -1650,22 +1650,21 @@ if(DearImGui_Install)
       foreach(ex IN LISTS imgui_examples_list)
         install(TARGETS ${ex} RUNTIME_DEPENDENCY_SET ${ex}_deps BUNDLE DESTINATION Applications)
 
-	install(RUNTIME_DEPENDENCY_SET ${ex}_deps
-	  POST_EXCLUDE_REGEXES "^/opt/X11/.*"
+        install(RUNTIME_DEPENDENCY_SET ${ex}_deps
           FRAMEWORK DESTINATION Applications/${ex}.app/Contents/Frameworks
-          LIBRARY DESTINATION Applications/${ex}.app/Contents/Frameworks)
+          LIBRARY DESTINATION Applications/${ex}.app/Contents/Frameworks
+          POST_EXCLUDE_REGEXES "^/opt/X11/.*")
       endforeach()
 
       if(SIGN_IDENTITY)
         string(CONFIGURE [=[
+          find_program(CODESIGN_COMMAND codesign REQUIRED)
+
           message(STATUS "Signing with identity: @SIGN_IDENTITY@")
 
           file(GLOB app_bundles LIST_DIRECTORIES TRUE "@CMAKE_INSTALL_PREFIX@/Applications/*.app")
-
-          find_program(CODESIGN_COMMAND codesign REQUIRED)
-
           foreach(app IN LISTS app_bundles)
-            execute_process( COMMAND "${CODESIGN_COMMAND}" --verbose --force --sign "@SIGN_IDENTITY@" "${app}"
+            execute_process(COMMAND "${CODESIGN_COMMAND}" --verbose --force --sign "@SIGN_IDENTITY@" "${app}"
               COMMAND_ECHO STDOUT
               COMMAND_ERROR_IS_FATAL ANY)
           endforeach() ]=] _codesign_code @ONLY)
@@ -1692,7 +1691,16 @@ if(DearImGui_Install)
       endif()
 
     else()
-      install(TARGETS ${imgui_examples_list})
+      foreach(ex IN LISTS imgui_examples_list)
+        install(TARGETS ${ex} RUNTIME_DEPENDENCY_SET ${ex}_deps)
+        install(RUNTIME_DEPENDENCY_SET ${ex}_deps
+          PRE_EXCLUDE_REGEXES [[^api-ms-.*]] [[^ext-ms-.*]]
+          POST_EXCLUDE_REGEXES [[.*[/\][Ss]ysWOW64[/\].*\.dll]] [[.*[/\][Ss]ystem32[/\].*\.dll]]
+          DIRECTORIES
+            $<$<TARGET_EXISTS:SDL2::SDL2>:$<TARGET_FILE_DIR:SDL2::SDL2>>
+            $<$<TARGET_EXISTS:SDL3::SDL3>:$<TARGET_FILE_DIR:SDL3::SDL3>>
+            $<$<TARGET_EXISTS:FreeGLUT::freeglut>:$<TARGET_FILE_DIR:FreeGLUT::freeglut>>)
+      endforeach()
     endif()
   endif()
 
