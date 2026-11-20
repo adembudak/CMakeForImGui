@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.23...4.0)
+cmake_minimum_required(VERSION 3.23...4.5.1)
 
 project(CMakeForImGui
   VERSION 1.2.2.0
