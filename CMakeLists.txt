@@ -1630,10 +1630,15 @@ if(DearImGui_Install)
 
   foreach(backend IN LISTS imgui_backends_list)
     get_target_property(name ${backend} NAME)
-    get_target_property(file_set ${backend} HEADER_SETS)
-    list(REMOVE_ITEM file_set HEADERS)
+    get_target_property(file_sets ${backend} HEADER_SETS)
 
-    install(TARGETS ${name} EXPORT imgui-targets FILE_SET ${file_set})
+    list(LENGTH file_sets file_sets_size)
+    if(file_sets_size GREATER 1)
+      list(REMOVE_ITEM file_sets HEADERS)
+      install(TARGETS ${name} EXPORT imgui-targets FILE_SET ${file_sets} FILE_SET HEADERS)
+    else()
+      install(TARGETS ${name} EXPORT imgui-targets FILE_SET ${file_sets})
+    endif()
   endforeach()
 
   if(DearImGui_Install_Examples)
