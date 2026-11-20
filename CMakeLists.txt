@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.23...4.5.1)
 
 project(CMakeForImGui
-  VERSION 1.2.2.0
+  VERSION 1.3.0.0
   DESCRIPTION "CMake build support for Dear ImGui"
   HOMEPAGE_URL "https://github.com/adembudak/CMakeForImGui"
   LANGUAGES CXX)
