@@ -1643,7 +1643,7 @@ if(DearImGui_Install)
 
   if(DearImGui_Install_Examples)
     if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-      set(SIGN_IDENTITY "" CACHE STRING "This will be used as: codesign --sign <identity>")
+      set(SIGN_IDENTITY "-" CACHE STRING "This will be used as: codesign --sign <identity>")
 
       set_target_properties(${imgui_examples_list} PROPERTIES
         MACOSX_BUNDLE TRUE
