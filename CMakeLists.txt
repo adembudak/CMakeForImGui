@@ -1643,9 +1643,6 @@ if(DearImGui_Install)
 
   if(DearImGui_Install_Examples)
     if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-      set_target_properties(${imgui_examples_list} PROPERTIES MACOSX_BUNDLE TRUE)
-      install(TARGETS ${imgui_examples_list} BUNDLE DESTINATION Applications)
-
       set(SIGN_IDENTITY "" CACHE STRING "This will be used as: codesign --sign <identity>")
 
       set_target_properties(${imgui_examples_list} PROPERTIES
@@ -1656,9 +1653,9 @@ if(DearImGui_Install)
         install(TARGETS ${ex} RUNTIME_DEPENDENCY_SET ${ex}_deps BUNDLE DESTINATION Applications)
 
         install(RUNTIME_DEPENDENCY_SET ${ex}_deps
+          POST_EXCLUDE_REGEXES "^/opt/X11/.*"
           FRAMEWORK DESTINATION Applications/${ex}.app/Contents/Frameworks
-          LIBRARY DESTINATION Applications/${ex}.app/Contents/Frameworks
-          POST_EXCLUDE_REGEXES "^/opt/X11/.*")
+          LIBRARY DESTINATION Applications/${ex}.app/Contents/Frameworks)
       endforeach()
 
       if(SIGN_IDENTITY)
