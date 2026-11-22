@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.23...4.5.1)
 
 project(CMakeForImGui
-  VERSION 1.3.0.1
+  VERSION 1.3.0.2
   DESCRIPTION "CMake build support for Dear ImGui"
   HOMEPAGE_URL "https://github.com/adembudak/CMakeForImGui"
   LANGUAGES CXX)
@@ -1728,7 +1728,7 @@ endif()
 file(STRINGS @PROJECT_BINARY_DIR@/install_manifest.txt files_to_uninstall)
 
 foreach(file IN LISTS files_to_uninstall)
-  execute_process(COMMAND @CMAKE_COMMAND@ -E rm -rf $ENV{DESTDIR}${file} COMMAND_ECHO STDOUT)
+  execute_process(COMMAND "@CMAKE_COMMAND@" -E rm -f $ENV{DESTDIR}${file} COMMAND_ECHO STDOUT)
 endforeach()
 ]=] @ONLY)
 
